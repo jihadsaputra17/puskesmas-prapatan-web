@@ -11,16 +11,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     const session = await getServerSession(authOptions);
 
     return (
-      <div className="min-h-screen bg-slate-100 md:flex">
-        <aside className="flex w-full flex-col bg-slate-900 text-slate-300 shadow-xl md:min-h-screen md:w-64">
-          <div className="border-b border-slate-800 p-6">
+      <div className="min-h-screen bg-[var(--sky-wash)] md:flex">
+        <aside className="flex w-full flex-col bg-[var(--navy-deep)] text-[var(--muted)] shadow-[var(--shadow-lift)] md:min-h-screen md:w-64">
+          <div className="border-b border-[var(--navy)] p-6">
             <h2 className="text-xl font-bold text-white">Panel Admin</h2>
-            <p className="mt-1 text-sm text-slate-400">Puskesmas Prapatan</p>
+            <p className="mt-1 text-sm text-[var(--muted)]">Puskesmas Prapatan</p>
           </div>
           <AdminNav role={role} userName={session?.user?.name ?? undefined} />
-          <div className="border-t border-slate-800 p-4">
+          <div className="border-t border-[var(--navy)] p-4">
             <p className="mb-1 truncate text-sm font-medium text-white">{session?.user?.name ?? "Pengguna"}</p>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-teal-400">{role}</p>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-[var(--teal)]">{role}</p>
             <LogoutButton />
           </div>
         </aside>
