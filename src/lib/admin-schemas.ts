@@ -2,8 +2,12 @@ import { z } from "zod";
 
 const httpUrl = z.string().url().refine(
   (value) => {
-    const protocol = new URL(value).protocol;
-    return protocol === "https:" || protocol === "http:";
+    try {
+      const protocol = new URL(value).protocol;
+      return protocol === "https:" || protocol === "http:";
+    } catch {
+      return false;
+    }
   },
   { message: "URL must use HTTP or HTTPS" },
 );

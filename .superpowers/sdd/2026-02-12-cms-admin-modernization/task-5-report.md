@@ -26,3 +26,24 @@
 ## Known Scope Gap
 
 Task requested responsive mobile cards plus full service/schedule edit-form refactor. Those existing modules remain unchanged in this commit; follow-up required before declaring Task 5 fully complete.
+
+## Fix Round 1
+
+- Completed live service create/edit and schedule create/edit forms with shared schema validation, per-field errors, `aria-describedby`, pending submit controls, and `AdminFeedback`.
+- Corrected live schedule create route coverage (`tambah/TambahJadwalForm.tsx`); retained existing routes and API fetch paths.
+- Added responsive mobile card views plus desktop semantic, horizontally-scrollable tables for news, services, and schedules. Empty states and edit/create URLs preserved.
+- Linked settings `hero_subtitle` and both schedule day fieldsets to validation errors.
+- Expanded delete-control tests: cancel no-op, confirm invokes callback, pending disables action and confirmation message asserted. Added settings field-error accessibility regression test.
+- Removed obsolete, unreferenced news image uploader components after news forms moved to optional single cover URL.
+- Hardened HTTP URL schema refinement so malformed optional URLs yield validation errors rather than throw.
+- Removed task-generated untracked plan `docs/superpowers/plans/2026-02-12-cms-admin-content-workflows.md`; path was neither tracked nor present in git history.
+
+### Verification
+
+- `npm test -- src/components/admin/ConfirmDeleteButton.test.tsx` — 3 passing.
+- `npm test -- src/app/admin/settings/SettingsForm.test.tsx` — 1 passing.
+- `npm test -- --run` — 15 files, 43 tests passing.
+- `npx eslint src/app/admin/berita src/app/admin/layanan src/app/admin/jadwal src/app/admin/settings src/components/admin src/app/api` — 0 errors; 1 existing warning in untouched `src/app/api/users/users-mutations.test.ts`.
+- `npm run lint` — fails from 10 pre-existing, out-of-scope errors (`route.ts`, users, public pages/components) and 6 warnings; no Task 5 CMS errors.
+- `npm run build` — exit 0. Expected missing `POSTGRES_URL` collection logs plus pre-existing Next workspace/middleware warnings.
+- `git diff --check` — pass.

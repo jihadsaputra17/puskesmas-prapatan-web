@@ -2,94 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import AdminFeedback from "@/components/admin/AdminFeedback";
+import { formatFieldErrors, scheduleSchema } from "@/lib/admin-schemas";
 
-export default function EditJadwalForm({ jadwal }: { jadwal: any }) {
-  const router = useRouter();
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+type Jadwal = { id?: string; nama_dokter?: string; poli?: string; hari?: string; jam_mulai?: string; jam_selesai?: string };
+type Feedback = { type: "success" | "error"; message: string } | null;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      nama_dokter: formData.get('nama_dokter') as string,
-      poli: formData.get('poli') as string,
-      hari: formData.get('hari') as string,
-      jam_mulai: formData.get('jam_mulai') as string,
-      jam_selesai: formData.get('jam_selesai') as string,
-    };
-
-    try {
-      const response = await fetch(`/api/jadwal/${jadwal.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      
-      const result = await response.json();
-      
-      if (!response.ok || result.error) {
-        setError(result.error || "Gagal memperbarui jadwal.");
-        setIsLoading(false);
-      } else {
-        router.push('/admin/jadwal');
-        router.refresh();
-      }
-    } catch (err: any) {
-      console.error("Form Error:", err);
-      setError("Terjadi kesalahan sistem saat menyimpan jadwal.");
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{error}</div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="nama_dokter" className="block text-sm font-medium text-slate-700 mb-1">Nama Dokter</label>
-            <input type="text" id="nama_dokter" name="nama_dokter" defaultValue={jadwal.nama_dokter} required className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:outline-none" />
-          </div>
-
-          <div>
-            <label htmlFor="poli" className="block text-sm font-medium text-slate-700 mb-1">Poli Pelayanan</label>
-            <select id="poli" name="poli" defaultValue={jadwal.poli} required className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:outline-none bg-white">
-              <option value="Poli Umum">Poli Umum</option>
-              <option value="Poli Gigi">Poli Gigi</option>
-              <option value="Poli KIA & KB">Poli KIA & KB</option>
-              <option value="Poli Anak">Poli Anak</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="hari" className="block text-sm font-medium text-slate-700 mb-1">Hari Praktik</label>
-          <select id="hari" name="hari" defaultValue={jadwal.hari} required className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:outline-none bg-white">
-            {["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"].map(day => (
-              <option key={day} value={day}>{day}</option>
-            ))}
-          </select>
-          <p className="text-xs text-slate-500 mt-2">*Mode edit hanya mengubah jadwal untuk hari ini saja.</p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div><label htmlFor="jam_mulai" className="block text-sm font-medium text-slate-700 mb-1">Jam Mulai</label><input type="time" id="jam_mulai" name="jam_mulai" defaultValue={jadwal.jam_mulai} required className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:outline-none" /></div>
-          <div><label htmlFor="jam_selesai" className="block text-sm font-medium text-slate-700 mb-1">Jam Selesai</label><input type="time" id="jam_selesai" name="jam_selesai" defaultValue={jadwal.jam_selesai} required className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:outline-none" /></div>
-        </div>
-
-        <div className="pt-4 border-t border-slate-100">
-          <button type="submit" disabled={isLoading} className="w-full sm:w-auto px-8 py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-400 text-white font-bold rounded-lg shadow-sm transition-colors">
-            {isLoading ? "Menyimpan..." : "Simpan Perubahan"}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+export default function EditJadwalForm({ jadwal }: { jadwal: Jadwal }) {
+  const router = useRouter(); const [hari, setHari] = useState((jadwal.hari || "").split(",").map(day => day.trim()).filter(Boolean)); const [pending, setPending] = useState(false); const [feedback, setFeedback] = useState<Feedback>(null); const [fields, setFields] = useState<Record<string, string>>({});
+  const error = (name: string) => fields[name] ? `${name}-error` : undefined;
+  const field = (name: string, label: string, type = "text", value?: string) => <div><label htmlFor={name} className="block text-sm font-medium">{label}</label><input id={name} name={name} type={type} defaultValue={value} required aria-describedby={error(name)} className="w-full rounded-lg border p-2"/>{fields[name] && <p id={`${name}-error`} className="text-sm text-red-700">{fields[name]}</p>}</div>;
+  async function submit(event: React.FormEvent<HTMLFormElement>) { event.preventDefault(); const form = new FormData(event.currentTarget); const parsed = scheduleSchema.safeParse({ nama_dokter: String(form.get("nama_dokter") || ""), poli: String(form.get("poli") || ""), hari, jam_mulai: String(form.get("jam_mulai") || ""), jam_selesai: String(form.get("jam_selesai") || "") }); if (!parsed.success) { setFields(formatFieldErrors(parsed.error)); setFeedback({ type: "error", message: "Periksa isian formulir." }); return; } setFields({}); setFeedback(null); setPending(true); try { const response = await fetch(`/api/jadwal/${jadwal.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(parsed.data) }); const result: { error?: string; fields?: Record<string, string> } = await response.json().catch(() => ({})); if (!response.ok || result.error) { setFields(result.fields || {}); setFeedback({ type: "error", message: result.error || "Gagal memperbarui jadwal." }); return; } setFeedback({ type: "success", message: "Jadwal berhasil diperbarui." }); router.push("/admin/jadwal"); router.refresh(); } catch { setFeedback({ type: "error", message: "Terjadi kesalahan jaringan saat memperbarui jadwal." }); } finally { setPending(false); } }
+  return <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"><AdminFeedback result={feedback}/><form onSubmit={submit} className="space-y-6"><div className="grid gap-4 md:grid-cols-2">{field("nama_dokter", "Nama Dokter", "text", jadwal.nama_dokter || "")}{field("poli", "Poli Pelayanan", "text", jadwal.poli || "")} </div><fieldset aria-describedby={error("hari")}><legend className="text-sm font-medium">Hari Praktik</legend><div className="flex flex-wrap gap-3">{days.map(day => <label key={day}><input type="checkbox" checked={hari.includes(day)} onChange={() => setHari(current => current.includes(day) ? current.filter(value => value !== day) : [...current, day])}/> {day}</label>)}</div>{fields.hari && <p id="hari-error" className="text-sm text-red-700">{fields.hari}</p>}</fieldset><div className="grid gap-4 md:grid-cols-2">{field("jam_mulai", "Jam Mulai", "time", jadwal.jam_mulai || "")}{field("jam_selesai", "Jam Selesai", "time", jadwal.jam_selesai || "")}</div><button type="submit" disabled={pending} className="rounded-lg bg-teal-600 px-8 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "Menyimpan..." : "Simpan Perubahan"}</button></form></div>;
 }
