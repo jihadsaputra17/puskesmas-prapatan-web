@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import "react-quill-new/dist/quill.snow.css";
 import AdminFeedback from "@/components/admin/AdminFeedback";
@@ -17,7 +17,17 @@ export default function TambahLayananForm() {
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [fields, setFields] = useState<Record<string, string>>({});
+  const editor = useRef<{ getEditor: () => { root: HTMLElement } }>(null);
   const error = (name: string) => fields[name] ? `${name}-error` : undefined;
+
+  useEffect(() => {
+    const root = editor.current?.getEditor().root;
+    if (!root) return;
+    root.id = "deskripsi";
+    root.setAttribute("aria-labelledby", "deskripsi-label");
+    if (fields.deskripsi) root.setAttribute("aria-describedby", "deskripsi-error");
+    else root.removeAttribute("aria-describedby");
+  }, [fields.deskripsi]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -34,5 +44,5 @@ export default function TambahLayananForm() {
     finally { setPending(false); }
   }
 
-  return <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"><AdminFeedback result={feedback}/><form onSubmit={submit} className="space-y-6"><div><label htmlFor="nama_poli" className="block text-sm font-medium">Nama Poli / Layanan</label><input id="nama_poli" name="nama_poli" required aria-describedby={error("nama_poli")} className="w-full rounded-lg border p-2"/>{fields.nama_poli && <p id="nama_poli-error" className="text-sm text-red-700">{fields.nama_poli}</p>}</div><div><label htmlFor="icon" className="block text-sm font-medium">Icon (Emoji)</label><input id="icon" name="icon" defaultValue="🏥" aria-describedby={error("icon")} className="w-full rounded-lg border p-2"/>{fields.icon && <p id="icon-error" className="text-sm text-red-700">{fields.icon}</p>}</div><div><label htmlFor="deskripsi" className="block text-sm font-medium">Deskripsi Layanan</label><div id="deskripsi" aria-describedby={error("deskripsi")}><ReactQuill theme="snow" value={deskripsi} onChange={setDeskripsi} modules={modules} className="mb-16 h-48" placeholder="Jelaskan secara rinci tentang layanan ini..."/></div>{fields.deskripsi && <p id="deskripsi-error" className="text-sm text-red-700">{fields.deskripsi}</p>}</div><button type="submit" disabled={pending} className="rounded-lg bg-teal-600 px-8 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "Menyimpan..." : "Simpan Layanan"}</button></form></div>;
+  return <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"><AdminFeedback result={feedback}/><form onSubmit={submit} className="space-y-6"><div><label htmlFor="nama_poli" className="block text-sm font-medium">Nama Poli / Layanan</label><input id="nama_poli" name="nama_poli" required aria-describedby={error("nama_poli")} className="w-full rounded-lg border p-2"/>{fields.nama_poli && <p id="nama_poli-error" className="text-sm text-red-700">{fields.nama_poli}</p>}</div><div><label htmlFor="icon" className="block text-sm font-medium">Icon (Emoji)</label><input id="icon" name="icon" defaultValue="🏥" aria-describedby={error("icon")} className="w-full rounded-lg border p-2"/>{fields.icon && <p id="icon-error" className="text-sm text-red-700">{fields.icon}</p>}</div><div><label id="deskripsi-label" className="block text-sm font-medium">Deskripsi Layanan</label><ReactQuill ref={editor} theme="snow" value={deskripsi} onChange={setDeskripsi} modules={modules} className="mb-16 h-48" placeholder="Jelaskan secara rinci tentang layanan ini..."/>{fields.deskripsi && <p id="deskripsi-error" className="text-sm text-red-700">{fields.deskripsi}</p>}</div><button type="submit" disabled={pending} className="rounded-lg bg-teal-600 px-8 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "Menyimpan..." : "Simpan Layanan"}</button></form></div>;
 }

@@ -47,3 +47,17 @@ Task requested responsive mobile cards plus full service/schedule edit-form refa
 - `npm run lint` — fails from 10 pre-existing, out-of-scope errors (`route.ts`, users, public pages/components) and 6 warnings; no Task 5 CMS errors.
 - `npm run build` — exit 0. Expected missing `POSTGRES_URL` collection logs plus pre-existing Next workspace/middleware warnings.
 - `git diff --check` — pass.
+
+## Fix Round 2
+
+- Bound service create/edit Quill `.ql-editor[contenteditable]` roots directly to `aria-labelledby="deskripsi-label"`; label no longer targets Quill wrapper.
+- Moved conditional `aria-describedby="deskripsi-error"` onto editable root, so validation message reaches actual editor control.
+- Added create/edit regression coverage with mocked Quill editor root. Test fails against wrapper association and asserts labelled editable control plus description error association.
+
+### Verification
+
+- RED: `npm test -- src/app/admin/layanan/LayananDescriptionAccessibility.test.tsx` — failed twice: label associated with non-labellable wrapper `<div>`.
+- GREEN: focused regression — 2 passing.
+- `npm test -- --run` — 16 files, 45 tests passing.
+- `npx eslint src/app/admin/layanan/tambah/TambahLayananForm.tsx 'src/app/admin/layanan/[id]/edit/EditLayananForm.tsx' src/app/admin/layanan/LayananDescriptionAccessibility.test.tsx` — 0 errors, 0 warnings.
+- `git diff --check` — pass.
