@@ -21,7 +21,18 @@ export async function initJadwalTable() {
   }
 }
 
-// 2. Mengambil Semua Jadwal
+// 2. Menghitung Semua Jadwal
+export async function getJadwalCount(): Promise<number> {
+  try {
+    const { rows } = await sql`SELECT COUNT(*)::int AS count FROM jadwal_dokter`;
+    return Number(rows[0]?.count ?? 0);
+  } catch (error) {
+    console.error('Database Error - getJadwalCount:', error);
+    throw new Error('Gagal menghitung data jadwal dokter.');
+  }
+}
+
+// 3. Mengambil Semua Jadwal
 export async function getJadwal() {
   await initJadwalTable();
   const { rows } = await sql`SELECT * FROM jadwal_dokter ORDER BY poli ASC, hari ASC`;

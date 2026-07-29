@@ -69,6 +69,16 @@ export async function createBeritaKesehatan(formData: FormData) {
   revalidatePath('/');
 }
 
+export async function getBeritaCount(): Promise<number> {
+  try {
+    const { rows } = await sql`SELECT COUNT(*)::int AS count FROM health_news`;
+    return Number(rows[0]?.count ?? 0);
+  } catch (error) {
+    console.error('Database Error - getBeritaCount:', error);
+    throw new Error('Gagal menghitung data berita kesehatan.');
+  }
+}
+
 export async function getBeritaKesehatan() {
   try {
     const { rows } = await sql`

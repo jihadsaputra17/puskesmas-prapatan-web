@@ -34,6 +34,16 @@ export async function deleteLayanan(id: string) {
   }
 }
 
+export async function getLayananCount(): Promise<number> {
+  try {
+    const { rows } = await sql`SELECT COUNT(*)::int AS count FROM layanan_poli`;
+    return Number(rows[0]?.count ?? 0);
+  } catch (error) {
+    console.error('Database Error - getLayananCount:', error);
+    throw new Error('Gagal menghitung data layanan.');
+  }
+}
+
 export async function getLayanan() {
   try {
     const { rows } = await sql`SELECT * FROM layanan_poli ORDER BY created_at ASC`;
