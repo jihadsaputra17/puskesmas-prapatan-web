@@ -41,3 +41,16 @@
 - `npm run lint`: unchanged pre-existing failures listed above.
 - `npm run build`: passed; same pre-existing workspace/middleware/missing-local-`POSTGRES_URL` warnings.
 - `git diff --check`: passed.
+
+## Final re-review round 3 — health_news published_at provisioning
+
+- Added `health_news.published_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP` to fresh-table provisioning, matching existing public news reads and ordering without runtime-query changes.
+- Added idempotent `ALTER TABLE health_news ADD COLUMN IF NOT EXISTS ...` for pre-existing CMS tables. PostgreSQL applies `CURRENT_TIMESTAMP` to existing rows during column addition, so all legacy rows satisfy `NOT NULL` and future inserts retain the default.
+- Extended `test:cms-provisioning` static guard: requires both fresh-table and existing-table `published_at` provisioning; retains CMS-table and runtime-DDL checks.
+
+### Round 3 verification
+
+- `npm run test:cms-provisioning`: passed.
+- `npm test`: 20 files, 60 tests passed.
+- `npm run build`: passed. Existing environment warnings remain: multiple lockfiles, deprecated middleware convention, and handled missing local `POSTGRES_URL` during static generation.
+- `git diff --check`: passed.

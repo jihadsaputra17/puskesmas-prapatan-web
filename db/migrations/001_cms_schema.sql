@@ -3,9 +3,9 @@
 -- Run once before deploying application code that reads or writes CMS data:
 --   psql "$POSTGRES_URL" -v ON_ERROR_STOP=1 -f db/migrations/001_cms_schema.sql
 --
--- Safe to rerun. This migration only creates missing tables/indexes and inserts
--- missing default setting keys. It never drops, truncates, alters, or overwrites
--- existing CMS data.
+-- Safe to rerun. This migration only creates missing tables/indexes/columns and
+-- inserts missing default setting keys. It never drops, truncates, or overwrites
+-- existing CMS data. Missing published_at values receive CURRENT_TIMESTAMP.
 
 CREATE TABLE IF NOT EXISTS users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -24,8 +24,12 @@ CREATE TABLE IF NOT EXISTS health_news (
   content TEXT NOT NULL,
   image_url TEXT NOT NULL DEFAULT '',
   template VARCHAR(50) NOT NULL DEFAULT 'standard',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  published_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE health_news
+  ADD COLUMN IF NOT EXISTS published_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 CREATE TABLE IF NOT EXISTS layanan_poli (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
