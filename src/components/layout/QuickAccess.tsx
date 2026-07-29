@@ -49,7 +49,7 @@ const items = [
 export default function QuickAccess() {
   return (
     <section className="border-b border-slate-200/80 bg-white py-8 md:py-10" aria-labelledby="quick-access-heading">
-      <div className="content-container">
+      <div className="content-container w-full max-w-full overflow-hidden">
         <div className="mb-5 flex items-end justify-between gap-4">
           <div>
             <p className="eyebrow">Akses cepat</p>
@@ -58,17 +58,17 @@ export default function QuickAccess() {
             </h2>
           </div>
         </div>
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 box-border">
           {items.map((item) => (
-            <li key={item.href} className="flex w-full">
+            <li key={item.href} className="flex w-full min-w-0">
               <Link
                 href={item.href}
-                className="group flex h-full w-full items-start gap-3 rounded-panel border border-slate-200 bg-clinic-wash/60 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:bg-white hover:shadow-lift"
+                className="group flex h-full w-full min-w-0 items-start gap-3 rounded-panel border border-slate-200 bg-clinic-wash/60 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:bg-white hover:shadow-lift"
               >
                 <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-clinic-soft text-clinic-teal transition group-hover:bg-clinic-teal group-hover:text-white">
                   {item.icon}
                 </span>
-                <span className="min-w-0 w-full">
+                <span className="min-w-0 flex-1">
                   <span className="block font-bold text-navy group-hover:text-clinic-teal">
                     {item.title}
                   </span>
