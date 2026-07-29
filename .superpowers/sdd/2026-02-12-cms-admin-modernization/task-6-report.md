@@ -29,7 +29,7 @@ Deferred existing Phase 3 failures outside Task 6:
 
 ```text
 npm run lint
-route.ts:16:19 @typescript-eslint/no-explicit-any
+repository-root route.ts:16:19 @typescript-eslint/no-explicit-any
 src/app/berita/page.tsx:33:38 @typescript-eslint/no-explicit-any
 src/components/berita/ArticleContent.tsx:15:5 react-hooks/set-state-in-effect
 src/components/jadwal/ScheduleTable.tsx:21:7 react-hooks/set-state-in-effect
@@ -78,7 +78,7 @@ passed
 Mandated `npm run lint` current unrelated failures (all user-form paths clean):
 
 ```text
-route.ts:16:19 @typescript-eslint/no-explicit-any
+repository-root route.ts:16:19 @typescript-eslint/no-explicit-any
 src/app/berita/page.tsx:33:38 @typescript-eslint/no-explicit-any
 src/components/berita/ArticleContent.tsx:15:5 react-hooks/set-state-in-effect
 src/components/jadwal/ScheduleTable.tsx:21:7 react-hooks/set-state-in-effect
@@ -101,7 +101,7 @@ src/lib/settings-actions.ts:49:12 @typescript-eslint/no-unused-vars
 Fresh `npm run lint` exits 1 with 6 unrelated errors. Exact repository-relative locations:
 
 ```text
-route.ts:16:19 @typescript-eslint/no-explicit-any
+repository-root route.ts:16:19 @typescript-eslint/no-explicit-any
 src/app/berita/page.tsx:33:38 @typescript-eslint/no-explicit-any
 src/components/berita/ArticleContent.tsx:15:5 react-hooks/set-state-in-effect
 src/components/jadwal/ScheduleTable.tsx:21:7 react-hooks/set-state-in-effect
