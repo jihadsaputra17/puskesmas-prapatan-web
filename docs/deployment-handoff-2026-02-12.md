@@ -1,14 +1,17 @@
 # Deployment Handoff — 2026-02-12
 
-Last updated: 2026-03-15 (admin login verified)
+Last updated: 2026-07-29 (Design A public UI shipped on `main`)
+
+> **Latest session handoff:** `docs/handoff-design-a-civic-polish-2026-07-29.md`
+> Design A commit: `ec9c92d` on `main` — civic polish public UI live / pushed.
 
 ## Delivered work
 
-- Branch: `feat/public-patient-experience`
-- Remote: `origin/feat/public-patient-experience`
-- Latest commit tip includes production deploy docs + deploy runtime fixes
+- Branch: `main` (feature branch merged via PR #1)
+- Feature history: `feat/public-patient-experience` @ `b7bd46d` (worktree retained)
 - Public patient experience (Phase 1) and CMS/admin modernization (Phase 2) complete
-- Final verification: `npm test` — 20 files / 60 tests passed; build passed; `git diff --check` passed
+- **Design A civic public polish** complete on `main` (`ec9c92d`)
+- Final verification: `npx vitest run` — 20 files / 60 tests passed
 - Full lint retains documented, untouched legacy failures for Phase 3
 
 ## Live URLs
@@ -66,13 +69,16 @@ Last updated: 2026-03-15 (admin login verified)
 
 ## Next session checklist
 
-1. Create + merge PR into `main` (align GitHub with live production)
-2. Optional: change admin password to stronger 8+ char password via admin UI
-3. Optional Phase 3:
+1. ~~Create + merge PR into `main`~~ **DONE** — PR #1 merged @ `f3c352f`
+2. ~~Design A public UI polish~~ **DONE** — `ec9c92d` (see `docs/handoff-design-a-civic-polish-2026-07-29.md`)
+3. **Next:** Admin UI restyle using Design A tokens (nav/shell/forms; keep CMS behavior)
+4. Optional: change admin password to stronger 8+ char password via admin UI
+5. Optional Phase 3:
    - fix remaining legacy lint failures
    - migrate deprecated `middleware` → `proxy`
    - managed image uploads (if approved)
    - real complaint intake backend (only after policy approval)
+6. Stash note: `stash@{0}` `wip-main-before-pr-merge-20260729` — do not blind-pop
 
 ## Notes
 
