@@ -19,5 +19,5 @@ export default async function EditBeritaPage({ params }: { params: Promise<{ slu
     );
   }
 
-  return <EditBeritaForm berita={berita} />;
+  return <EditBeritaForm berita={berita as { id: string } & Record<string, string | undefined>} />;
 }
