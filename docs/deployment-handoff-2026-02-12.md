@@ -29,13 +29,13 @@
    - `POSTGRES_URL` already present on all environments
    - Existing preview deployment must be **redeployed** before new auth vars apply
 
-2. Run CMS database provisioning once from trusted operator environment:
+2. CMS database provisioning — **DONE 2026-03-15**
 
-   ```bash
-   psql "$POSTGRES_URL" -v ON_ERROR_STOP=1 -f db/migrations/001_cms_schema.sql
-   ```
-
-   Migration is additive and idempotent. It covers `users`, `health_news`, `layanan_poli`, `jadwal_dokter`, `website_settings`, including `health_news.published_at`.
+   - Ran `db/migrations/001_cms_schema.sql` against production `POSTGRES_URL`
+   - Verified tables: `users`, `health_news`, `layanan_poli`, `jadwal_dokter`, `website_settings`
+   - `health_news.published_at` present (existing production column type: `date`, NOT NULL)
+   - `website_settings` count: 8 default keys present
+   - Migration is additive/idempotent; safe to rerun
 
 3. Verify deployed public routes and admin login. Confirm role boundaries:
    - `admin`: news, services, schedules, settings
