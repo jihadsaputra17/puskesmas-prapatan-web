@@ -58,17 +58,17 @@ export default function QuickAccess() {
             </h2>
           </div>
         </div>
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item) => (
-            <li key={item.href} className="flex">
+            <li key={item.href} className="flex w-full">
               <Link
                 href={item.href}
-                className="group flex h-full items-start gap-3 rounded-panel border border-slate-200 bg-clinic-wash/60 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:bg-white hover:shadow-lift"
+                className="group flex h-full w-full items-start gap-3 rounded-panel border border-slate-200 bg-clinic-wash/60 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:bg-white hover:shadow-lift"
               >
                 <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-clinic-soft text-clinic-teal transition group-hover:bg-clinic-teal group-hover:text-white">
                   {item.icon}
                 </span>
-                <span className="min-w-0">
+                <span className="min-w-0 w-full">
                   <span className="block font-bold text-navy group-hover:text-clinic-teal">
                     {item.title}
                   </span>
