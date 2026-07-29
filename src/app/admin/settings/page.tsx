@@ -16,8 +16,9 @@ export default async function SettingsPage() {
     <div className="max-w-4xl">
       <header className="mb-8 flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Pengaturan Situs</h1>
-          <p className="text-slate-600 mt-2">Ubah informasi kontak, teks sambutan, dan detail publik website di sini.</p>
+          <p className="eyebrow">Konfigurasi</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight text-[var(--navy)]">Pengaturan Situs</h1>
+          <p className="mt-2 text-[var(--muted)]">Ubah informasi kontak, teks sambutan, dan detail publik website di sini.</p>
         </div>
       </header>
 

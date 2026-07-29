@@ -48,18 +48,18 @@ export default function AddUserForm() {
     }
   };
 
-  return <div className="max-w-2xl rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+  return <div className="panel p-8 max-w-2xl">
     {error && <div role="alert" className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>}
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-      <Field label="Nama Lengkap" name="name" error={fieldErrors.name}><input type="text" id="name" name="name" required aria-describedby={fieldErrors.name ? "name-error" : undefined} placeholder="Contoh: Budi Santoso" className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600" /></Field>
-      <Field label="Email" name="email" error={fieldErrors.email}><input type="email" id="email" name="email" required aria-describedby={fieldErrors.email ? "email-error" : undefined} placeholder="contoh@puskesmas.com" className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600" /></Field>
-      <Field label="Kata Sandi" name="password" error={fieldErrors.password}><input type="password" id="password" name="password" required minLength={8} aria-describedby={fieldErrors.password ? "password-error" : undefined} placeholder="Minimal 8 karakter" className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600" /></Field>
-      <Field label="Peran" name="role" error={fieldErrors.role}><select id="role" name="role" required aria-describedby={fieldErrors.role ? "role-error" : undefined} defaultValue="admin" className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"><option value="admin">Admin</option><option value="superadmin">Superadmin</option></select></Field>
-      <div className="border-t border-slate-100 pt-4"><button type="submit" disabled={isLoading} className="w-full rounded-lg bg-teal-600 px-8 py-3 font-bold text-white transition-colors hover:bg-teal-700 disabled:bg-slate-400 sm:w-auto">{isLoading ? "Menyimpan..." : "Simpan Pengguna"}</button></div>
+      <Field label="Nama Lengkap" name="name" error={fieldErrors.name}><input type="text" id="name" name="name" required aria-describedby={fieldErrors.name ? "name-error" : undefined} placeholder="Contoh: Budi Santoso" className="input-field" /></Field>
+      <Field label="Email" name="email" error={fieldErrors.email}><input type="email" id="email" name="email" required aria-describedby={fieldErrors.email ? "email-error" : undefined} placeholder="contoh@puskesmas.com" className="input-field" /></Field>
+      <Field label="Kata Sandi" name="password" error={fieldErrors.password}><input type="password" id="password" name="password" required minLength={8} aria-describedby={fieldErrors.password ? "password-error" : undefined} placeholder="Minimal 8 karakter" className="input-field" /></Field>
+      <Field label="Peran" name="role" error={fieldErrors.role}><select id="role" name="role" required aria-describedby={fieldErrors.role ? "role-error" : undefined} defaultValue="admin" className="input-field"><option value="admin">Admin</option><option value="superadmin">Superadmin</option></select></Field>
+      <div className="border-t border-[var(--line)] pt-4"><button type="submit" disabled={isLoading} className="button-primary sm:w-auto">{isLoading ? "Menyimpan..." : "Simpan Pengguna"}</button></div>
     </form>
   </div>;
 }
 
 function Field({ label, name, error, children }: { label: string; name: string; error?: string; children: React.ReactNode }) {
-  return <div><label htmlFor={name} className="mb-1 block text-sm font-medium text-slate-700">{label}</label>{children}{error && <p id={`${name}-error`} role="alert" className="mt-1 text-sm text-red-700">{error}</p>}</div>;
+  return <div><label htmlFor={name} className="mb-1 block text-sm font-medium text-[var(--ink)]">{label}</label>{children}{error && <p id={`${name}-error`} role="alert" className="mt-1 text-sm text-red-700">{error}</p>}</div>;
 }

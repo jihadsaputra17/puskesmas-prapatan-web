@@ -14,7 +14,12 @@ export default function ConfirmDeleteButton({ onConfirm, itemName, pending = fal
   };
 
   return (
-    <button type="button" onClick={handleClick} disabled={pending} className="text-sm font-medium text-red-600 hover:text-red-800 disabled:text-slate-400">
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={pending}
+      className="text-sm font-medium text-red-600 transition-colors hover:text-red-800 disabled:text-[var(--muted)]"
+    >
       {pending ? "Menghapus..." : `Hapus ${itemName}`}
     </button>
   );

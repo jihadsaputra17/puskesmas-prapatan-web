@@ -28,15 +28,15 @@ export default function EditUserForm({ user }: { user: User }) {
     finally { setIsLoading(false); }
   };
 
-  return <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+  return <div className="panel p-8">
     {error && <div role="alert" className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>}
     <form onSubmit={submit} className="space-y-6" noValidate>
       <Input label="Nama Lengkap" name="name" defaultValue={user.name} error={fieldErrors.name} />
       <Input label="Email" name="email" type="email" defaultValue={user.email} error={fieldErrors.email} />
-      <div><label htmlFor="role" className="mb-1 block text-sm font-medium text-slate-700">Peran</label><select id="role" name="role" defaultValue={user.role} required aria-describedby={fieldErrors.role ? "role-error" : undefined} className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"><option value="admin">Admin</option><option value="superadmin">Superadmin</option></select>{fieldErrors.role && <p id="role-error" role="alert" className="mt-1 text-sm text-red-700">{fieldErrors.role}</p>}</div>
-      <div className="border-t border-slate-100 pt-4"><button type="submit" disabled={isLoading} className="w-full rounded-lg bg-teal-600 px-8 py-3 font-bold text-white hover:bg-teal-700 disabled:bg-slate-400 sm:w-auto">{isLoading ? "Menyimpan..." : "Simpan Perubahan"}</button></div>
+      <div><label htmlFor="role" className="mb-1 block text-sm font-medium text-[var(--ink)]">Peran</label><select id="role" name="role" defaultValue={user.role} required aria-describedby={fieldErrors.role ? "role-error" : undefined} className="input-field"><option value="admin">Admin</option><option value="superadmin">Superadmin</option></select>{fieldErrors.role && <p id="role-error" role="alert" className="mt-1 text-sm text-red-700">{fieldErrors.role}</p>}</div>
+      <div className="border-t border-[var(--line)] pt-4"><button type="submit" disabled={isLoading} className="button-primary sm:w-auto">{isLoading ? "Menyimpan..." : "Simpan Perubahan"}</button></div>
     </form>
   </div>;
 }
 
-function Input({ label, name, type = "text", defaultValue, error }: { label: string; name: string; type?: string; defaultValue: string; error?: string }) { return <div><label htmlFor={name} className="mb-1 block text-sm font-medium text-slate-700">{label}</label><input id={name} name={name} type={type} defaultValue={defaultValue} required aria-describedby={error ? `${name}-error` : undefined} className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600" />{error && <p id={`${name}-error`} role="alert" className="mt-1 text-sm text-red-700">{error}</p>}</div>; }
+function Input({ label, name, type = "text", defaultValue, error }: { label: string; name: string; type?: string; defaultValue: string; error?: string }) { return <div><label htmlFor={name} className="mb-1 block text-sm font-medium text-[var(--ink)]">{label}</label><input id={name} name={name} type={type} defaultValue={defaultValue} required aria-describedby={error ? `${name}-error` : undefined} className="input-field" />{error && <p id={`${name}-error`} role="alert" className="mt-1 text-sm text-red-700">{error}</p>}</div>; }
