@@ -144,12 +144,51 @@ body {
   }
 }
 
-/* Hero slideshow — custom nav buttons use Tailwind classes */
+/* Hero slideshow — default nav styled */
 .hero-slideshow .swiper-button-next,
 .hero-slideshow .swiper-button-prev {
-  position: absolute;
-  z-index: 10;
-  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+}
+.hero-slideshow .swiper-button-next:hover,
+.hero-slideshow .swiper-button-prev:hover {
+  background: rgba(255,255,255,1);
+  transform: scale(1.1);
+}
+.hero-slideshow .swiper-button-next::after,
+.hero-slideshow .swiper-button-prev::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: #081B2B;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  transition: background 0.2s;
+}
+.hero-slideshow .swiper-button-next:hover::after {
+  background: #0D9488;
+}
+.hero-slideshow .swiper-button-prev:hover::after {
+  background: #0D9488;
+}
+.hero-slideshow .swiper-button-next::after {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081B2B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081B2B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
+}
+.hero-slideshow .swiper-button-prev::after {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081B2B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081B2B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E");
 }
 .hero-slideshow .swiper-button-disabled {
   opacity: 0.35;
