@@ -73,3 +73,29 @@ Output:
 
 ### Commit
 `89bf91b fix(cms): reject malformed mutation bodies`
+
+---
+
+## Fix Round 2 — atomic schedule multi-insert
+
+### Root cause and fix
+- `POST /api/jadwal` executed one independent `INSERT` per selected day. A later insert failure could retain earlier rows despite returning `500`.
+- Replaced loop with one parameterized PostgreSQL statement: `INSERT … SELECT … FROM jsonb_array_elements_text($dayJson::jsonb)`. PostgreSQL executes this as one statement, so statement failure inserts no selected-day rows.
+- Serialized validated `string[]` days as JSON because `@vercel/postgres` tagged SQL parameters permit primitives, not JavaScript arrays. Existing request/response contract remains `{ success: true }`; every day still stores one row.
+
+### TDD evidence
+1. RED: changed authorized comma-day schedule regression to require one SQL execution, then ran:
+   `npm test -- src/app/api/content-mutations.test.ts`
+   Failed expectedly: `expected "vi.fn()" to be called 1 times, but got 2 times`.
+2. GREEN: implemented one atomic insert statement, then ran:
+   `npm test -- src/app/api/content-mutations.test.ts`
+   Passed: 1 file / 7 tests.
+
+### Final verification
+- `npm test -- src/app/api/content-mutations.test.ts` — passed, 1 file / 7 tests.
+- `npm test` — passed, 10 files / 28 tests.
+- `npm run build` — passed, exit 0. Existing warnings remain: multiple lockfiles, deprecated middleware convention, and expected missing `POSTGRES_URL` read errors during static generation.
+- `git diff --check` — passed.
+
+### Commit
+`fix(schedule): make multi-day insert atomic`

@@ -84,12 +84,12 @@ describe("CMS content mutations", () => {
     expect(mockedSql).not.toHaveBeenCalled();
   });
 
-  it("normalizes comma-separated schedule days for authorized creation", async () => {
+  it("inserts comma-separated schedule days atomically for authorized creation", async () => {
     mockedGetServerSession.mockResolvedValue(admin);
     const response = await createSchedule(new Request("http://test/api/jadwal", { method: "POST", body: JSON.stringify({ nama_dokter: "Dr. Sari", poli: "Umum", hari: "Senin, Rabu", jam_mulai: "08:00", jam_selesai: "12:00" }) }));
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ success: true });
-    expect(mockedSql).toHaveBeenCalledTimes(2);
+    expect(mockedSql).toHaveBeenCalledTimes(1);
   });
 
   it("accepts only validated settings for authorized admin", async () => {
