@@ -95,3 +95,18 @@ src/components/jadwal/ScheduleTable.tsx:23:6 react-hooks/exhaustive-deps
 src/lib/layanan-actions.ts:51:12 @typescript-eslint/no-unused-vars
 src/lib/settings-actions.ts:49:12 @typescript-eslint/no-unused-vars
 ```
+
+## Review fix round 2: lint evidence
+
+Fresh `npm run lint` exits 1 with 6 unrelated errors. Exact repository-relative locations:
+
+```text
+route.ts:16:19 @typescript-eslint/no-explicit-any
+src/app/berita/page.tsx:33:38 @typescript-eslint/no-explicit-any
+src/components/berita/ArticleContent.tsx:15:5 react-hooks/set-state-in-effect
+src/components/jadwal/ScheduleTable.tsx:21:7 react-hooks/set-state-in-effect
+src/components/layout/BeritaSection.tsx:31:37 @typescript-eslint/no-explicit-any
+src/components/layout/LayananSection.tsx:22:33 @typescript-eslint/no-explicit-any
+```
+
+Lint also emits 5 warnings; no unrelated source code changed for this review round.
