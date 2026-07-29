@@ -1,76 +1,82 @@
 # Deployment Handoff — 2026-02-12
 
+Last updated: 2026-03-15 (admin login verified)
+
 ## Delivered work
 
 - Branch: `feat/public-patient-experience`
 - Remote: `origin/feat/public-patient-experience`
-- Pull request creation: <https://github.com/jihadsaputra17/puskesmas-prapatan-web/pull/new/feat/public-patient-experience>
-- Public patient experience and Phase 2 CMS modernization complete.
-- Final verification: `npm test` — 20 files / 60 tests passed; build passed; `git diff --check` passed.
-- Full lint retains documented, untouched legacy failures for Phase 3.
+- Latest commit tip includes production deploy docs + deploy runtime fixes
+- Public patient experience (Phase 1) and CMS/admin modernization (Phase 2) complete
+- Final verification: `npm test` — 20 files / 60 tests passed; build passed; `git diff --check` passed
+- Full lint retains documented, untouched legacy failures for Phase 3
 
-## Vercel state
+## Live URLs
+
+- **Production (use this):** <https://puskesmas-prapatan-web.vercel.app>
+- Production deployment: <https://puskesmas-prapatan-272syaeai-saputrajihad-1763s-projects.vercel.app>
+- Latest good preview: <https://puskesmas-prapatan-pqv6x3kdu-saputrajihad-1763s-projects.vercel.app>
+- **Do not use old previews** such as `...7jrfd1dmp...` (pre-fix 500 deploys)
+
+## Vercel / env state
 
 - Account/team: `saputrajihad-1763's projects`
-- Vercel project: `puskesmas-prapatan-web`
-- Preview deployment succeeded:
-  <https://puskesmas-prapatan-7jrfd1dmp-saputrajihad-1763s-projects.vercel.app>
-- Deployment build succeeded.
-- Preview currently has Vercel Deployment Protection: unauthenticated visitors are sent to Vercel login. This is expected until protection is disabled or a public production deployment is made.
-- Production deploy completed 2026-03-15:
-  - Alias: <https://puskesmas-prapatan-web.vercel.app>
-  - Deployment: <https://puskesmas-prapatan-272syaeai-saputrajihad-1763s-projects.vercel.app>
+- Project: `puskesmas-prapatan-web`
+- SSO deployment protection: **disabled** (public access allowed)
+- Production env set:
+  - `POSTGRES_URL`
+  - `NEXTAUTH_SECRET`
+  - `NEXTAUTH_URL=https://puskesmas-prapatan-web.vercel.app`
+  - `NEXT_PUBLIC_SITE_URL=https://puskesmas-prapatan-web.vercel.app`
+- Preview-wide `NEXTAUTH_SECRET` set
+- Development localhost auth vars set
 
-## Required before public production launch
+## Database
 
-1. Auth environment variables — **DONE 2026-03-15**
+- Migration applied: `db/migrations/001_cms_schema.sql`
+- Tables present: `users`, `health_news`, `layanan_poli`, `jadwal_dokter`, `website_settings`
+- `health_news.published_at` present
+- `website_settings` default keys present (8)
 
-   - Production: `NEXTAUTH_SECRET`, `NEXTAUTH_URL=https://puskesmas-prapatan-web.vercel.app`, `NEXT_PUBLIC_SITE_URL=https://puskesmas-prapatan-web.vercel.app`
-   - Preview (`feat/public-patient-experience`): `NEXTAUTH_SECRET`, `NEXTAUTH_URL` + `NEXT_PUBLIC_SITE_URL` set to current preview host
-   - Development: localhost values
-   - `POSTGRES_URL` already present on all environments
-   - Existing preview deployment must be **redeployed** before new auth vars apply
+## Runtime fixes applied for deploy
 
-2. CMS database provisioning — **DONE 2026-03-15**
+- Replaced `isomorphic-dompurify` with `sanitize-html` (jsdom ESM crash on Vercel)
+- Explicit `secret: process.env.NEXTAUTH_SECRET` in `src/lib/auth.ts`
 
-   - Ran `db/migrations/001_cms_schema.sql` against production `POSTGRES_URL`
-   - Verified tables: `users`, `health_news`, `layanan_poli`, `jadwal_dokter`, `website_settings`
-   - `health_news.published_at` present (existing production column type: `date`, NOT NULL)
-   - `website_settings` count: 8 default keys present
-   - Migration is additive/idempotent; safe to rerun
+## Verification status
 
-3. Verify deployed public routes and admin login — **DONE 2026-03-15 (partial)**
-
-   - Preview public (SSO protection disabled):
-     <https://puskesmas-prapatan-pqv6x3kdu-saputrajihad-1763s-projects.vercel.app>
-   - Public routes HTTP 200: `/`, `/layanan`, `/jadwal-dokter`, `/berita`, `/login`, `/pengaduan`, `/profil`, `/kebijakan-privasi`
-   - Unauthenticated `/admin` redirects to `/login` (NextAuth working)
-   - Deploy fixes applied:
-     - Replaced `isomorphic-dompurify` with `sanitize-html` (jsdom ESM crash on Vercel)
-     - Explicit `secret: process.env.NEXTAUTH_SECRET` in `authOptions`
-     - Preview-wide `NEXTAUTH_SECRET` set
-   - Manual browser admin login with real credentials still needed (cannot complete from CLI)
-   - Role boundaries still expected:
-     - `admin`: news, services, schedules, settings
-     - `superadmin`: includes user management
-
-4. Create/review/merge GitHub PR into `main` — **PENDING browser create**
-
-   - Compare URL: <https://github.com/jihadsaputra17/puskesmas-prapatan-web/compare/main...feat/public-patient-experience?expand=1>
+1. Auth env vars — **DONE**
+2. CMS schema migration — **DONE**
+3. Public route checks — **DONE** (HTTP 200 on key pages)
+4. GitHub PR create/merge into `main` — **PENDING**
+   - Compare: <https://github.com/jihadsaputra17/puskesmas-prapatan-web/compare/main...feat/public-patient-experience?expand=1>
    - PR body draft: `docs/pr-body-feat-public-patient-experience.md`
-   - Note: production already deployed from feature branch via Vercel CLI; merge still needed to align `main`.
+   - Production already deployed from feature branch via CLI; merge still needed to align `main`
+5. Production deploy — **DONE**
+6. Admin login — **DONE (user-confirmed success 2026-03-15)**
+   - Superadmin email available: `admin@puskesmas.com`
+   - Password was operator-reset via secure DB hash update (not stored in docs)
+   - Other accounts present: `saputra.jihad@gmail.com` (superadmin), `penulis@puskesmas.com` (role `user`)
+   - CMS password policy in forms remains min 8 chars; recommend upgrading weak passwords later
 
-5. Production deploy — **DONE 2026-03-15**
+## Role model
 
-   - Live: <https://puskesmas-prapatan-web.vercel.app>
-   - Public routes HTTP 200 verified
-   - Unauthenticated `/admin` redirects to `/login`
-   - Manual admin credential login still recommended
+- `admin`: news, services, schedules, settings
+- `superadmin`: all admin capabilities + user management
+
+## Next session checklist
+
+1. Create + merge PR into `main` (align GitHub with live production)
+2. Optional: change admin password to stronger 8+ char password via admin UI
+3. Optional Phase 3:
+   - fix remaining legacy lint failures
+   - migrate deprecated `middleware` → `proxy`
+   - managed image uploads (if approved)
+   - real complaint intake backend (only after policy approval)
 
 ## Notes
 
-- GitHub stores code; it does not host this Next.js server app.
-- Vercel deployment has configured Postgres variables; local development only needs `.env.local` when running locally.
-- Do not commit `.env.local` or secrets.
-- Existing README deployment instructions: `README.md`.
-- CMS migration: `db/migrations/001_cms_schema.sql`.
+- Never commit `.env.local` or secrets
+- GitHub stores code; Vercel hosts app
+- Handoff companion PR body: `docs/pr-body-feat-public-patient-experience.md`
+- CMS migration path: `db/migrations/001_cms_schema.sql`
