@@ -1,21 +1,26 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import type { JadwalDokter } from '../../lib/actions';
 
-const scheduleData = [
-  { id: 1, doctor: 'dr. Andi Pratama', poli: 'Poli Umum', day: 'Senin - Kamis', hours: '08:00 - 12:00 WITA' },
-  { id: 2, doctor: 'dr. Budi Santoso', poli: 'Poli Umum', day: 'Jumat - Sabtu', hours: '08:00 - 11:00 WITA' },
-  { id: 3, doctor: 'drg. Citra Lestari', poli: 'Poli Gigi', day: 'Senin - Rabu', hours: '08:30 - 13:00 WITA' },
-  { id: 4, doctor: 'drg. Dian Novita', poli: 'Poli Gigi', day: 'Kamis - Sabtu', hours: '08:30 - 12:00 WITA' },
-  { id: 5, doctor: 'Bidan Eka Sari', poli: 'Poli KIA & KB', day: 'Senin - Sabtu', hours: '08:00 - 12:00 WITA' },
-  { id: 6, doctor: 'Petugas Lab (Analis)', poli: 'Laboratorium', day: 'Senin - Sabtu', hours: '08:00 - 11:30 WITA' },
-];
-
-export default function ScheduleTable() {
+export default function ScheduleTable({ 
+  scheduleData,
+  initialPoli
+}: { 
+  scheduleData: JadwalDokter[];
+  initialPoli?: string;
+}) {
   const [filterPoli, setFilterPoli] = useState('Semua');
 
   // Ekstrak daftar poli unik dari data jadwal
   const uniquePoli = ['Semua', ...Array.from(new Set(scheduleData.map(item => item.poli)))];
+
+  // Set nilai awal filter jika pengunjung datang dari link spesifik
+  useEffect(() => {
+    if (initialPoli && uniquePoli.includes(initialPoli)) {
+      setFilterPoli(initialPoli);
+    }
+  }, [initialPoli]); // Hanya berjalan ketika parameter URL diubah/diterima
 
   // Filter data berdasarkan poli yang dipilih
   const filteredSchedule = filterPoli === 'Semua'

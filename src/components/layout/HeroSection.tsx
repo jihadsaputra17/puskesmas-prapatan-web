@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { getSettings } from '@/lib/settings-actions';
 
-const HeroSection = () => {
+export default async function HeroSection() {
+  const settings = await getSettings();
+
   return (
     <section 
       className="relative bg-slate-50 py-16 sm:py-24 lg:py-32" 
@@ -11,13 +14,13 @@ const HeroSection = () => {
           id="hero-heading" 
           className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 mb-6"
         >
-          Puskesmas Prapatan
-          <span className="block text-teal-600 text-2xl sm:text-3xl lg:text-4xl mt-2 font-bold">
-            Pelayanan Kesehatan Prima untuk Masyarakat
+          {settings.site_name || 'Puskesmas Prapatan'}
+          <span className="block text-teal-600 text-2xl sm:text-3xl lg:text-4xl mt-2 font-bold tracking-normal">
+            {settings.hero_title || 'Pelayanan Kesehatan Prima untuk Masyarakat'}
           </span>
         </h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg sm:text-xl text-slate-600 mb-8">
-          Kami berkomitmen memberikan pelayanan kesehatan yang berkualitas, terjangkau, dan merata bagi seluruh warga Kota Balikpapan.
+          {settings.hero_subtitle || 'Kami berkomitmen memberikan pelayanan kesehatan yang berkualitas, terjangkau, dan merata bagi seluruh warga Kota Balikpapan.'}
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link 
@@ -39,5 +42,3 @@ const HeroSection = () => {
     </section>
   );
 };
-
-export default HeroSection;

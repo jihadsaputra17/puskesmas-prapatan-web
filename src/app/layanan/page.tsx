@@ -1,12 +1,14 @@
 import { Metadata } from "next";
 import LayananSection from "../../components/layout/LayananSection";
+import LayananSkeleton from "../../components/layout/LayananSkeleton";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Layanan & Fasilitas",
   description: "Daftar layanan poli dan fasilitas penunjang di Puskesmas Prapatan.",
 };
 
-export default function LayananPage() {
+export default async function LayananPage() {
   return (
     <main className="bg-white min-h-screen">
       {/* Hero Khusus Halaman Layanan */}
@@ -23,7 +25,9 @@ export default function LayananPage() {
 
       {/* Bagian Layanan Poli dari Komponen yang sudah ada */}
       <div className="-mt-8">
-        <LayananSection />
+        <Suspense fallback={<LayananSkeleton />}>
+          <LayananSection />
+        </Suspense>
       </div>
 
       {/* Fasilitas Penunjang */}

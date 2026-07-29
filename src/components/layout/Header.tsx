@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
-const Header = () => {
+const Header = ({ isAdmin = false }: { isAdmin?: boolean }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
@@ -31,12 +31,17 @@ const Header = () => {
           </div>
 
           {/* Navigasi Desktop */}
-          <nav aria-label="Navigasi Utama Desktop" className="hidden md:flex md:space-x-8">
+          <nav aria-label="Navigasi Utama Desktop" className="hidden md:flex md:items-center md:space-x-8">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} className="text-sm font-medium text-slate-700 hover:text-teal-600 rounded-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2">
                 {link.label}
               </Link>
             ))}
+            {isAdmin && (
+              <Link href="/admin" className="text-sm font-semibold text-teal-700 bg-teal-50 px-3 py-1.5 rounded-md hover:bg-teal-100 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 flex items-center">
+                Panel Admin
+              </Link>
+            )}
           </nav>
 
           {/* Tombol Menu Mobile */}
@@ -72,6 +77,11 @@ const Header = () => {
                 {link.label}
               </Link>
             ))}
+            {isAdmin && (
+              <Link href="/admin" className="block px-3 py-2 mt-2 rounded-md text-base font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2">
+                Panel Admin
+              </Link>
+            )}
           </nav>
         </div>
       )}
