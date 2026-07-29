@@ -1,28 +1,21 @@
-import { updateSettings } from '@/lib/settings-actions';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { NextResponse } from 'next/server';
+import { updateSettings } from "@/lib/settings-actions";
+import { NextResponse } from "next/server";
+import { requireAdmin, toAuthorizationResponse } from "@/lib/admin-auth";
+import { formatFieldErrors, settingsSchema } from "@/lib/admin-schemas";
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-
-  // 1. Cek Autentikasi & Otorisasi: Hanya superadmin yang boleh menyimpan
-  if (session?.user?.role !== 'superadmin') {
-    return NextResponse.json({ message: 'Akses ditolak. Anda tidak memiliki izin.' }, { status: 403 });
-  }
-
   try {
-    const body = await request.json();
-    
-    // 2. Panggil server action untuk update database
-    await updateSettings(body);
-
-    // 3. Kirim respons sukses
-    return NextResponse.json({ message: 'Pengaturan berhasil disimpan!' });
-
+    try { await requireAdmin(); } catch (error) {
+      const response = toAuthorizationResponse(error);
+      if (response) return response;
+      throw error;
+    }
+    const parsed = settingsSchema.safeParse(await request.json());
+    if (!parsed.success) return NextResponse.json({ error: "Data pengaturan tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
+    await updateSettings(parsed.data);
+    return NextResponse.json({ message: "Pengaturan berhasil disimpan!" });
   } catch (error) {
-    console.error('API Settings Error:', error);
-    // 4. Kirim respons error jika terjadi masalah
-    return NextResponse.json({ message: 'Terjadi kesalahan pada server.' }, { status: 500 });
+    console.error("API Settings Error:", error);
+    return NextResponse.json({ error: "Terjadi kesalahan pada server." }, { status: 500 });
   }
 }

@@ -1,27 +1,22 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { sql } from "@vercel/postgres";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin, toAuthorizationResponse } from "@/lib/admin-auth";
+import { formatFieldErrors, newsSchema } from "@/lib/admin-schemas";
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+const uuidSchema = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const invalidate = () => { revalidatePath("/admin/berita"); revalidatePath("/berita"); revalidatePath("/"); };
+async function authorize() { try { await requireAdmin(); } catch (error) { const response = toAuthorizationResponse(error); if (response) return response; throw error; } }
+async function getId(params: Promise<{ id: string }>) { const { id } = await params; return uuidSchema.test(id) ? id : null; }
+function newsFromForm(formData: FormData) { return { title: formData.get("title"), slug: formData.get("slug"), excerpt: formData.get("excerpt"), content: formData.get("content"), image_url: formData.get("image_url") ?? formData.get("images") ?? "", template: formData.get("template") || "standard" }; }
+
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getServerSession(authOptions);
-    // Mengizinkan admin atau superadmin untuk menghapus
-    if (!session?.user) {
-      return NextResponse.json({ error: "Akses ditolak." }, { status: 403 });
-    }
-
-    const resolvedParams = await params;
-    const id = resolvedParams.id;
-
-    if (!id) {
-      return NextResponse.json({ error: "ID berita tidak ditemukan." }, { status: 400 });
-    }
-
-    await sql`DELETE FROM health_news WHERE id = ${id}`;
-    
-    return NextResponse.json({ success: true });
-  } catch (error: any) {
+    const denied = await authorize(); if (denied) return denied;
+    const id = await getId(params); if (!id) return NextResponse.json({ error: "ID berita tidak valid." }, { status: 400 });
+    await sql`DELETE FROM health_news WHERE id = ${id}::uuid`;
+    invalidate(); return NextResponse.json({ success: true });
+  } catch (error) {
     console.error("API Delete Berita Error:", error);
     return NextResponse.json({ error: "Terjadi kesalahan internal server saat menghapus berita." }, { status: 500 });
   }
@@ -29,43 +24,16 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: "Akses ditolak." }, { status: 403 });
-    }
-
-    const resolvedParams = await params;
-    const id = resolvedParams.id;
-
-    if (!id) {
-      return NextResponse.json({ error: "ID berita tidak ditemukan." }, { status: 400 });
-    }
-
-    const formData = await request.formData();
-    const title = formData.get('title') as string;
-    const slug = formData.get('slug') as string;
-    const excerpt = formData.get('excerpt') as string;
-    let content = formData.get('content') as string;
-    const template = (formData.get('template') as string) || 'standard';
-
-    const images = formData.getAll('images') as string[];
-    const coverImage = images.length > 0 ? images[0] : '';
-
-    if (images.length > 1) {
-      content += '\n\n<div class="mt-10 pt-6 border-t border-slate-200 not-prose">';
-      content += '\n<h3 class="text-xl font-bold mb-4 text-slate-800">Galeri Foto</h3>';
-      content += '\n<div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 scroll-smooth" style="scrollbar-width: thin;">';
-      for(let i = 1; i < images.length; i++){
-        content += `\n<img src="${images[i]}" alt="Galeri Berita ${i}" class="snap-center shrink-0 w-[85%] sm:w-[70%] md:w-[60%] h-64 sm:h-80 object-cover rounded-xl shadow-sm border border-slate-200 cursor-zoom-in hover:opacity-95 transition-opacity m-0" />`;
-      }
-      content += '\n</div>\n</div>';
-    }
-
-    await sql`UPDATE health_news SET title = ${title}, slug = ${slug}, excerpt = ${excerpt}, content = ${content}, image_url = ${coverImage}, template = ${template} WHERE id = ${id}`;
-
-    return NextResponse.json({ success: true });
-  } catch (error: any) {
+    const denied = await authorize(); if (denied) return denied;
+    const id = await getId(params); if (!id) return NextResponse.json({ error: "ID berita tidak valid." }, { status: 400 });
+    const parsed = newsSchema.safeParse(newsFromForm(await request.formData()));
+    if (!parsed.success) return NextResponse.json({ error: "Data berita tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
+    const { title, slug, excerpt, content, image_url, template } = parsed.data;
+    await sql`UPDATE health_news SET title = ${title}, slug = ${slug}, excerpt = ${excerpt}, content = ${content}, image_url = ${image_url || ""}, template = ${template} WHERE id = ${id}::uuid`;
+    invalidate(); return NextResponse.json({ success: true });
+  } catch (error: unknown) {
     console.error("API Update Berita Error:", error);
+    if ((error as { code?: string }).code === "23505") return NextResponse.json({ error: "Slug/Tautan sudah digunakan. Harap ganti tautan." }, { status: 409 });
     return NextResponse.json({ error: "Terjadi kesalahan internal server saat memperbarui berita." }, { status: 500 });
   }
 }
