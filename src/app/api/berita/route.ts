@@ -19,7 +19,11 @@ export async function POST(request: Request) {
       if (response) return response;
       throw error;
     }
-    const parsed = newsSchema.safeParse(newsFromForm(await request.formData()));
+    let formData: FormData;
+    try { formData = await request.formData(); } catch {
+      return NextResponse.json({ error: "Data berita tidak valid.", fields: {} }, { status: 400 });
+    }
+    const parsed = newsSchema.safeParse(newsFromForm(formData));
     if (!parsed.success) return NextResponse.json({ error: "Data berita tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
     const { title, slug, excerpt, content, image_url, template } = parsed.data;
     await sql`INSERT INTO health_news (title, slug, excerpt, content, image_url, template) VALUES (${title}, ${slug}, ${excerpt}, ${content}, ${image_url || ""}, ${template})`;

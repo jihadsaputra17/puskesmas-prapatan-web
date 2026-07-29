@@ -43,3 +43,33 @@ Tests cover unauthenticated 401/no SQL, wrong-role 403/no SQL, invalid service f
 - Build emits existing environment/config warnings: multiple lockfiles, deprecated middleware convention, and expected database read errors while `POSTGRES_URL` absent during static generation. Build exits 0.
 - Existing admin UI labels still present superadmin-only capabilities for some routes. Task brief explicitly requires `requireAdmin` for all listed content/settings mutations, so API permits both `admin` and `superadmin` while UI behavior remains unchanged.
 - No live database integration run; SQL paths validated by mocked external database boundary in route tests.
+
+---
+
+## Fix Round 1 — malformed mutation bodies
+
+### Important finding fixed
+- Route body parsers (`request.json()` / `request.formData()`) previously threw into outer generic catches, returning 500. Every affected parser now has local parse handling after authorization and before schema/database/action work. Malformed JSON or multipart returns route-specific `400 { error, fields: {} }`.
+- Schedule handlers now safely treat non-object parsed JSON (including `null`) as invalid schema input, avoiding `body.hari` dereference errors.
+
+### RED
+Command:
+```bash
+npm test -- src/app/api/content-mutations.test.ts
+```
+Output: failed 1/7. New regression exercised malformed JSON for service/schedule/settings POST and PUT plus malformed multipart for news POST/PUT. All seven returned 500; expected 400.
+
+### GREEN / covering tests
+Commands:
+```bash
+npm test -- src/app/api/content-mutations.test.ts
+npm test
+git diff --check
+```
+Output:
+- Route suite: passed, 1 file / 7 tests.
+- Full suite: passed, 10 files / 28 tests.
+- `git diff --check`: passed (exit 0).
+
+### Commit
+`89bf91b fix(cms): reject malformed mutation bodies`

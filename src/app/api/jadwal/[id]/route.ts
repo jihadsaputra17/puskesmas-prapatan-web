@@ -25,9 +25,13 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   try {
     const denied = await authorize(); if (denied) return denied;
     const id = await getId(params); if (!id) return NextResponse.json({ error: "ID jadwal tidak valid." }, { status: 400 });
-    const body = await request.json();
-    const hari = Array.isArray(body.hari) ? body.hari : typeof body.hari === "string" ? body.hari.split(",").map((day: string) => day.trim()).filter(Boolean) : body.hari;
-    const parsed = scheduleSchema.safeParse({ ...body, hari });
+    let body: unknown;
+    try { body = await request.json(); } catch {
+      return NextResponse.json({ error: "Data jadwal tidak valid.", fields: {} }, { status: 400 });
+    }
+    const scheduleBody = body && typeof body === "object" ? body as Record<string, unknown> : {};
+    const hari = Array.isArray(scheduleBody.hari) ? scheduleBody.hari : typeof scheduleBody.hari === "string" ? scheduleBody.hari.split(",").map((day: string) => day.trim()).filter(Boolean) : scheduleBody.hari;
+    const parsed = scheduleSchema.safeParse({ ...scheduleBody, hari });
     if (!parsed.success) return NextResponse.json({ error: "Data jadwal tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
     const { nama_dokter, poli, hari: days, jam_mulai, jam_selesai } = parsed.data;
     await sql`UPDATE jadwal_dokter SET nama_dokter = ${nama_dokter}, poli = ${poli}, hari = ${days.join(", ")}, jam_mulai = ${jam_mulai}, jam_selesai = ${jam_selesai} WHERE id = ${id}::uuid`;

@@ -26,7 +26,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   try {
     const denied = await authorize(); if (denied) return denied;
     const id = await getId(params); if (!id) return NextResponse.json({ error: "ID berita tidak valid." }, { status: 400 });
-    const parsed = newsSchema.safeParse(newsFromForm(await request.formData()));
+    let formData: FormData;
+    try { formData = await request.formData(); } catch {
+      return NextResponse.json({ error: "Data berita tidak valid.", fields: {} }, { status: 400 });
+    }
+    const parsed = newsSchema.safeParse(newsFromForm(formData));
     if (!parsed.success) return NextResponse.json({ error: "Data berita tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
     const { title, slug, excerpt, content, image_url, template } = parsed.data;
     await sql`UPDATE health_news SET title = ${title}, slug = ${slug}, excerpt = ${excerpt}, content = ${content}, image_url = ${image_url || ""}, template = ${template} WHERE id = ${id}::uuid`;

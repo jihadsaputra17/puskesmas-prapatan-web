@@ -12,7 +12,11 @@ export async function POST(request: Request) {
       throw error;
     }
 
-    const parsed = serviceSchema.safeParse(await request.json());
+    let body: unknown;
+    try { body = await request.json(); } catch {
+      return NextResponse.json({ error: "Data layanan tidak valid.", fields: {} }, { status: 400 });
+    }
+    const parsed = serviceSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: "Data layanan tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
 
     const { nama_poli, deskripsi, icon } = parsed.data;

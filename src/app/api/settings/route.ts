@@ -10,7 +10,11 @@ export async function POST(request: Request) {
       if (response) return response;
       throw error;
     }
-    const parsed = settingsSchema.safeParse(await request.json());
+    let body: unknown;
+    try { body = await request.json(); } catch {
+      return NextResponse.json({ error: "Data pengaturan tidak valid.", fields: {} }, { status: 400 });
+    }
+    const parsed = settingsSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: "Data pengaturan tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
     await updateSettings(parsed.data);
     return NextResponse.json({ message: "Pengaturan berhasil disimpan!" });

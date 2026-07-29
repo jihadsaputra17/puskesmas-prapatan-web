@@ -9,8 +9,11 @@ vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/settings-actions", () => ({ updateSettings: mockedUpdateSettings }));
 
 import { POST as createNews } from "./berita/route";
+import { PUT as updateNews } from "./berita/[id]/route";
 import { POST as createSchedule } from "./jadwal/route";
+import { PUT as updateSchedule } from "./jadwal/[id]/route";
 import { POST as createService } from "./layanan/route";
+import { PUT as updateService } from "./layanan/[id]/route";
 import { POST as updateSettings } from "./settings/route";
 
 const mockedGetServerSession = vi.mocked(getServerSession);
@@ -42,6 +45,27 @@ describe("CMS content mutations", () => {
     const response = await createService(new Request("http://test/api/layanan", { method: "POST", body: JSON.stringify({}) }));
     expect(response.status).toBe(403);
     expect(mockedSql).not.toHaveBeenCalled();
+  });
+
+  it("returns validation errors for malformed authenticated mutation bodies before SQL", async () => {
+    mockedGetServerSession.mockResolvedValue(admin);
+    const malformedJson = () => new Request("http://test/api/content", { method: "POST", headers: { "content-type": "application/json" }, body: "{" });
+    const malformedForm = () => new Request("http://test/api/berita", { method: "POST", headers: { "content-type": "multipart/form-data" }, body: "invalid" });
+    const params = { params: Promise.resolve({ id: "123e4567-e89b-42d3-a456-426614174000" }) };
+
+    const responses = await Promise.all([
+      createService(malformedJson()), updateService(malformedJson(), params),
+      createSchedule(malformedJson()), updateSchedule(malformedJson(), params),
+      updateSettings(malformedJson()), createNews(malformedForm()), updateNews(malformedForm(), params),
+    ]);
+
+    expect(responses.map((response) => response.status)).toEqual([400, 400, 400, 400, 400, 400, 400]);
+    await expect(responses[0].json()).resolves.toMatchObject({ error: "Data layanan tidak valid.", fields: {} });
+    await expect(responses[2].json()).resolves.toMatchObject({ error: "Data jadwal tidak valid.", fields: {} });
+    await expect(responses[4].json()).resolves.toMatchObject({ error: "Data pengaturan tidak valid.", fields: {} });
+    await expect(responses[5].json()).resolves.toMatchObject({ error: "Data berita tidak valid.", fields: {} });
+    expect(mockedSql).not.toHaveBeenCalled();
+    expect(mockedUpdateSettings).not.toHaveBeenCalled();
   });
 
   it("rejects invalid service fields before SQL", async () => {

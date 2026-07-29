@@ -38,7 +38,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const denied = await authorize(); if (denied) return denied;
     const id = await getId(params);
     if (!id) return NextResponse.json({ error: "ID layanan tidak valid." }, { status: 400 });
-    const parsed = serviceSchema.safeParse(await request.json());
+    let body: unknown;
+    try { body = await request.json(); } catch {
+      return NextResponse.json({ error: "Data layanan tidak valid.", fields: {} }, { status: 400 });
+    }
+    const parsed = serviceSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: "Data layanan tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
     const { nama_poli, deskripsi, icon } = parsed.data;
     await sql`UPDATE layanan_poli SET nama_poli = ${nama_poli}, deskripsi = ${deskripsi}, icon = ${icon || "🏥"} WHERE id = ${id}::uuid`;

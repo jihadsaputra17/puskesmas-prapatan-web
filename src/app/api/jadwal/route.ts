@@ -11,9 +11,13 @@ export async function POST(request: Request) {
       if (response) return response;
       throw error;
     }
-    const body = await request.json();
-    const hari = Array.isArray(body.hari) ? body.hari : typeof body.hari === "string" ? body.hari.split(",").map((day: string) => day.trim()).filter(Boolean) : body.hari;
-    const parsed = scheduleSchema.safeParse({ ...body, hari });
+    let body: unknown;
+    try { body = await request.json(); } catch {
+      return NextResponse.json({ error: "Data jadwal tidak valid.", fields: {} }, { status: 400 });
+    }
+    const scheduleBody = body && typeof body === "object" ? body as Record<string, unknown> : {};
+    const hari = Array.isArray(scheduleBody.hari) ? scheduleBody.hari : typeof scheduleBody.hari === "string" ? scheduleBody.hari.split(",").map((day: string) => day.trim()).filter(Boolean) : scheduleBody.hari;
+    const parsed = scheduleSchema.safeParse({ ...scheduleBody, hari });
     if (!parsed.success) return NextResponse.json({ error: "Data jadwal tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
     const { nama_dokter, poli, hari: days, jam_mulai, jam_selesai } = parsed.data;
     for (const hari of days) await sql`INSERT INTO jadwal_dokter (nama_dokter, poli, hari, jam_mulai, jam_selesai) VALUES (${nama_dokter}, ${poli}, ${hari}, ${jam_mulai}, ${jam_selesai})`;
