@@ -1,28 +1,23 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-
-const mocks = vi.hoisted(() => ({ getLayanan: vi.fn() }));
-vi.mock("@/lib/layanan-actions", () => ({ getLayanan: mocks.getLayanan }));
+import { describe, expect, it } from "vitest";
 
 import LayananSection from "./LayananSection";
 
 describe("LayananSection", () => {
-  it("renders plain-text excerpts and strips unsafe rich HTML", async () => {
-    mocks.getLayanan.mockResolvedValue([
-      {
-        id: "service-1",
-        icon: "🏥",
-        nama_poli: "Umum",
-        deskripsi:
-          '<img src="javascript:alert(1)" onerror="alert(1)"><svg><script>alert(1)</script></svg><p>Aman untuk dibaca</p>',
-      },
-    ]);
-
+  it("renders service cards with emoji icons and titles", async () => {
     const { container } = render(await LayananSection());
 
-    expect(screen.getByText(/Aman untuk dibaca/i)).toBeVisible();
-    expect(container.querySelector("script, svg")).toBeNull();
-    expect(container.querySelector("[onerror]")).toBeNull();
-    expect(container.querySelector('img[src^="javascript:"]')).toBeNull();
+    expect(screen.getByText(/Poli Umum/i)).toBeVisible();
+    expect(screen.getByText(/Poli Gigi/i)).toBeVisible();
+    expect(screen.getByText(/KIA & KB/i)).toBeVisible();
+    expect(screen.getByText(/Laboratorium/i)).toBeVisible();
+
+    // 6 cards + 1 'Semua layanan' button link to /layanan
+    const links = container.querySelectorAll('a[href="/layanan"]');
+    expect(links.length).toBe(7);
+
+    // Heading visible
+    expect(screen.getByText(/Layanan poli/i)).toBeVisible();
+    expect(screen.getByText(/Semua layanan/i)).toBeVisible();
   });
 });

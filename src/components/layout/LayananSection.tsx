@@ -1,26 +1,73 @@
-import { getLayanan } from "@/lib/layanan-actions";
-import { plainText, truncateText } from "@/lib/public-content";
 import Link from "next/link";
 import SectionHeading from "./SectionHeading";
 
-type Layanan = { id: string; icon: string; nama_poli: string; deskripsi: string };
+const services = [
+  {
+    emoji: "🩺",
+    title: "Poli Umum",
+    desc: "Pemeriksaan kesehatan umum bagi dewasa, diagnosis, pengobatan, serta rujukan bila diperlukan penanganan lebih lanjut.",
+    items: [
+      "Pemeriksaan kesehatan & konsultasi",
+      "Surat keterangan sehat",
+      "Pengobatan penyakit umum",
+      "Pemeriksaan tensi, asam urat, kolesterol",
+    ],
+  },
+  {
+    emoji: "🦷",
+    title: "Poli Gigi & Mulut",
+    desc: "Pemeriksaan dan perawatan kesehatan gigi serta mulut untuk seluruh kelompok usia.",
+    items: [
+      "Pemeriksaan gigi",
+      "Pencabutan gigi",
+      "Penambalan gigi",
+      "Edukasi kesehatan gigi",
+    ],
+  },
+  {
+    emoji: "🤰",
+    title: "KIA & KB",
+    desc: "Pelayanan kesehatan ibu hamil, bersalin, nifas, serta layanan keluarga berencana.",
+    items: [
+      "Pemeriksaan kehamilan (ANC)",
+      "Tes kehamilan",
+      "Pelayanan KB",
+      "Pelayanan persalinan",
+    ],
+  },
+  {
+    emoji: "👶",
+    title: "Poli Anak / MTBS",
+    desc: "Pemeriksaan tumbuh kembang dan kesehatan anak, termasuk imunisasi dasar.",
+    items: [
+      "Pemeriksaan anak sakit (MTBS)",
+      "Imunisasi",
+      "Pemantauan tumbuh kembang",
+    ],
+  },
+  {
+    emoji: "🥗",
+    title: "Poli Gizi",
+    desc: "Konsultasi gizi untuk balita, ibu hamil, dan masyarakat umum dalam rangka pencegahan masalah gizi.",
+    items: [
+      "Konsultasi gizi",
+      "Pemantauan status gizi balita",
+      "Edukasi pola makan sehat",
+    ],
+  },
+  {
+    emoji: "🧪",
+    title: "Laboratorium",
+    desc: "Pemeriksaan penunjang diagnosis sederhana untuk mendukung pengobatan pasien.",
+    items: [
+      "Tes golongan darah",
+      "Gula darah, asam urat, kolesterol",
+      "Tes kehamilan",
+    ],
+  },
+];
 
-function ServiceGlyph({ label }: { label: string }) {
-  const initial = (label || "?").trim().charAt(0).toUpperCase() || "?";
-  return (
-    <span
-      className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-clinic-soft text-base font-bold text-clinic-teal"
-      aria-hidden="true"
-    >
-      {initial}
-    </span>
-  );
-}
-
-export default async function LayananSection() {
-  const layanan = await getLayanan();
-  const preview = (layanan as Layanan[]).slice(0, 6);
-
+export default function LayananSection() {
   return (
     <section className="section-band bg-white" id="layanan" aria-labelledby="layanan-heading">
       <div className="content-container">
@@ -36,33 +83,32 @@ export default async function LayananSection() {
           }
         />
 
-        {preview.length > 0 ? (
-          <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {preview.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={`/layanan/${item.id}`}
-                  className="panel panel-lift flex h-full flex-col overflow-hidden p-6"
+        <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((s) => (
+            <li key={s.title}>
+              <Link
+                href="/layanan"
+                className="panel panel-lift flex h-full flex-col overflow-hidden p-5"
+              >
+                <span
+                  className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-clinic-soft text-lg"
+                  aria-hidden="true"
                 >
-                  <ServiceGlyph label={item.nama_poli} />
-                  <h3 className="mt-5 text-lg font-bold tracking-tight text-navy">
-                    {item.nama_poli}
-                  </h3>
-                  <p className="mt-3 flex-grow text-sm leading-6 text-slate-600 break-words line-clamp-4">
-                    {truncateText(plainText(item.deskripsi), 320) || "Informasi layanan tersedia di halaman detail."}
-                  </p>
-                  <span className="mt-5 text-sm font-semibold text-clinic-teal">
-                    Lihat detail →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="panel mt-10 p-10 text-center text-slate-500">
-            Belum ada layanan yang ditambahkan.
-          </div>
-        )}
+                  {s.emoji}
+                </span>
+                <h3 className="mt-4 text-base font-bold tracking-tight text-navy">
+                  {s.title}
+                </h3>
+                <p className="mt-2 flex-grow text-sm leading-6 text-slate-600 line-clamp-3">
+                  {s.desc}
+                </p>
+                <span className="mt-4 text-sm font-semibold text-clinic-teal">
+                  Lihat detail →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
