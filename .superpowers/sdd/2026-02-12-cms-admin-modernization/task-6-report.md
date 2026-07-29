@@ -25,11 +25,11 @@ git diff --check
 passed
 ```
 
-Deferred existing Phase 3 failures outside Task 6:
+Deferred existing Phase 3 failures outside Task 6. First location is repo root outside code token; code token below remains canonical repository-relative path:
 
 ```text
 npm run lint
-repository-root route.ts:16:19 @typescript-eslint/no-explicit-any
+route.ts:16:19 @typescript-eslint/no-explicit-any
 src/app/berita/page.tsx:33:38 @typescript-eslint/no-explicit-any
 src/components/berita/ArticleContent.tsx:15:5 react-hooks/set-state-in-effect
 src/components/jadwal/ScheduleTable.tsx:21:7 react-hooks/set-state-in-effect
@@ -75,10 +75,10 @@ git diff --check
 passed
 ```
 
-Mandated `npm run lint` current unrelated failures (all user-form paths clean):
+Mandated `npm run lint` current unrelated failures (all user-form paths clean). First location is repo root outside code token; code token below remains canonical repository-relative path:
 
 ```text
-repository-root route.ts:16:19 @typescript-eslint/no-explicit-any
+route.ts:16:19 @typescript-eslint/no-explicit-any
 src/app/berita/page.tsx:33:38 @typescript-eslint/no-explicit-any
 src/components/berita/ArticleContent.tsx:15:5 react-hooks/set-state-in-effect
 src/components/jadwal/ScheduleTable.tsx:21:7 react-hooks/set-state-in-effect
@@ -98,10 +98,10 @@ src/lib/settings-actions.ts:49:12 @typescript-eslint/no-unused-vars
 
 ## Review fix round 2: lint evidence
 
-Fresh `npm run lint` exits 1 with 6 unrelated errors. Exact repository-relative locations:
+Fresh `npm run lint` exits 1 with 6 unrelated errors. First location is repo root outside code token; code token below is exact repository-relative path:
 
 ```text
-repository-root route.ts:16:19 @typescript-eslint/no-explicit-any
+route.ts:16:19 @typescript-eslint/no-explicit-any
 src/app/berita/page.tsx:33:38 @typescript-eslint/no-explicit-any
 src/components/berita/ArticleContent.tsx:15:5 react-hooks/set-state-in-effect
 src/components/jadwal/ScheduleTable.tsx:21:7 react-hooks/set-state-in-effect
