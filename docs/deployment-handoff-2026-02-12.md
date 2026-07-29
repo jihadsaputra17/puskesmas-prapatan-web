@@ -17,7 +17,9 @@
   <https://puskesmas-prapatan-7jrfd1dmp-saputrajihad-1763s-projects.vercel.app>
 - Deployment build succeeded.
 - Preview currently has Vercel Deployment Protection: unauthenticated visitors are sent to Vercel login. This is expected until protection is disabled or a public production deployment is made.
-- Production deploy was **not** run.
+- Production deploy completed 2026-03-15:
+  - Alias: <https://puskesmas-prapatan-web.vercel.app>
+  - Deployment: <https://puskesmas-prapatan-272syaeai-saputrajihad-1763s-projects.vercel.app>
 
 ## Required before public production launch
 
@@ -52,13 +54,18 @@
      - `admin`: news, services, schedules, settings
      - `superadmin`: includes user management
 
-4. Create/review/merge GitHub PR into `main`.
+4. Create/review/merge GitHub PR into `main` — **PENDING browser create**
 
-5. Deploy production only after review and database/environment checks. Vercel CLI production command:
+   - Compare URL: <https://github.com/jihadsaputra17/puskesmas-prapatan-web/compare/main...feat/public-patient-experience?expand=1>
+   - PR body draft: `docs/pr-body-feat-public-patient-experience.md`
+   - Note: production already deployed from feature branch via Vercel CLI; merge still needed to align `main`.
 
-   ```bash
-   npx vercel --prod --scope saputrajihad-1763s-projects
-   ```
+5. Production deploy — **DONE 2026-03-15**
+
+   - Live: <https://puskesmas-prapatan-web.vercel.app>
+   - Public routes HTTP 200 verified
+   - Unauthenticated `/admin` redirects to `/login`
+   - Manual admin credential login still recommended
 
 ## Notes
 
