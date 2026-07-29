@@ -37,9 +37,20 @@
    - `website_settings` count: 8 default keys present
    - Migration is additive/idempotent; safe to rerun
 
-3. Verify deployed public routes and admin login. Confirm role boundaries:
-   - `admin`: news, services, schedules, settings
-   - `superadmin`: includes user management
+3. Verify deployed public routes and admin login — **DONE 2026-03-15 (partial)**
+
+   - Preview public (SSO protection disabled):
+     <https://puskesmas-prapatan-pqv6x3kdu-saputrajihad-1763s-projects.vercel.app>
+   - Public routes HTTP 200: `/`, `/layanan`, `/jadwal-dokter`, `/berita`, `/login`, `/pengaduan`, `/profil`, `/kebijakan-privasi`
+   - Unauthenticated `/admin` redirects to `/login` (NextAuth working)
+   - Deploy fixes applied:
+     - Replaced `isomorphic-dompurify` with `sanitize-html` (jsdom ESM crash on Vercel)
+     - Explicit `secret: process.env.NEXTAUTH_SECRET` in `authOptions`
+     - Preview-wide `NEXTAUTH_SECRET` set
+   - Manual browser admin login with real credentials still needed (cannot complete from CLI)
+   - Role boundaries still expected:
+     - `admin`: news, services, schedules, settings
+     - `superadmin`: includes user management
 
 4. Create/review/merge GitHub PR into `main`.
 
