@@ -21,14 +21,13 @@
 
 ## Required before public production launch
 
-1. In Vercel, configure environment variables for Production (and Preview if needed):
+1. Auth environment variables — **DONE 2026-03-15**
 
-   ```env
-   POSTGRES_URL=<existing Vercel Postgres/Neon connection string>
-   NEXTAUTH_SECRET=<long random secret>
-   NEXTAUTH_URL=https://<production-domain>
-   NEXT_PUBLIC_SITE_URL=https://<production-domain>
-   ```
+   - Production: `NEXTAUTH_SECRET`, `NEXTAUTH_URL=https://puskesmas-prapatan-web.vercel.app`, `NEXT_PUBLIC_SITE_URL=https://puskesmas-prapatan-web.vercel.app`
+   - Preview (`feat/public-patient-experience`): `NEXTAUTH_SECRET`, `NEXTAUTH_URL` + `NEXT_PUBLIC_SITE_URL` set to current preview host
+   - Development: localhost values
+   - `POSTGRES_URL` already present on all environments
+   - Existing preview deployment must be **redeployed** before new auth vars apply
 
 2. Run CMS database provisioning once from trusted operator environment:
 
