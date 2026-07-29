@@ -33,3 +33,19 @@ Konten HTML layanan dan berita diproses melalui `sanitizeArticleHtml` sebelum di
 ## Deployment
 
 Sediakan `POSTGRES_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, dan `NEXT_PUBLIC_SITE_URL` pada lingkungan deployment. Gunakan domain HTTPS produksi pada dua variabel URL.
+
+### Provisioning database CMS
+
+Sebelum deploy pertama, dan sebelum deploy versi aplikasi yang memakai tabel CMS baru, jalankan migration berikut dari lingkungan operator yang memiliki `psql` dan akses database. Jangan jalankan melalui halaman publik/admin atau request aplikasi.
+
+```bash
+psql "$POSTGRES_URL" -v ON_ERROR_STOP=1 -f db/migrations/001_cms_schema.sql
+```
+
+Migration membuat tabel CMS yang belum ada (`users`, `health_news`, `layanan_poli`, `jadwal_dokter`, `website_settings`), index, dan default setting yang belum ada. Aman dijalankan ulang: tidak menghapus, mengubah, atau menimpa schema/data CMS yang sudah ada. Jalankan sebelum application rollout; akun admin awal tetap harus dibuat sesuai prosedur operator yang aman, bukan dari request runtime tanpa autentikasi.
+
+Static guard untuk migration:
+
+```bash
+npm run test:cms-provisioning
+```

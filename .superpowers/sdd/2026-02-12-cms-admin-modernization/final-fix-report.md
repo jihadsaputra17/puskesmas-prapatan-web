@@ -26,4 +26,18 @@
 - Touched-path ESLint: passed.
 - Full `npm run lint`: still fails in pre-existing untouched paths: root `route.ts`, `src/app/berita/page.tsx`, `src/components/berita/ArticleContent.tsx`, `src/components/jadwal/ScheduleTable.tsx`, `src/components/layout/BeritaSection.tsx`; one pre-existing warning in users mutation test.
 - `npm run build`: passed. Warnings: multiple lockfiles, deprecated middleware convention, missing local `POSTGRES_URL` while static generation logs handled DB read errors.
+
+## Final re-review round 2 — deployment provisioning
+
+- Added versioned deployment-only migration `db/migrations/001_cms_schema.sql` for every CMS table: `users`, `health_news`, `layanan_poli`, `jadwal_dokter`, and `website_settings`.
+- Migration uses additive `CREATE TABLE IF NOT EXISTS` / `CREATE INDEX IF NOT EXISTS` and `ON CONFLICT DO NOTHING` defaults. It contains no destructive or mutating schema/data statements, preserving existing tables, rows, and settings across safe reruns.
+- Added `scripts/verify-cms-provisioning.mjs` and `npm run test:cms-provisioning`; static verification requires all CMS table provisions and rejects `CREATE`/`ALTER`/`DROP TABLE` from `src` runtime source.
+- Documented exact operator command in `README.md`: `psql "$POSTGRES_URL" -v ON_ERROR_STOP=1 -f db/migrations/001_cms_schema.sql`. Provision before application rollout; no request-path DDL restored.
+
+### Round 2 verification
+
+- `npm run test:cms-provisioning`: passed.
+- `npm test`: 20 files, 60 tests passed.
+- `npm run lint`: unchanged pre-existing failures listed above.
+- `npm run build`: passed; same pre-existing workspace/middleware/missing-local-`POSTGRES_URL` warnings.
 - `git diff --check`: passed.

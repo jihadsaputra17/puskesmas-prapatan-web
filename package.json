@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "test:cms-provisioning": "node scripts/verify-cms-provisioning.mjs",
     "test:watch": "vitest"
   },
   "dependencies": {
