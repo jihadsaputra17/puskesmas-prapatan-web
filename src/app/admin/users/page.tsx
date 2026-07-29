@@ -1,6 +1,4 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { requireSuperadmin } from "@/lib/admin-auth";
 import Link from "next/link";
 import { getUsers } from "@/lib/user-actions";
 import DeleteUserButton from "./DeleteUserButton";
@@ -10,13 +8,7 @@ export const metadata = {
 };
 
 export default async function ManajemenUserPage() {
-  const session = await getServerSession(authOptions);
-  
-  // PROTEKSI GANDA: Jika bukan superadmin, tendang kembali ke dashboard
-  if (session?.user?.role !== 'superadmin') {
-    redirect('/admin');
-  }
-
+  const session = await requireSuperadmin();
   const users = await getUsers();
 
   return (
@@ -65,7 +57,7 @@ export default async function ManajemenUserPage() {
                       Reset Password
                     </Link>
                     {/* Sembunyikan tombol hapus untuk akun diri sendiri */}
-                    {session?.user?.email !== user.email && (
+                    {session.id !== user.id && (
                       <DeleteUserButton id={user.id} />
                     )}
                   </td>

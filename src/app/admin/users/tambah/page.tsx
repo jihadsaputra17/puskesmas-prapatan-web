@@ -1,7 +1,5 @@
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { requireSuperadmin } from "@/lib/admin-auth";
 import Link from "next/link";
 import AddUserForm from "../AddUserForm";
 
@@ -10,11 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TambahUserPage() {
-  const session = await getServerSession(authOptions);
-
-  if (session?.user?.role !== 'superadmin') {
-    redirect('/admin');
-  }
+  await requireSuperadmin();
 
   return (
     <div className="max-w-2xl">

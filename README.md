@@ -21,9 +21,14 @@ npm run lint
 
 Aplikasi memerlukan `POSTGRES_URL` untuk data layanan, jadwal, berita, pengguna, dan pengaturan. Tanpa variabel itu, halaman publik memakai kondisi kosong/fallback dan build dapat mencetak peringatan koneksi database.
 
-## Catatan keamanan konten
+## Kebijakan CMS dan keamanan konten
 
 Konten HTML layanan dan berita diproses melalui `sanitizeArticleHtml` sebelum dirender. Jangan menambahkan `dangerouslySetInnerHTML` baru untuk konten CMS tanpa sanitasi ini.
+
+- Peran CMS hanya `admin` dan `superadmin`. Manajemen akun pengguna hanya untuk `superadmin`.
+- Gambar CMS harus memakai URL HTTPS publik; aplikasi tidak menerima unggahan atau data gambar inline.
+- Setiap mutasi CMS baru wajib memvalidasi data dan mengotorisasi peran di server, termasuk API route dan server action. Validasi klien hanya bantuan UX.
+- Form pengaduan publik tidak menyimpan keluhan atau data pengirim. Gunakan kanal resmi puskesmas untuk pengaduan yang perlu ditindaklanjuti.
 
 ## Deployment
 

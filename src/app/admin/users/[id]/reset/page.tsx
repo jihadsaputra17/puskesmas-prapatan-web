@@ -1,7 +1,5 @@
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { requireSuperadmin } from "@/lib/admin-auth";
 import { getUserById } from "@/lib/user-actions";
 import ResetPasswordForm from "./ResetPasswordForm";
 
@@ -10,13 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ResetPasswordPage({ params }: { params: Promise<{ id: string }> }) {
-  // Mengambil data sesi dan data pengguna secara sekuensial untuk stabilitas.
-  const session = await getServerSession(authOptions);
-
-  // Proteksi ganda: Hanya superadmin yang bisa mengakses
-  if (session?.user?.role !== 'superadmin') {
-    redirect('/admin');
-  }
+  await requireSuperadmin();
 
   // Ekstrak params menggunakan await sesuai aturan Next.js versi terbaru
   const resolvedParams = await params;
