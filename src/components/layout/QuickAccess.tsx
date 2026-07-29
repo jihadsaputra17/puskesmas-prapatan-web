@@ -63,7 +63,7 @@ export default function QuickAccess() {
             <li key={item.href} className="flex">
               <Link
                 href={item.href}
-                className="group flex h-full items-center gap-3 rounded-panel border border-slate-200 bg-clinic-wash/60 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:bg-white hover:shadow-lift"
+                className="group flex h-full items-start gap-3 rounded-panel border border-slate-200 bg-clinic-wash/60 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:bg-white hover:shadow-lift"
               >
                 <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-clinic-soft text-clinic-teal transition group-hover:bg-clinic-teal group-hover:text-white">
                   {item.icon}
@@ -72,7 +72,7 @@ export default function QuickAccess() {
                   <span className="block font-bold text-navy group-hover:text-clinic-teal">
                     {item.title}
                   </span>
-                  <span className="mt-1 block text-sm leading-6 text-slate-600">
+                  <span className="mt-1 block truncate text-sm leading-6 text-slate-600" title={item.text}>
                     {item.text}
                   </span>
                 </span>
