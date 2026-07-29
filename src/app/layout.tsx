@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
+import SiteHeader from "@/components/layout/SiteHeader";
+import SiteFooter from "@/components/layout/SiteFooter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,12 +21,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`${inter.className} bg-white text-slate-800 flex flex-col min-h-screen`}>
-        <Header />
-        <div className="flex-grow">
+      <body className={`${inter.className} flex min-h-screen flex-col`}>
+        <a className="skip-link" href="#main-content">Lewati ke isi utama</a>
+        <SiteHeader isAdmin={false} />
+        <main id="main-content" className="flex-grow">
           {children}
-        </div>
-        <Footer />
+        </main>
+        <SiteFooter settings={{}} />
       </body>
     </html>
   );
