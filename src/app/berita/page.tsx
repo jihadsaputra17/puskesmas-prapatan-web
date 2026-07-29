@@ -21,7 +21,7 @@ export default async function BeritaPage() {
             Berita & Informasi Terkini
           </h1>
           <p className="text-lg text-slate-600 leading-relaxed">
-            Dapatkan kabar, pengumuman, dan artikel kesehatan terbaru langsung dari tenaga medis Puskesmas Prapatan.
+            Kabar, pengumuman, dan informasi kesehatan dari Puskesmas Prapatan.
           </p>
         </div>
       </section>
@@ -40,7 +40,7 @@ export default async function BeritaPage() {
                 </div>
                 
                 <div className="flex flex-col flex-grow p-6">
-                  <time className="text-sm font-medium text-teal-600 mb-2">
+                  <time dateTime={new Date(berita.date).toISOString()} className="text-sm font-medium text-teal-600 mb-2">
                     {new Date(berita.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                   </time>
                   <h2 className="font-bold leading-tight text-xl mb-3">

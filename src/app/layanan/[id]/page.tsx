@@ -2,6 +2,7 @@ import { getLayananById } from "@/lib/layanan-actions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import { sanitizeArticleHtml } from "@/lib/sanitize-html";
 
 // SEO Dinamis menyesuaikan nama Poli
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -59,7 +60,7 @@ export default async function DetailLayananPage({ params }: { params: Promise<{ 
               [&_a]:text-teal-600 [&_a]:underline hover:[&_a]:text-teal-700 [&_a]:!break-words
               [&_strong]:font-bold [&_strong]:text-slate-900
               [&_.ql-align-center]:!text-center [&_.ql-align-right]:!text-right [&_.ql-align-justify]:!text-justify"
-            dangerouslySetInnerHTML={{ __html: layanan.deskripsi }}
+            dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(layanan.deskripsi) }}
           />
           
           <div className="mt-16 pt-8 border-t border-slate-200 flex justify-center sm:justify-start">

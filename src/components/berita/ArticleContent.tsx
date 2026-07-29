@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { sanitizeArticleHtml } from "@/lib/sanitize-html";
 
 export default function ArticleContent({ content }: { content: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +42,7 @@ export default function ArticleContent({ content }: { content: string }) {
       {/* Area Artikel */}
       <div 
         className="article-body prose prose-lg prose-slate max-w-none prose-a:text-teal-600 hover:prose-a:text-teal-700 whitespace-pre-wrap text-justify px-2 sm:px-0 prose-img:cursor-zoom-in"
-        dangerouslySetInnerHTML={{ __html: content }} 
+        dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(content) }}
         onClick={handleClick}
       />
 
