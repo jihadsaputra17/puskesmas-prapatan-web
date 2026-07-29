@@ -41,37 +41,45 @@ export default async function AdminDashboard() {
   return (
     <>
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Selamat datang, {session?.user?.name || "Admin"}</h1>
-        <p className="mt-2 text-slate-600">Ringkasan konten website Puskesmas Prapatan.</p>
+        <p className="eyebrow">Dashboard</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-[var(--navy)]">
+          Selamat datang, {session?.user?.name || "Admin"}
+        </h1>
+        <p className="mt-2 max-w-2xl text-base leading-7 text-[var(--muted)]">
+          Ringkasan konten website Puskesmas Prapatan.
+        </p>
       </header>
 
-      <section aria-label="Ringkasan konten" className="grid gap-4 sm:grid-cols-3">
+      <section aria-label="Ringkasan konten" className="grid gap-5 sm:grid-cols-3">
         {summaries.map(([label, result]) => (
-          <article key={label} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-sm font-medium text-slate-600">{label}</p>
+          <article key={label} className="panel p-5">
+            <p className="text-sm font-medium text-[var(--muted)]">{label}</p>
             {result.status === "available" ? (
-              <p className="mt-2 text-3xl font-bold text-slate-900">
+              <p className="mt-2 text-3xl font-bold text-[var(--navy)]">
                 {result.data}
               </p>
             ) : (
-              <p className="mt-2 text-slate-600">Data belum tersedia.</p>
+              <p className="mt-2 text-[var(--muted)]">Data belum tersedia.</p>
             )}
           </article>
         ))}
       </section>
 
-      <section className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-slate-900">Berita terbaru</h2>
-        {recentNews.status === "unavailable" ? (
-          <p className="mt-3 text-slate-600">Data belum tersedia.</p>
-        ) : latestNews ? (
-          <div className="mt-3">
-            <p className="font-medium text-slate-800">{latestNews.title || "Data belum tersedia."}</p>
-            {latestNews.date && <p className="mt-1 text-sm text-slate-600">{new Date(latestNews.date).toLocaleDateString("id-ID")}</p>}
-          </div>
-        ) : (
-          <p className="mt-3 text-slate-600">Belum ada berita.</p>
-        )}
+      <section className="section-band">
+        <div className="panel p-6">
+          <p className="eyebrow">Terkini</p>
+          <h2 className="mt-1 text-lg font-bold text-[var(--navy)]">Berita terbaru</h2>
+          {recentNews.status === "unavailable" ? (
+            <p className="mt-3 text-[var(--muted)]">Data belum tersedia.</p>
+          ) : latestNews ? (
+            <div className="accent-bar mt-4">
+              <p className="font-medium text-[var(--ink)]">{latestNews.title || "Data belum tersedia."}</p>
+              {latestNews.date && <p className="mt-1 text-sm text-[var(--muted)]">{new Date(latestNews.date).toLocaleDateString("id-ID")}</p>}
+            </div>
+          ) : (
+            <p className="mt-3 text-[var(--muted)]">Belum ada berita.</p>
+          )}
+        </div>
       </section>
     </>
   );
