@@ -1,0 +1,36 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import type ReactQuillType from "react-quill-new";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import "react-quill-new/dist/quill.snow.css";
+import AdminFeedback from "@/components/admin/AdminFeedback";
+import { formatFieldErrors, serviceSchema } from "@/lib/admin-schemas";
+
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false }) as typeof import("react-quill-new").default;
+type Layanan = { id?: string; nama_poli?: string; deskripsi?: string; icon?: string | null };
+type Feedback = { type: "success" | "error"; message: string } | null;
+const modules = { toolbar: [[{ header: [1, 2, 3, false] }], ["bold", "italic", "underline"], [{ align: [] }], [{ list: "ordered" }, { list: "bullet" }], ["clean"]] };
+
+export default function EditLayananForm({ layanan }: { layanan: Layanan }) {
+  const router = useRouter(); const [deskripsi, setDeskripsi] = useState(layanan.deskripsi || ""); const [pending, setPending] = useState(false); const [feedback, setFeedback] = useState<Feedback>(null); const [fields, setFields] = useState<Record<string, string>>({});
+  const editor = useRef<ReactQuillType>(null);
+  const error = (name: string) => fields[name] ? `${name}-error` : undefined;
+  useEffect(() => {
+    const root = editor.current?.getEditor().root;
+    if (!root) return;
+    root.id = "deskripsi";
+    root.setAttribute("aria-labelledby", "deskripsi-label");
+    if (fields.deskripsi) root.setAttribute("aria-describedby", "deskripsi-error");
+    else root.removeAttribute("aria-describedby");
+  }, [fields.deskripsi]);
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); const form = new FormData(event.currentTarget);
+    const parsed = serviceSchema.safeParse({ nama_poli: String(form.get("nama_poli") || ""), icon: String(form.get("icon") || ""), deskripsi: deskripsi.replace(/<[^>]*>/g, "").trim() ? deskripsi : "" });
+    if (!parsed.success) { setFields(formatFieldErrors(parsed.error)); setFeedback({ type: "error", message: "Periksa isian formulir." }); return; }
+    setFields({}); setFeedback(null); setPending(true);
+    try { const response = await fetch(`/api/layanan/${layanan.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(parsed.data) }); const result: { error?: string; message?: string; fields?: Record<string, string> } = await response.json().catch(() => ({})); if (!response.ok || result.error) { setFields(result.fields || {}); setFeedback({ type: "error", message: result.error || result.message || "Gagal memperbarui layanan." }); return; } setFeedback({ type: "success", message: "Layanan berhasil diperbarui." }); router.push("/admin/layanan"); router.refresh(); } catch { setFeedback({ type: "error", message: "Terjadi kesalahan jaringan saat memperbarui layanan." }); } finally { setPending(false); }
+  }
+  return <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"><AdminFeedback result={feedback}/><form onSubmit={submit} className="space-y-6"><div><label htmlFor="nama_poli" className="block text-sm font-medium">Nama Poli / Layanan</label><input id="nama_poli" name="nama_poli" defaultValue={layanan.nama_poli || ""} required aria-describedby={error("nama_poli")} className="w-full rounded-lg border p-2"/>{fields.nama_poli && <p id="nama_poli-error" className="text-sm text-red-700">{fields.nama_poli}</p>}</div><div><label htmlFor="icon" className="block text-sm font-medium">Icon (Emoji)</label><input id="icon" name="icon" defaultValue={layanan.icon || ""} aria-describedby={error("icon")} className="w-full rounded-lg border p-2"/>{fields.icon && <p id="icon-error" className="text-sm text-red-700">{fields.icon}</p>}</div><div><label id="deskripsi-label" className="block text-sm font-medium">Deskripsi Layanan</label><ReactQuill ref={editor} theme="snow" value={deskripsi} onChange={setDeskripsi} modules={modules} className="mb-16 h-48"/>{fields.deskripsi && <p id="deskripsi-error" className="text-sm text-red-700">{fields.deskripsi}</p>}</div><button type="submit" disabled={pending} className="rounded-lg bg-teal-600 px-8 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "Menyimpan..." : "Simpan Perubahan"}</button></form></div>;
+}

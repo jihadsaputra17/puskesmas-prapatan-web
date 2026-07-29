@@ -1,1 +1,20 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --navy: #12304a; --teal: #007f7b; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { min-width: 320px; background: #f8fafc; color: #1e293b; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+@layer components {
+  .content-container { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .page-shell { @apply py-12 md:py-16; }
+  .nav-link { @apply min-h-11 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-[#007f7b]; }
+  .button-primary { @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-[#007f7b] px-5 py-3 font-semibold text-white transition-colors hover:bg-teal-800 active:translate-y-px; }
+  .button-secondary { @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-[#12304a] bg-white px-5 py-3 font-semibold text-[#12304a] transition-colors hover:bg-slate-100 active:translate-y-px; }
+  .button-icon { @apply min-h-11 min-w-11 rounded-lg px-3 font-semibold text-[#12304a] hover:bg-slate-100; }
+  .footer-link { @apply mt-2 block w-fit underline-offset-4 hover:underline; }
+  .skip-link { @apply sr-only fixed left-4 top-4 z-[100] rounded-lg bg-white px-4 py-3 font-semibold text-[#12304a] shadow-lg focus:not-sr-only; }
+}

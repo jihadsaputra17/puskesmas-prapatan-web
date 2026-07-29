@@ -1,26 +1,11 @@
-import { Metadata } from "next";
-import ScheduleTable from "../../components/jadwal/ScheduleTable";
+import type { Metadata } from "next";
+import ScheduleExplorer from "@/components/jadwal/ScheduleExplorer";
+import { getJadwalDokter } from "@/lib/actions";
 
-export const metadata: Metadata = {
-  title: "Jadwal Dokter",
-  description: "Informasi jadwal praktik dokter dan pelayanan poli di Puskesmas Prapatan.",
-};
+export const metadata: Metadata = { title: "Jadwal dokter", description: "Informasi jadwal praktik dokter dan pelayanan poli di Puskesmas Prapatan." };
 
-export default function JadwalDokterPage() {
-  return (
-    <main className="py-16 md:py-24 bg-slate-50 min-h-screen">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-4">
-            Jadwal Dokter & Pelayanan
-          </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Berikut adalah jadwal pelayanan tenaga medis kami. Silakan gunakan fitur pencarian di bawah untuk memfilter jadwal berdasarkan poli atau layanan.
-          </p>
-        </div>
-        
-        <ScheduleTable />
-      </div>
-    </main>
-  );
+export default async function JadwalDokterPage({ searchParams }: { searchParams: Promise<{ poli?: string | string[] }> }) {
+  const [scheduleData, params] = await Promise.all([getJadwalDokter(), searchParams]);
+  const initialPoli = typeof params.poli === "string" ? params.poli : undefined;
+  return <div className="page-shell"><div className="content-container max-w-5xl"><h1 className="text-4xl font-bold tracking-tight text-[#12304a]">Jadwal dokter</h1><p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">Cari jadwal pelayanan berdasarkan poli atau hari sebelum berkunjung.</p><div className="mt-10"><ScheduleExplorer scheduleData={scheduleData} initialPoli={initialPoli} /></div></div></div>;
 }

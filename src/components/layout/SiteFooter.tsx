@@ -1,0 +1,6 @@
+import Link from "next/link";
+
+export default function SiteFooter({ settings }: { settings: Record<string, string> }) {
+  const name = settings.site_name || "Puskesmas Prapatan";
+  return <footer className="mt-auto bg-[#12304a] py-12 text-slate-100"><div className="content-container grid gap-8 md:grid-cols-2"><div><p className="text-lg font-bold">{name}</p><p className="mt-3 max-w-md text-slate-300">Informasi layanan kesehatan untuk masyarakat.</p></div><address className="not-italic text-slate-200"><p className="font-semibold text-white">Hubungi kami</p>{settings.address && <p className="mt-2">{settings.address}</p>}{settings.phone && <a className="footer-link" href={`tel:${settings.phone.replace(/[^+\d]/g, "")}`}>{settings.phone}</a>}{settings.email && <a className="footer-link" href={`mailto:${settings.email}`}>{settings.email}</a>}</address><div className="md:col-span-2 flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-600 pt-6 text-sm"><Link className="footer-link" href="/kebijakan-privasi">Kebijakan privasi</Link>{settings.instagram && <a className="footer-link" href={settings.instagram} target="_blank" rel="noreferrer">Instagram</a>}{settings.facebook && <a className="footer-link" href={settings.facebook} target="_blank" rel="noreferrer">Facebook</a>}</div></div></footer>;
+}

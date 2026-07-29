@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Puskesmas Prapatan Web
 
-## Getting Started
+Website publik dan CMS Puskesmas Prapatan, dibangun dengan Next.js.
 
-First, run the development server:
+## Menjalankan lokal
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verifikasi
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test
+npm run build
+npm run lint
+```
 
-## Learn More
+Aplikasi memerlukan `POSTGRES_URL` untuk data layanan, jadwal, berita, pengguna, dan pengaturan. Tanpa variabel itu, halaman publik memakai kondisi kosong/fallback dan build dapat mencetak peringatan koneksi database.
 
-To learn more about Next.js, take a look at the following resources:
+## Kebijakan CMS dan keamanan konten
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Konten HTML layanan dan berita diproses melalui `sanitizeArticleHtml` sebelum dirender. Jangan menambahkan `dangerouslySetInnerHTML` baru untuk konten CMS tanpa sanitasi ini.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Peran CMS hanya `admin` dan `superadmin`. Manajemen akun pengguna hanya untuk `superadmin`.
+- Gambar CMS harus memakai URL HTTPS publik; aplikasi tidak menerima unggahan atau data gambar inline.
+- Setiap mutasi CMS baru wajib memvalidasi data dan mengotorisasi peran di server, termasuk API route dan server action. Validasi klien hanya bantuan UX.
+- Form pengaduan publik tidak menyimpan keluhan atau data pengirim. Gunakan kanal resmi puskesmas untuk pengaduan yang perlu ditindaklanjuti.
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Sediakan `POSTGRES_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, dan `NEXT_PUBLIC_SITE_URL` pada lingkungan deployment. Gunakan domain HTTPS produksi pada dua variabel URL.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Provisioning database CMS
+
+Sebelum deploy pertama, dan sebelum deploy versi aplikasi yang memakai tabel CMS baru, jalankan migration berikut dari lingkungan operator yang memiliki `psql` dan akses database. Jangan jalankan melalui halaman publik/admin atau request aplikasi.
+
+```bash
+psql "$POSTGRES_URL" -v ON_ERROR_STOP=1 -f db/migrations/001_cms_schema.sql
+```
+
+Migration membuat tabel CMS yang belum ada (`users`, `health_news`, `layanan_poli`, `jadwal_dokter`, `website_settings`), index, dan default setting yang belum ada. Aman dijalankan ulang: tidak menghapus, mengubah, atau menimpa schema/data CMS yang sudah ada. Jalankan sebelum application rollout; akun admin awal tetap harus dibuat sesuai prosedur operator yang aman, bukan dari request runtime tanpa autentikasi.
+
+Static guard untuk migration:
+
+```bash
+npm run test:cms-provisioning
+```

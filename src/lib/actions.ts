@@ -1,6 +1,4 @@
-'use server';
-
-import { sql } from '@vercel/postgres';
+import { sql } from "@vercel/postgres";
 
 export type JadwalDokter = {
   id: string;
@@ -12,38 +10,50 @@ export type JadwalDokter = {
 
 export async function getJadwalDokter(): Promise<JadwalDokter[]> {
   try {
-    // PROTEKSI KEBOCORAN: Kita secara eksplisit HANYA mengambil kolom publik.
-    // Jika suatu saat tabel ini dimodifikasi dan digabung dengan ID internal pegawai, 
-    // query ini menjamin data internal tidak akan bocor terkirim ke frontend.
     const { rows } = await sql`
-      SELECT 
-        id, 
-        doctor_name as doctor, 
-        poli, 
-        practice_days as day, 
-        practice_hours as hours
-      FROM doctors_schedule
-      ORDER BY poli ASC, doctor_name ASC
+      SELECT id, nama_dokter as doctor, poli, hari as day,
+        jam_mulai || ' - ' || jam_selesai as hours
+      FROM jadwal_dokter
+      ORDER BY poli ASC, nama_dokter ASC
     `;
     return rows as JadwalDokter[];
   } catch (error) {
-    console.error('Database Error - getJadwalDokter:', error);
-    throw new Error('Gagal mengambil data jadwal dokter.');
+    console.error("Database Error - getJadwalDokter:", error);
+    throw new Error("Gagal mengambil data jadwal dokter.");
+  }
+}
+
+export async function getBeritaCount(): Promise<number> {
+  try {
+    const { rows } = await sql`SELECT COUNT(*)::int AS count FROM health_news`;
+    return Number(rows[0]?.count ?? 0);
+  } catch (error) {
+    console.error("Database Error - getBeritaCount:", error);
+    throw new Error("Gagal menghitung data berita kesehatan.");
   }
 }
 
 export async function getBeritaKesehatan() {
   try {
     const { rows } = await sql`
-      SELECT 
-        id, title, slug, excerpt, image_url as "imageUrl", published_at as date
+      SELECT id, title, slug, excerpt, image_url as "imageUrl", published_at as date
       FROM health_news
       ORDER BY published_at DESC
       LIMIT 6
     `;
     return rows;
   } catch (error) {
-    console.error('Database Error - getBeritaKesehatan:', error);
-    throw new Error('Gagal mengambil data berita kesehatan.');
+    console.error("Database Error - getBeritaKesehatan:", error);
+    throw new Error("Gagal mengambil data berita kesehatan.");
+  }
+}
+
+export async function getBeritaBySlug(slug: string) {
+  try {
+    const { rows } = await sql`SELECT * FROM health_news WHERE slug = ${slug} LIMIT 1`;
+    return rows[0] || null;
+  } catch (error) {
+    console.error("Database Error - getBeritaBySlug:", error);
+    throw new Error("Gagal mengambil detail berita.");
   }
 }
