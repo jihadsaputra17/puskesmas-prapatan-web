@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import Link from "next/link";
@@ -69,8 +69,8 @@ const slides: Slide[] = [
 ];
 
 export default function HeroSlideshow() {
-  const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
-  const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
   return (
     <section className="relative w-full">
@@ -80,7 +80,18 @@ export default function HeroSlideshow() {
         slidesPerView={1}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         pagination={{ clickable: true }}
-        navigation={{ prevEl, nextEl }}
+        navigation={{
+          prevEl: prevRef.current,
+          nextEl: nextRef.current,
+        }}
+        onInit={(swiper) => {
+          swiper.params.navigation = {
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          };
+          swiper.navigation.init();
+          swiper.navigation.update();
+        }}
         loop
         className="hero-slideshow"
       >
@@ -115,10 +126,10 @@ export default function HeroSlideshow() {
           </SwiperSlide>
         ))}
 
-        {/* Custom navigation buttons */}
+        {/* Custom navigation buttons — refs, not state, so Swiper gets them on init */}
         <button
-          ref={(node) => { if (node) setPrevEl(node); }}
-          className="swiper-button-prev flex items-center justify-center after:!hidden"
+          ref={prevRef}
+          className="swiper-button-prev flex items-center justify-center after:!hidden z-10"
           aria-label="Previous slide"
         >
           <svg className="!w-6 !h-6 text-navy hover:text-clinic-teal transition-colors duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -126,8 +137,8 @@ export default function HeroSlideshow() {
           </svg>
         </button>
         <button
-          ref={(node) => { if (node) setNextEl(node); }}
-          className="swiper-button-next flex items-center justify-center after:!hidden"
+          ref={nextRef}
+          className="swiper-button-next flex items-center justify-center after:!hidden z-10"
           aria-label="Next slide"
         >
           <svg className="!w-6 !h-6 text-navy hover:text-clinic-teal transition-colors duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
