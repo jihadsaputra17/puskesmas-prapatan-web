@@ -18,7 +18,7 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    image: "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600&q=80",
+    image: "/images/hero-1.jpg",
     title: "Pelayanan Kesehatan untuk Masyarakat",
     subtitle:
       "Puskesmas Prapatan berkomitmen memberikan layanan kesehatan prima, terjangkau, dan merata bagi seluruh warga Kota Balikpapan.",
@@ -26,7 +26,7 @@ const slides: Slide[] = [
     ctaHref: "/layanan",
   },
   {
-    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1600&q=80",
+    image: "/images/hero-2.jpg",
     title: "Layanan Poli Spesialis",
     subtitle:
       "Konsultasi kesehatan dengan tenaga medis profesional di berbagai poli spesialis yang tersedia.",
@@ -34,12 +34,12 @@ const slides: Slide[] = [
     ctaHref: "/jadwal-dokter",
   },
   {
-    image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=1600&q=80",
-    title: "Kesehatan Ibu & Anak",
+    image: "/images/hero-3.jpg",
+    title: "Fasilitas & Lingkungan Puskesmas",
     subtitle:
-      "Layanan lengkap mulai dari pemeriksaan kehamilan, imunisasi, hingga tumbuh kembang balita.",
-    ctaLabel: "Info selengkapnya",
-    ctaHref: "/layanan",
+      "Nikmati pelayanan kesehatan yang nyaman di Puskesmas Prapatan dengan fasilitas yang terus ditingkatkan.",
+    ctaLabel: "Profil puskesmas",
+    ctaHref: "/profil",
   },
 ];
 
