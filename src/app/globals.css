@@ -143,3 +143,35 @@ body {
     @apply relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-1 before:rounded-full before:bg-[var(--teal)];
   }
 }
+
+/* Hero slideshow */
+.hero-slideshow .swiper-button-next,
+.hero-slideshow .swiper-button-prev {
+  color: white;
+  background: rgba(255,255,255,0.12);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s;
+}
+.hero-slideshow .swiper-button-next:hover,
+.hero-slideshow .swiper-button-prev:hover {
+  background: rgba(255,255,255,0.25);
+}
+.hero-slideshow .swiper-button-next::after,
+.hero-slideshow .swiper-button-prev::after {
+  font-size: 18px;
+  font-weight: 700;
+}
+.hero-slideshow .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: rgba(255,255,255,0.4);
+  opacity: 1;
+}
+.hero-slideshow .swiper-pagination-bullet-active {
+  background: var(--teal);
+  width: 28px;
+  border-radius: 5px;
+}
