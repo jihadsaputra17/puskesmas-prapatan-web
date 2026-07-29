@@ -60,7 +60,7 @@ export default function ProfilPage() {
               </div>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">Visi</h2>
               <p className="text-lg text-slate-600 italic">
-                "Terwujudnya Masyarakat Prapatan yang Sehat, Mandiri, dan Berkualitas melalui Pelayanan Kesehatan Prima."
+                &ldquo;Terwujudnya Masyarakat Prapatan yang Sehat, Mandiri, dan Berkualitas melalui Pelayanan Kesehatan Prima.&rdquo;
               </p>
             </div>
 
