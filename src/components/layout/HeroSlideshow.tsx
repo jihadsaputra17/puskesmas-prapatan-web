@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import Link from "next/link";
@@ -68,6 +69,9 @@ const slides: Slide[] = [
 ];
 
 export default function HeroSlideshow() {
+  const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
+  const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+
   return (
     <section className="relative w-full">
       <Swiper
@@ -76,7 +80,7 @@ export default function HeroSlideshow() {
         slidesPerView={1}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         pagination={{ clickable: true }}
-        navigation
+        navigation={{ prevEl, nextEl }}
         loop
         className="hero-slideshow"
       >
@@ -110,6 +114,26 @@ export default function HeroSlideshow() {
             </div>
           </SwiperSlide>
         ))}
+
+        {/* Custom navigation buttons */}
+        <button
+          ref={(node) => { if (node) setPrevEl(node); }}
+          className="swiper-button-prev flex items-center justify-center after:!hidden"
+          aria-label="Previous slide"
+        >
+          <svg className="!w-6 !h-6 text-navy hover:text-clinic-teal transition-colors duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 6l-6 6 6 6"/>
+          </svg>
+        </button>
+        <button
+          ref={(node) => { if (node) setNextEl(node); }}
+          className="swiper-button-next flex items-center justify-center after:!hidden"
+          aria-label="Next slide"
+        >
+          <svg className="!w-6 !h-6 text-navy hover:text-clinic-teal transition-colors duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 6l6 6-6 6"/>
+          </svg>
+        </button>
       </Swiper>
     </section>
   );
