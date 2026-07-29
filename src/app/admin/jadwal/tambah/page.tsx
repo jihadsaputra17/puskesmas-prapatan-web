@@ -1,7 +1,5 @@
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/admin-auth";
 import TambahJadwalForm from "./TambahJadwalForm";
 import Link from "next/link";
 
@@ -10,11 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TambahJadwalPage() {
-  const session = await getServerSession(authOptions);
-
-  if (session?.user?.role !== 'superadmin') {
-    redirect('/admin');
-  }
+  await requireAdmin();
 
   return (
     <div className="max-w-2xl">

@@ -1,7 +1,5 @@
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/admin-auth";
 import { getJadwalById } from "@/lib/jadwal-actions";
 import EditJadwalForm from "./EditJadwalForm";
 import Link from "next/link";
@@ -11,11 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EditJadwalPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
-
-  if (session?.user?.role !== 'superadmin') {
-    redirect('/admin');
-  }
+  await requireAdmin();
 
   const resolvedParams = await params;
   const jadwal = await getJadwalById(resolvedParams.id);

@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin-auth";
 import { getBeritaKesehatan } from "../../../lib/actions";
 import Link from "next/link";
 import { Metadata } from "next";
@@ -6,6 +7,7 @@ import DeleteBeritaButton from "./DeleteBeritaButton";
 type Berita = { id: string; title: string; slug: string; date: string | Date };
 export const metadata: Metadata = { title: "Kelola Berita | Admin" };
 export default async function KelolaBeritaPage() {
+  await requireAdmin();
   const berita = await getBeritaKesehatan() as Berita[];
   const date = (value: string | Date) => new Date(value).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
   const action = (item: Berita) => <div className="flex gap-4"><Link href={`/admin/berita/edit/${item.slug}`} className="text-sm font-medium text-amber-600">Edit</Link><DeleteBeritaButton id={item.id}/></div>;

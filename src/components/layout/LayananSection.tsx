@@ -1,5 +1,8 @@
 import { getLayanan } from "@/lib/layanan-actions";
+import { sanitizeArticleHtml } from "@/lib/sanitize-html";
 import Link from "next/link";
+
+type Layanan = { id: string; icon: string; nama_poli: string; deskripsi: string };
 
 export default async function LayananSection() {
   // Mengambil data langsung dari database
@@ -19,7 +22,7 @@ export default async function LayananSection() {
 
         {layanan && layanan.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {layanan.map((item: any) => (
+            {(layanan as Layanan[]).map((item) => (
               <Link 
                 href={`/layanan/${item.id}`}
                 key={item.id} 
@@ -33,7 +36,7 @@ export default async function LayananSection() {
                 </h3>
                 <div 
                   className="prose prose-slate max-w-none prose-sm text-slate-600 line-clamp-3 flex-grow w-full break-words [&_*]:!whitespace-pre-wrap [&_*]:!m-0 [&_img]:hidden [&_.ql-align-justify]:text-justify"
-                  dangerouslySetInnerHTML={{ __html: item.deskripsi }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(item.deskripsi) }}
                 />
               </Link>
             ))}

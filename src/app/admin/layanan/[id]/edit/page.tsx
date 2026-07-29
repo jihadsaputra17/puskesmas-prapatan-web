@@ -1,7 +1,6 @@
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect, notFound } from "next/navigation";
+import { requireAdmin } from "@/lib/admin-auth";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getLayananById } from "@/lib/layanan-actions";
 import EditLayananForm from "./EditLayananForm";
@@ -11,11 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EditLayananPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
-
-  if (session?.user?.role !== 'superadmin') {
-    redirect('/admin');
-  }
+  await requireAdmin();
 
   const resolvedParams = await params;
   const layanan = await getLayananById(resolvedParams.id);

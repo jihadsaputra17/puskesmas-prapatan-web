@@ -1,20 +1,21 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type ReactQuillType from "react-quill-new";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import "react-quill-new/dist/quill.snow.css";
 import AdminFeedback from "@/components/admin/AdminFeedback";
 import { formatFieldErrors, serviceSchema } from "@/lib/admin-schemas";
 
-const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false }) as typeof import("react-quill-new").default;
 type Layanan = { id?: string; nama_poli?: string; deskripsi?: string; icon?: string | null };
 type Feedback = { type: "success" | "error"; message: string } | null;
 const modules = { toolbar: [[{ header: [1, 2, 3, false] }], ["bold", "italic", "underline"], [{ align: [] }], [{ list: "ordered" }, { list: "bullet" }], ["clean"]] };
 
 export default function EditLayananForm({ layanan }: { layanan: Layanan }) {
   const router = useRouter(); const [deskripsi, setDeskripsi] = useState(layanan.deskripsi || ""); const [pending, setPending] = useState(false); const [feedback, setFeedback] = useState<Feedback>(null); const [fields, setFields] = useState<Record<string, string>>({});
-  const editor = useRef<{ getEditor: () => { root: HTMLElement } }>(null);
+  const editor = useRef<ReactQuillType>(null);
   const error = (name: string) => fields[name] ? `${name}-error` : undefined;
   useEffect(() => {
     const root = editor.current?.getEditor().root;

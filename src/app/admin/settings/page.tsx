@@ -1,7 +1,5 @@
-import { getServerSession } from "next-auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import { getSettings } from "@/lib/settings-actions";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import SettingsForm from "./SettingsForm";
 
 export const metadata = {
@@ -9,12 +7,7 @@ export const metadata = {
 };
 
 export default async function SettingsPage() {
-  const session = await getServerSession(authOptions);
-  
-  // Proteksi rute yang aman tanpa 'as any'
-  if (session?.user?.role !== 'superadmin') {
-    redirect('/admin');
-  }
+  await requireAdmin();
 
   // Ambil data pengaturan yang ada di database saat ini
   const settings = await getSettings();

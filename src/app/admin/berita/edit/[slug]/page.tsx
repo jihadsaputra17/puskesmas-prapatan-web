@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { requireAdmin } from "@/lib/admin-auth";
 import { getBeritaBySlug } from "../../../../../lib/actions";
 import EditBeritaForm from "./EditBeritaForm";
 
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EditBeritaPage({ params }: { params: Promise<{ slug: string }> }) {
+  await requireAdmin();
   const resolvedParams = await params;
   const berita = await getBeritaBySlug(resolvedParams.slug);
 

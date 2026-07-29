@@ -31,14 +31,14 @@ export async function getUsers() {
   }
 }
 
-export async function getUserById(id: string) {
+export async function getUserById(id: string): Promise<{ id: string; name: string; email: string; role: "admin" | "superadmin" } | null> {
   await requireSuperadmin();
   const parsedId = userIdParamSchema.safeParse({ id });
   if (!parsedId.success) return null;
 
   try {
     const { rows } = await sql`SELECT id, name, email, role FROM users WHERE id = ${parsedId.data.id}::uuid LIMIT 1`;
-    return rows[0] || null;
+    return (rows[0] as { id: string; name: string; email: string; role: "admin" | "superadmin" } | undefined) || null;
   } catch (error) {
     console.error("Database Error:", error);
     return null;
