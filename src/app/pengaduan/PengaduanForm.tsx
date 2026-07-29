@@ -7,69 +7,89 @@ export default function PengaduanForm() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setMessage("Formulir belum terhubung ke layanan penerimaan pengaduan. Silakan gunakan kontak resmi puskesmas yang telah dikonfirmasi.");
+    setMessage(
+      "Formulir belum terhubung ke layanan penerimaan pengaduan. Silakan gunakan kontak resmi puskesmas yang telah dikonfirmasi.",
+    );
   };
 
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Formulir Pesan / Pengaduan</h2>
-      
-      {message ? <p className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">{message}</p> : null}
+    <div>
+      <h2 className="text-xl font-bold text-navy sm:text-2xl">Formulir pengaduan</h2>
+      <p className="mt-2 text-sm leading-6 text-slate-600">
+        Jangan kirim data medis sensitif. Formulir ini menyiapkan pesan pengaduan saja.
+      </p>
 
-      <form className="space-y-5" onSubmit={handleSubmit}>
+      {message ? (
+        <p
+          className="mt-6 rounded-[10px] border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950"
+          role="status"
+        >
+          {message}
+        </p>
+      ) : null}
+
+      <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
-            Nama Lengkap <span className="text-red-500">*</span>
+          <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-slate-700">
+            Nama lengkap <span className="text-red-600">*</span>
           </label>
-          <input 
-            type="text" 
-            id="name" 
-            name="name" 
-            required 
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition-colors bg-slate-50 focus:bg-white"
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            className="input-field"
             placeholder="Masukkan nama lengkap Anda"
+            autoComplete="name"
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
-              Nomor HP / WhatsApp <span className="text-red-500">*</span>
+            <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-slate-700">
+              Nomor HP / WhatsApp <span className="text-red-600">*</span>
             </label>
-            <input 
-              type="tel" 
-              id="phone" 
-              name="phone" 
-              required 
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition-colors bg-slate-50 focus:bg-white"
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              required
+              className="input-field"
               placeholder="08xxxxxxxxxx"
+              autoComplete="tel"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">Email (Opsional)</label>
-            <input type="email" id="email" name="email" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition-colors bg-slate-50 focus:bg-white" placeholder="email@contoh.com" />
+            <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">
+              Email (opsional)
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              className="input-field"
+              placeholder="email@contoh.com"
+              autoComplete="email"
+            />
           </div>
         </div>
 
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1">
-            Isi pengaduan <span className="text-red-500">*</span>
+          <label htmlFor="message" className="mb-1.5 block text-sm font-medium text-slate-700">
+            Isi pengaduan <span className="text-red-600">*</span>
           </label>
-          <textarea 
-            id="message" 
-            name="message" 
-            rows={5} 
-            required 
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition-colors bg-slate-50 focus:bg-white resize-none"
-            placeholder="Tuliskan pesan, saran, atau keluhan Anda di sini secara detail..."
-          ></textarea>
+          <textarea
+            id="message"
+            name="message"
+            rows={5}
+            required
+            className="input-field min-h-[8rem] resize-y py-3"
+            placeholder="Tuliskan pesan, saran, atau keluhan Anda secara ringkas..."
+          />
         </div>
 
-        <button 
-          type="submit" 
-          className="w-full py-3 px-4 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 flex items-center justify-center gap-2"
-        >
-Kirim pengaduan
+        <button type="submit" className="button-primary w-full sm:w-auto">
+          Kirim pengaduan
         </button>
       </form>
     </div>

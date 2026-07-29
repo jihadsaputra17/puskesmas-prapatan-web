@@ -11,10 +11,24 @@ import BeritaSkeleton from "@/components/layout/BeritaSkeleton";
 
 export const metadata: Metadata = {
   title: "Beranda",
-  description: "Informasi layanan, jadwal dokter, dan pengaduan Puskesmas Prapatan.",
+  description:
+    "Informasi layanan, jadwal dokter, dan pengaduan Puskesmas Prapatan.",
 };
 
 export default async function HomePage() {
   const settings = await getSettings();
-  return <><ClinicHero settings={settings} /><QuickAccess /><Suspense fallback={<LayananSkeleton />}><LayananSection /></Suspense><Suspense fallback={<BeritaSkeleton />}><BeritaSection /></Suspense><FaqSection /></>;
+
+  return (
+    <>
+      <ClinicHero settings={settings} />
+      <QuickAccess />
+      <Suspense fallback={<LayananSkeleton />}>
+        <LayananSection />
+      </Suspense>
+      <Suspense fallback={<BeritaSkeleton />}>
+        <BeritaSection />
+      </Suspense>
+      <FaqSection />
+    </>
+  );
 }

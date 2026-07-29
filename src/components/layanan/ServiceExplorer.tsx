@@ -24,30 +24,62 @@ export default function ServiceExplorer({ services }: { services: Service[] }) {
 
   return (
     <section aria-labelledby="service-list-heading">
-      <label className="sr-only" htmlFor="service-search">Cari layanan</label>
-      <input
-        id="service-search"
-        type="search"
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
-        placeholder="Cari layanan"
-        className="mb-8 min-h-11 w-full rounded-xl border border-slate-300 px-4 text-base text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600"
-      />
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 id="service-list-heading" className="text-lg font-bold text-navy">
+            Daftar layanan
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">
+            {filteredServices.length} dari {services.length} layanan
+          </p>
+        </div>
+        <div className="w-full sm:max-w-sm">
+          <label className="sr-only" htmlFor="service-search">
+            Cari layanan
+          </label>
+          <input
+            id="service-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Cari nama poli atau deskripsi"
+            className="input-field"
+          />
+        </div>
+      </div>
+
       {filteredServices.length ? (
-        <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-label="Daftar layanan">
-          {filteredServices.map((service) => (
-            <li key={service.id}>
-              <Link href={`/layanan/${service.id}`} className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-teal-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-600">
-                {service.icon ? <span aria-hidden="true" className="mb-4 text-3xl">{service.icon}</span> : null}
-                <h2 className="text-xl font-bold text-slate-900">{service.nama_poli}</h2>
-                <p className="mt-3 text-slate-600">{truncateText(plainText(service.deskripsi), 180)}</p>
-                <span className="mt-5 font-semibold text-teal-700">Lihat layanan <span aria-hidden="true">→</span></span>
-              </Link>
-            </li>
-          ))}
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Daftar layanan">
+          {filteredServices.map((service) => {
+            const initial = (service.nama_poli || "?").trim().charAt(0).toUpperCase() || "?";
+            return (
+              <li key={service.id}>
+                <Link
+                  href={`/layanan/${service.id}`}
+                  className="panel panel-lift flex h-full flex-col p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-clinic-teal"
+                >
+                  <span
+                    className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-clinic-soft text-base font-bold text-clinic-teal"
+                    aria-hidden="true"
+                  >
+                    {initial}
+                  </span>
+                  <h3 className="mt-5 text-lg font-bold text-navy">{service.nama_poli}</h3>
+                  <p className="mt-3 flex-grow text-sm leading-6 text-slate-600">
+                    {truncateText(plainText(service.deskripsi), 180)}
+                  </p>
+                  <span className="mt-5 text-sm font-semibold text-clinic-teal">
+                    Lihat layanan →
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       ) : (
-        <p className="rounded-xl border border-slate-200 bg-slate-50 p-6 text-slate-700" role="status">Layanan tidak ditemukan.</p>
+        <p className="panel p-8 text-center text-slate-600" role="status">
+          Layanan tidak ditemukan.
+        </p>
       )}
     </section>
   );

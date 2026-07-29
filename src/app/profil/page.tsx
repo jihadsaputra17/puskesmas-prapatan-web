@@ -11,18 +11,49 @@ export default async function ProfilPage() {
   const name = settings.site_name || "Puskesmas Prapatan";
 
   return (
-    <main className="bg-white">
-      <section className="border-b border-slate-200 bg-slate-50 py-14 md:py-20">
-        <div className="container max-w-4xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-wider text-teal-700">Profil</p>
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-[#12304a] sm:text-5xl">{name}</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">Informasi resmi tentang layanan dan pembaruan puskesmas tersedia melalui halaman ini.</p>
+    <>
+      <section className="page-intro">
+        <div className="content-container max-w-3xl">
+          <p className="eyebrow">Profil</p>
+          <h1 className="page-intro-title mt-3">{name}</h1>
+          <p className="page-intro-copy">
+            Informasi resmi tentang layanan dan pembaruan puskesmas tersedia melalui halaman ini.
+          </p>
         </div>
       </section>
-      <section className="container max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-[#12304a]">Informasi profil</h2>
-        <p className="mt-4 leading-7 text-slate-600">Profil rinci, visi, misi, dan riwayat akan ditampilkan setelah informasi tersebut dikonfirmasi dan diperbarui oleh puskesmas.</p>
+      <section className="page-shell">
+        <div className="content-container max-w-3xl">
+          <div className="panel p-6 sm:p-8">
+            <h2 className="text-xl font-bold text-navy">Informasi profil</h2>
+            <p className="mt-4 leading-7 text-slate-600">
+              Profil rinci, visi, misi, dan riwayat akan ditampilkan setelah informasi tersebut
+              dikonfirmasi dan diperbarui oleh puskesmas.
+            </p>
+            {(settings.address || settings.phone || settings.email) && (
+              <dl className="mt-8 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-2">
+                {settings.address && (
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Alamat</dt>
+                    <dd className="mt-1 text-sm leading-6 text-slate-700">{settings.address}</dd>
+                  </div>
+                )}
+                {settings.phone && (
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Telepon</dt>
+                    <dd className="mt-1 text-sm leading-6 text-slate-700">{settings.phone}</dd>
+                  </div>
+                )}
+                {settings.email && (
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Email</dt>
+                    <dd className="mt-1 text-sm leading-6 text-slate-700">{settings.email}</dd>
+                  </div>
+                )}
+              </dl>
+            )}
+          </div>
+        </div>
       </section>
-    </main>
+    </>
   );
 }
