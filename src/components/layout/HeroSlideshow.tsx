@@ -41,6 +41,30 @@ const slides: Slide[] = [
     ctaLabel: "Profil puskesmas",
     ctaHref: "/profil",
   },
+  {
+    image: "/images/hero-4.jpg",
+    title: "Tenaga Medis Profesional",
+    subtitle:
+      "Dilayani oleh tenaga kesehatan yang berpengalaman dan siap memberikan pelayanan terbaik bagi Anda dan keluarga.",
+    ctaLabel: "Lihat layanan",
+    ctaHref: "/layanan",
+  },
+  {
+    image: "/images/hero-5.jpg",
+    title: "Layanan Unggulan Puskesmas",
+    subtitle:
+      "Berbagai layanan unggulan tersedia, mulai dari pemeriksaan umum, gigi, KIA, hingga laboratorium sederhana.",
+    ctaLabel: "Lihat layanan",
+    ctaHref: "/layanan",
+  },
+  {
+    image: "/images/hero-6.jpg",
+    title: "Kenyamanan & Keamanan Pasien",
+    subtitle:
+      "Puskesmas Prapatan mengutamakan kenyamanan dan keselamatan pasien dalam setiap pelayanan yang diberikan.",
+    ctaLabel: "Info selengkapnya",
+    ctaHref: "/profil",
+  },
 ];
 
 export default function HeroSlideshow() {
