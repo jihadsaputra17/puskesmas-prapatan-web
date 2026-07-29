@@ -1,40 +1,38 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 import bcrypt from "bcryptjs";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireSuperadmin, toAuthorizationResponse } from "@/lib/admin-auth";
+import { formatFieldErrors, userSchema } from "@/lib/admin-schemas";
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (session?.user?.role !== 'superadmin') {
-      return NextResponse.json({ error: "Akses ditolak." }, { status: 403 });
+    await requireSuperadmin();
+
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Data pengguna tidak valid.", fields: {} }, { status: 400 });
     }
 
-    const data = await request.json();
-    const { name, email, password, role } = data;
-
-    if (!name || !email || !password || !role) {
-      return NextResponse.json({ error: 'Semua field harus diisi.' }, { status: 400 });
+    const parsed = userSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Data pengguna tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
     }
 
-    if (password.length < 8) {
-      return NextResponse.json({ error: 'Password minimal harus 8 karakter.' }, { status: 400 });
-    }
-
+    const { name, email, password, role } = parsed.data;
     const hashedPassword = await bcrypt.hash(password, 10);
+    await sql`INSERT INTO users (name, email, password, role) VALUES (${name}, ${email}, ${hashedPassword}, ${role})`;
 
-    await sql`
-      INSERT INTO users (name, email, password, role)
-      VALUES (${name}, ${email}, ${hashedPassword}, ${role})
-    `;
-    
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error('API Add User Error:', error);
-    if (error.code === '23505') { 
-       return NextResponse.json({ error: 'Email sudah terdaftar. Silakan gunakan email lain.' }, { status: 400 });
+  } catch (error: unknown) {
+    const authorizationResponse = toAuthorizationResponse(error);
+    if (authorizationResponse) return authorizationResponse;
+
+    console.error("API Add User Error:", error);
+    if ((error as { code?: string }).code === "23505") {
+      return NextResponse.json({ error: "Email sudah terdaftar. Silakan gunakan email lain." }, { status: 409 });
     }
-    return NextResponse.json({ error: 'Gagal menambahkan pengguna. Pastikan email belum terdaftar.' }, { status: 500 });
+    return NextResponse.json({ error: "Gagal menambahkan pengguna." }, { status: 500 });
   }
 }

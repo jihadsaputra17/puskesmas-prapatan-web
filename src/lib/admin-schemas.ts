@@ -45,15 +45,22 @@ export const settingsSchema = z.object({
   hero_subtitle: z.string().trim().min(1).optional(),
 }).strict();
 
-export const userSchema = z.object({
+const userIdSchema = z.string().trim().uuid();
+const userDetailsSchema = z.object({
   name: requiredText,
-  email: z.string().trim().email(),
-  password: z.string().min(8),
+  email: z.string().trim().email().transform((value) => value.toLowerCase()),
   role: z.enum(["admin", "superadmin"]),
 }).strict();
 
+export const userSchema = userDetailsSchema.extend({
+  password: z.string().min(8),
+}).strict();
+
+export const userUpdateSchema = userDetailsSchema;
+export const userIdParamSchema = z.object({ id: userIdSchema }).strict();
+
 export const passwordResetSchema = z.object({
-  id: z.string().trim().min(1),
+  id: userIdSchema,
   password: z.string().min(8),
 }).strict();
 
