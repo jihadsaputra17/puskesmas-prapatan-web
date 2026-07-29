@@ -42,14 +42,14 @@ export default async function LayananSection() {
               <li key={item.id}>
                 <Link
                   href={`/layanan/${item.id}`}
-                  className="panel panel-lift flex h-full flex-col p-6"
+                  className="panel panel-lift flex h-full flex-col overflow-hidden p-6"
                 >
                   <ServiceGlyph label={item.nama_poli} />
                   <h3 className="mt-5 text-lg font-bold tracking-tight text-navy">
                     {item.nama_poli}
                   </h3>
-                  <p className="mt-3 flex-grow text-sm leading-6 text-slate-600">
-                    {truncateText(plainText(item.deskripsi), 140) || "Informasi layanan tersedia di halaman detail."}
+                  <p className="mt-3 flex-grow text-sm leading-6 text-slate-600 break-words line-clamp-4">
+                    {truncateText(plainText(item.deskripsi), 320) || "Informasi layanan tersedia di halaman detail."}
                   </p>
                   <span className="mt-5 text-sm font-semibold text-clinic-teal">
                     Lihat detail →
