@@ -178,11 +178,7 @@ export default function ProfilPage() {
               </li>
             ))}
           </ul>
-          <div className="rounded-panel border border-dashed border-teal-300/60 bg-[var(--teal-soft)]/60 px-5 py-4 text-sm leading-6 text-slate-600">
-            Catatan: daftar layanan di atas merupakan cakupan umum layanan Puskesmas. Mohon
-            sesuaikan atau lengkapi dengan daftar layanan resmi yang berlaku saat ini di Puskesmas
-            Prapatan.
-          </div>
+
 
           {/* Hubungi Kami CTA */}
           <div className="rounded-panel bg-gradient-to-br from-navy to-[var(--navy-deep)] p-8 text-center text-white">

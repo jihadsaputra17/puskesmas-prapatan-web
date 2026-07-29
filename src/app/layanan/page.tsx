@@ -232,13 +232,7 @@ export default function LayananPage() {
             ))}
           </div>
 
-          {/* Note */}
-          <div className="rounded-panel border border-dashed border-teal-300/60 bg-[var(--teal-soft)]/60 px-5 py-4 text-sm leading-6 text-slate-600">
-            Catatan: Daftar layanan dan poli di atas disusun berdasarkan layanan umum yang lazim
-            tersedia di Puskesmas serta informasi publik mengenai Puskesmas Prapatan. Mohon
-            sesuaikan nama poli, jam praktik, serta nama tenaga medis dengan data resmi terbaru
-            dari Puskesmas Prapatan sebelum dipublikasikan di website.
-          </div>
+
 
           {/* CTA */}
           <div className="rounded-panel bg-gradient-to-br from-navy to-[var(--navy-deep)] p-8 text-center text-white">
