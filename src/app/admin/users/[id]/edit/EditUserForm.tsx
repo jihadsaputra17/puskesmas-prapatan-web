@@ -20,7 +20,7 @@ export default function EditUserForm({ user }: { user: User }) {
       const response = await fetch(`/api/users/${user.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: form.get("name"), email: form.get("email"), role: form.get("role") as UserRole }) });
       const result: unknown = await response.json();
       if (!response.ok) {
-        const errors = result && typeof result === "object" && "fieldErrors" in result ? (result as { fieldErrors?: FieldErrors }).fieldErrors : undefined;
+        const errors = result && typeof result === "object" && "fields" in result ? (result as { fields?: FieldErrors }).fields : undefined;
         setFieldErrors(errors ?? {}); setError("Gagal memperbarui pengguna. Periksa isian lalu coba lagi."); return;
       }
       router.push("/admin/users"); router.refresh();
@@ -33,7 +33,7 @@ export default function EditUserForm({ user }: { user: User }) {
     <form onSubmit={submit} className="space-y-6" noValidate>
       <Input label="Nama Lengkap" name="name" defaultValue={user.name} error={fieldErrors.name} />
       <Input label="Email" name="email" type="email" defaultValue={user.email} error={fieldErrors.email} />
-      <div><label htmlFor="role" className="mb-1 block text-sm font-medium text-slate-700">Peran</label><select id="role" name="role" defaultValue={user.role} required className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"><option value="admin">Admin</option><option value="superadmin">Superadmin</option></select>{fieldErrors.role && <p role="alert" className="mt-1 text-sm text-red-700">{fieldErrors.role}</p>}</div>
+      <div><label htmlFor="role" className="mb-1 block text-sm font-medium text-slate-700">Peran</label><select id="role" name="role" defaultValue={user.role} required aria-describedby={fieldErrors.role ? "role-error" : undefined} className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"><option value="admin">Admin</option><option value="superadmin">Superadmin</option></select>{fieldErrors.role && <p id="role-error" role="alert" className="mt-1 text-sm text-red-700">{fieldErrors.role}</p>}</div>
       <div className="border-t border-slate-100 pt-4"><button type="submit" disabled={isLoading} className="w-full rounded-lg bg-teal-600 px-8 py-3 font-bold text-white hover:bg-teal-700 disabled:bg-slate-400 sm:w-auto">{isLoading ? "Menyimpan..." : "Simpan Perubahan"}</button></div>
     </form>
   </div>;
