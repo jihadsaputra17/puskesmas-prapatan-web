@@ -414,3 +414,149 @@ body {
   max-width: 100%;
   border-radius: 10px;
 }
+
+/* ===========================
+   Jadwal Dokter — card layout
+   =========================== */
+.controls-panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .controls-panel {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+.controls-panel .field label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 0.375rem;
+}
+.controls-panel .field input,
+.controls-panel .field select {
+  width: 100%;
+  padding: 0.5625rem 0.625rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: #fff;
+}
+.controls-panel .field input:focus,
+.controls-panel .field select:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+.schedule-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1.375rem;
+}
+
+.day-group {}
+.day-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.625rem;
+}
+.badge-today {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: #f59e0b;
+  color: #fff;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+}
+
+.card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.625rem;
+}
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid #f1f5f9;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+.card.is-today {
+  border-color: #f59e0b;
+  background: #fff7ed;
+}
+.card-main .card-name {
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 0.9375rem;
+}
+.card-main .card-meta {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 0.125rem;
+}
+.card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.375rem;
+}
+.time-chip {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--teal);
+  background: #e6f4f3;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.status-chip {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.125rem 0.5625rem;
+  border-radius: 999px;
+}
+.status-open {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-closed {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1.25rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+.empty-state strong {
+  display: block;
+  color: var(--navy);
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.schedule-results + .footnote,
+.empty-state + .footnote {
+  margin-top: 1.5rem;
+}
+.footnote {
+  font-size: 0.8125rem;
+  color: #64748b;
+  line-height: 1.6;
+}

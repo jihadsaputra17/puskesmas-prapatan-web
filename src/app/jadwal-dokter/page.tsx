@@ -3,9 +3,9 @@ import ScheduleExplorer from "@/components/jadwal/ScheduleExplorer";
 import { getJadwalDokter } from "@/lib/actions";
 
 export const metadata: Metadata = {
-  title: "Jadwal dokter",
+  title: "Jadwal Dokter — Puskesmas Prapatan",
   description:
-    "Informasi jadwal praktik dokter dan pelayanan poli di Puskesmas Prapatan.",
+    "Cari jadwal praktik dokter dan pelayanan poli di Puskesmas Prapatan berdasarkan poli, hari, atau nama tenaga medis.",
 };
 
 export default async function JadwalDokterPage({
@@ -21,9 +21,9 @@ export default async function JadwalDokterPage({
       <section className="page-intro">
         <div className="content-container max-w-3xl">
           <p className="eyebrow">Kunjungan</p>
-          <h1 className="page-intro-title mt-3">Jadwal dokter</h1>
+          <h1 className="page-intro-title mt-3">Jadwal Dokter</h1>
           <p className="page-intro-copy">
-            Cari jadwal pelayanan berdasarkan poli atau hari sebelum berkunjung.
+            Cari jadwal pelayanan berdasarkan poli, hari, atau nama dokter sebelum berkunjung.
           </p>
         </div>
       </section>

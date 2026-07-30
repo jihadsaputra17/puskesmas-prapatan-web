@@ -6,13 +6,19 @@ export type JadwalDokter = {
   poli: string;
   day: string;
   hours: string;
+  jam_mulai: string;
+  jam_selesai: string;
 };
 
 export async function getJadwalDokter(): Promise<JadwalDokter[]> {
   try {
     const { rows } = await sql`
-      SELECT id, nama_dokter as doctor, poli, hari as day,
-        jam_mulai || ' - ' || jam_selesai as hours
+      SELECT id, nama_dokter as doctor,
+        poli,
+        hari as day,
+        jam_mulai || ' - ' || jam_selesai as hours,
+        jam_mulai,
+        jam_selesai
       FROM jadwal_dokter
       ORDER BY poli ASC, nama_dokter ASC
     `;

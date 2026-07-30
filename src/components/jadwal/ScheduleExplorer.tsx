@@ -1,7 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { JadwalDokter } from "@/lib/actions";
+
+const URUTAN_HARI = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"];
+const HARI_INI = URUTAN_HARI[(new Date().getDay() + 6) % 7]; // getDay(): 0=Minggu
+
+function todayMidnight() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  return d.toISOString().slice(0,10);
+}
+
+function statusSabtu(jamMulai: string, jamSelesai: string) {
+  const now = new Date();
+  const [hM,mM] = jamMulai.split(":").map(Number);
+  const [hS,mS] = jamSelesai.split(":").map(Number);
+  const mulai = hM*60 + mM;
+  const selesai = hS*60 + mS;
+  const sekarang = now.getHours()*60 + now.getMinutes();
+  return sekarang >= mulai && sekarang <= selesai;
+}
 
 export default function ScheduleExplorer({
   scheduleData,
@@ -10,101 +29,132 @@ export default function ScheduleExplorer({
   scheduleData: JadwalDokter[];
   initialPoli?: string;
 }) {
-  const poliOptions = ["Semua", ...Array.from(new Set(scheduleData.map((row) => row.poli)))];
-  const dayOptions = ["Semua", ...Array.from(new Set(scheduleData.map((row) => row.day)))];
-  const [poli, setPoli] = useState(
-    initialPoli && poliOptions.includes(initialPoli) ? initialPoli : "Semua",
+  const [search, setSearch] = useState("");
+  const [filterPoli, setFilterPoli] = useState(
+    initialPoli && scheduleData.some((r) => r.poli === initialPoli)
+      ? initialPoli : "",
   );
-  const [day, setDay] = useState("Semua");
-  const rows = scheduleData.filter(
-    (row) => (poli === "Semua" || row.poli === poli) && (day === "Semua" || row.day === day),
+  const [filterHari, setFilterHari] = useState("");
+
+  const daftarPoli = useMemo(
+    () => [...new Set(scheduleData.map((r) => r.poli))].sort(),
+    [scheduleData],
   );
+  const daftarHari = useMemo(
+    () => URUTAN_HARI.filter((h) => scheduleData.some((r) => r.day === h)),
+    [scheduleData],
+  );
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return scheduleData.filter(
+      (r) =>
+        (!q || r.doctor.toLowerCase().includes(q) || r.poli.toLowerCase().includes(q)) &&
+        (!filterPoli || r.poli === filterPoli) &&
+        (!filterHari || r.day === filterHari),
+    );
+  }, [scheduleData, search, filterPoli, filterHari]);
+
+  const hariTerpakai = useMemo(() => {
+    const set = new Set(filtered.map((r) => r.day));
+    return URUTAN_HARI.filter((h) => set.has(h)).sort((a, b) =>
+      a === HARI_INI ? -1 : b === HARI_INI ? 1 : 0,
+    );
+  }, [filtered]);
 
   return (
-    <section aria-label="Daftar jadwal" className="space-y-6">
-      <div className="panel grid gap-4 p-4 sm:grid-cols-2 sm:p-5">
-        <label className="grid gap-2 text-sm font-semibold text-navy">
-          Filter poli
+    <>
+      <div className="panel controls-panel">
+        <div className="field">
+          <label htmlFor="cari-dokter">Cari nama dokter</label>
+          <input
+            id="cari-dokter"
+            type="text"
+            placeholder="mis. budi"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="filter-poli">Filter poli</label>
           <select
-            aria-label="Filter poli"
-            value={poli}
-            onChange={(event) => setPoli(event.target.value)}
-            className="input-field"
+            id="filter-poli"
+            value={filterPoli}
+            onChange={(e) => setFilterPoli(e.target.value)}
           >
-            {poliOptions.map((item) => (
-              <option key={item}>{item}</option>
+            <option value="">Semua</option>
+            {daftarPoli.map((p) => (
+              <option key={p} value={p}>{p}</option>
             ))}
           </select>
-        </label>
-        <label className="grid gap-2 text-sm font-semibold text-navy">
-          Filter hari
+        </div>
+        <div className="field">
+          <label htmlFor="filter-hari">Filter hari</label>
           <select
-            aria-label="Filter hari"
-            value={day}
-            onChange={(event) => setDay(event.target.value)}
-            className="input-field"
+            id="filter-hari"
+            value={filterHari}
+            onChange={(e) => setFilterHari(e.target.value)}
           >
-            {dayOptions.map((item) => (
-              <option key={item}>{item}</option>
+            <option value="">Semua</option>
+            {daftarHari.map((h) => (
+              <option key={h} value={h}>{h}</option>
             ))}
           </select>
-        </label>
+        </div>
       </div>
 
-      {rows.length ? (
-        <>
-          <div className="panel hidden overflow-hidden md:block">
-            <table className="w-full text-left">
-              <thead className="bg-clinic-soft/70 text-sm text-slate-700">
-                <tr>
-                  <th className="px-5 py-3.5 font-semibold">Tenaga medis</th>
-                  <th className="px-5 py-3.5 font-semibold">Poli</th>
-                  <th className="px-5 py-3.5 font-semibold">Hari</th>
-                  <th className="px-5 py-3.5 font-semibold">Jam</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr key={row.id} className="border-t border-slate-100">
-                    <td className="px-5 py-4 font-semibold text-navy">{row.doctor}</td>
-                    <td className="px-5 py-4 text-slate-700">{row.poli}</td>
-                    <td className="px-5 py-4 text-slate-700">{row.day}</td>
-                    <td className="px-5 py-4">
-                      <span className="inline-flex rounded-full bg-clinic-soft px-3 py-1 text-sm font-medium text-clinic-teal">
-                        {row.hours}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <ul className="grid gap-3 md:hidden">
-            {rows.map((row) => (
-              <li key={row.id} className="panel p-4">
-                <p className="font-bold text-navy">{row.doctor}</p>
-                <dl className="mt-3 grid grid-cols-2 gap-y-2 text-sm">
-                  <dt className="text-slate-500">Poli</dt>
-                  <dd className="font-medium text-slate-800">{row.poli}</dd>
-                  <dt className="text-slate-500">Hari</dt>
-                  <dd className="font-medium text-slate-800">{row.day}</dd>
-                  <dt className="text-slate-500">Jam</dt>
-                  <dd className="font-medium text-clinic-teal">{row.hours}</dd>
-                </dl>
-              </li>
-            ))}
-          </ul>
-        </>
+      {filtered.length === 0 ? (
+        <div className="panel empty-state">
+          <strong>Tidak ada jadwal ditemukan</strong>
+          <span>Coba ubah kata kunci pencarian atau filter yang dipilih.</span>
+        </div>
       ) : (
-        <p className="panel p-8 text-center text-slate-600">
-          Tidak ada jadwal yang sesuai filter.
-        </p>
+        <div className="schedule-results">
+          {hariTerpakai.map((hari) => {
+            const group = filtered.filter((r) => r.day === hari);
+            return (
+              <div key={hari} className="day-group">
+                <div className="day-heading">
+                  {hari}
+                  {hari === HARI_INI && <span className="badge-today">Hari ini</span>}
+                </div>
+                <ul className="card-list">
+                  {group
+                    .sort((a, b) => a.poli.localeCompare(b.poli))
+                    .map((row) => {
+                      const isToday = hari === HARI_INI;
+                      const buka = isToday && statusSabtu(row.jam_mulai, row.jam_selesai);
+
+                      return (
+                        <li
+                          key={row.id}
+                          className={`card${isToday ? " is-today" : ""}`}
+                        >
+                          <div className="card-main">
+                            <div className="card-name">{row.doctor}</div>
+                            <div className="card-meta">{row.poli}</div>
+                          </div>
+                          <div className="card-right">
+                            <span className="time-chip">{row.hours}</span>
+                            {isToday && (
+                              <span className={`status-chip ${buka ? "status-open" : "status-closed"}`}>
+                                {buka ? "Sedang praktik" : "Tutup"}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       )}
 
-      <p className="text-sm leading-6 text-slate-600">
+      <p className="footnote">
         Jadwal dapat berubah. Hubungi puskesmas untuk konfirmasi sebelum berkunjung.
       </p>
-    </section>
+    </>
   );
 }
