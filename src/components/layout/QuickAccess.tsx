@@ -49,7 +49,7 @@ const items = [
 export default function QuickAccess() {
   return (
     <section className="border-b border-slate-200/80 bg-white py-8 md:py-10" aria-labelledby="quick-access-heading">
-      <div className="content-container w-full max-w-full overflow-hidden">
+      <div className="content-container">
         <div className="mb-5 flex items-end justify-between gap-4">
           <div>
             <p className="eyebrow">Akses cepat</p>

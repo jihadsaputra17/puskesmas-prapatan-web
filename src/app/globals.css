@@ -144,52 +144,72 @@ body {
   }
 }
 
-/* Hero slideshow — default nav styled */
+/* Hero slideshow nav — align to content-container (max-w-7xl + pad)
+   so arrows line up with Akses cepat card edges below. */
+.hero-slideshow {
+  --nav-inset: 1rem; /* px-4 */
+  --content-max: 80rem; /* max-w-7xl */
+}
+@media (min-width: 640px) {
+  .hero-slideshow {
+    --nav-inset: 1.5rem; /* sm:px-6 */
+  }
+}
+@media (min-width: 1024px) {
+  .hero-slideshow {
+    --nav-inset: 2rem; /* lg:px-8 */
+  }
+}
+
 .hero-slideshow .swiper-button-next,
 .hero-slideshow .swiper-button-prev {
+  top: 50%;
   width: 48px;
   height: 48px;
   margin-top: -24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 9999px;
-  background: rgba(255,255,255,0.7);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-  transition: all 0.3s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  color: #081b2b;
+  transition: background 0.3s, transform 0.3s, color 0.2s;
+  z-index: 10;
 }
+
+/* Same horizontal edges as .content-container */
+.hero-slideshow .swiper-button-prev {
+  left: max(var(--nav-inset), calc((100% - var(--content-max)) / 2 + var(--nav-inset)));
+  right: auto;
+}
+.hero-slideshow .swiper-button-next {
+  right: max(var(--nav-inset), calc((100% - var(--content-max)) / 2 + var(--nav-inset)));
+  left: auto;
+}
+
 .hero-slideshow .swiper-button-next:hover,
 .hero-slideshow .swiper-button-prev:hover {
-  background: rgba(255,255,255,1);
+  background: rgba(255, 255, 255, 1);
+  color: #0d9488;
   transform: scale(1.1);
+}
+
+/* Swiper 14 ships SVG icons — size them, drop font ::after */
+.hero-slideshow .swiper-button-next svg,
+.hero-slideshow .swiper-button-prev svg,
+.hero-slideshow .swiper-navigation-icon {
+  width: 18px !important;
+  height: 18px !important;
+  fill: currentColor;
 }
 .hero-slideshow .swiper-button-next::after,
 .hero-slideshow .swiper-button-prev::after {
-  content: '';
-  display: block;
-  width: 24px;
-  height: 24px;
-  background: #081B2B;
-  mask-size: contain;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  transition: background 0.2s;
+  content: none !important;
+  display: none !important;
 }
-.hero-slideshow .swiper-button-next:hover::after {
-  background: #0D9488;
-}
-.hero-slideshow .swiper-button-prev:hover::after {
-  background: #0D9488;
-}
-.hero-slideshow .swiper-button-next::after {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081B2B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081B2B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
-}
-.hero-slideshow .swiper-button-prev::after {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081B2B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081B2B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E");
-}
+
 .hero-slideshow .swiper-button-disabled {
   opacity: 0.35;
   pointer-events: none;
@@ -197,7 +217,7 @@ body {
 .hero-slideshow .swiper-pagination-bullet {
   width: 10px;
   height: 10px;
-  background: rgba(255,255,255,0.4);
+  background: rgba(255, 255, 255, 0.4);
   opacity: 1;
 }
 .hero-slideshow .swiper-pagination-bullet-active {
