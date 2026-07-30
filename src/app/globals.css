@@ -231,12 +231,30 @@ body {
   font-size: 1.0625rem;
   line-height: 1.7;
   color: #1e293b;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
 }
 .article-body > *:first-child {
   margin-top: 0;
 }
 .article-body p {
   margin: 0 0 1.35rem;
+  text-align: justify;
+  text-justify: inter-word;
+}
+/* Keep headings/lists/captions left; justify body copy only */
+.article-body h2,
+.article-body h3,
+.article-body h4,
+.article-body figcaption,
+.article-body .photo-grid-caption {
+  text-align: left;
+  hyphens: manual;
+}
+.article-body li {
+  text-align: justify;
+  text-justify: inter-word;
 }
 .article-body h2 {
   margin: 2.25rem 0 1rem;

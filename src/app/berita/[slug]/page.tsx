@@ -170,7 +170,9 @@ export default async function DetailBeritaPage({
 
       <div className="content-container max-w-4xl pb-4 pt-8">
         {berita.excerpt ? (
-          <p className="mb-6 text-xl font-medium leading-relaxed text-slate-900">{berita.excerpt}</p>
+          <p className="mb-6 text-xl font-medium leading-relaxed text-slate-900 text-justify [text-justify:inter-word]">
+            {berita.excerpt}
+          </p>
         ) : null}
 
         <ArticleContent content={String(berita.content || "")} />
