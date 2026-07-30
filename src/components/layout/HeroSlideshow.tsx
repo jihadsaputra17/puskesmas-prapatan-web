@@ -18,6 +18,14 @@ type Slide = {
 
 const slides: Slide[] = [
   {
+    image: "/images/hero-pkm.jpg",
+    title: "Puskesmas Prapatan",
+    subtitle:
+      "UPTD Pelayanan Kesehatan masyarakat Kota Balikpapan — siap melayani Anda dan keluarga dengan layanan yang aman, nyaman, dan terpercaya.",
+    ctaLabel: "Profil puskesmas",
+    ctaHref: "/profil",
+  },
+  {
     image: "/images/hero-1.jpg",
     title: "Pelayanan Kesehatan untuk Masyarakat",
     subtitle:
