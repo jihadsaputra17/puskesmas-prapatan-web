@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import PengaduanForm from "./PengaduanForm";
 
 export const metadata: Metadata = {
-  title: "Pengaduan",
-  description: "Sampaikan pengaduan atau masukan untuk Puskesmas Prapatan.",
+  title: "Pengaduan — Puskesmas Prapatan",
+  description: "Sampaikan pengaduan, saran, atau masukan untuk Puskesmas Prapatan.",
 };
 
 export default function PengaduanPage() {
@@ -14,8 +14,8 @@ export default function PengaduanPage() {
           <p className="eyebrow">Pengaduan</p>
           <h1 className="page-intro-title mt-3">Sampaikan pengaduan atau masukan</h1>
           <p className="page-intro-copy">
-            Gunakan formulir ini untuk menyiapkan pengaduan. Informasi kontak resmi akan ditampilkan
-            setelah dikonfirmasi oleh puskesmas.
+            Setiap masukan dari Anda membantu kami meningkatkan kualitas pelayanan.
+            Pengaduan akan dikirim langsung ke email resmi Puskesmas Prapatan.
           </p>
         </div>
       </section>
