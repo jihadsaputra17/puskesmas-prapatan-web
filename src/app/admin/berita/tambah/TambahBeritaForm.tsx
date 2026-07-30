@@ -1,13 +1,83 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AdminFeedback from "@/components/admin/AdminFeedback";
+import BeritaFormFields from "@/components/admin/BeritaFormFields";
 import { formatFieldErrors, newsSchema } from "@/lib/admin-schemas";
 
 export default function TambahBeritaForm() {
- const router=useRouter(); const [pending,setPending]=useState(false); const [feedback,setFeedback]=useState<{type:"success"|"error";message:string}|null>(null); const [fields,setFields]=useState<Record<string,string>>({});
- async function submit(e:React.FormEvent<HTMLFormElement>){e.preventDefault(); setFeedback(null); const form=new FormData(e.currentTarget); const parsed=newsSchema.safeParse(Object.fromEntries(form)); if(!parsed.success){setFields(formatFieldErrors(parsed.error)); setFeedback({type:"error",message:"Periksa isian formulir."});return;} setFields({});setPending(true);try{const r=await fetch("/api/berita",{method:"POST",body:form});const result=await r.json().catch(()=>({}));if(!r.ok||result.error){setFields(result.fields||{});setFeedback({type:"error",message:result.error||"Gagal mempublikasikan berita."});}else{router.push("/admin/berita");router.refresh();}}catch{setFeedback({type:"error",message:"Terjadi kesalahan jaringan saat menyimpan berita."});}finally{setPending(false)}}
- const err=(id:string)=>fields[id]?<p id={`${id}-error`} className="mt-1 text-sm text-red-700">{fields[id]}</p>:null; const described=(id:string)=>fields[id]?`${id}-error`:undefined;
- return <div className="panel p-8 max-w-3xl"><div className="mb-8 flex justify-between border-b border-[var(--line)] pb-4"><h1 className="text-2xl font-bold text-[var(--navy)]">Tambah Berita Baru</h1><Link href="/admin/berita" className="text-sm font-medium text-[var(--teal)] hover:text-[var(--teal-dark)]">← Batal</Link></div><AdminFeedback result={feedback}/><form onSubmit={submit} className="space-y-6">{[["title","Judul Berita"],["slug","Tautan / Slug"],["excerpt","Ringkasan Singkat"],["content","Isi Berita Lengkap"]].map(([id,label])=><div key={id}><label htmlFor={id} className="mb-1 block text-sm font-medium text-[var(--ink)]">{label}</label>{id==="excerpt"||id==="content"?<textarea id={id} name={id} rows={id==="content"?8:3} aria-describedby={described(id)} className="input-field"/>:<input id={id} name={id} aria-describedby={described(id)} className="input-field"/>}{err(id)}</div>)}<div><label htmlFor="template" className="mb-1 block text-sm font-medium text-[var(--ink)]">Template</label><select id="template" name="template" className="input-field"><option value="standard">Standar</option><option value="hero-overlay">Hero Banner</option><option value="minimalist">Minimalis</option></select></div><div><label htmlFor="image_url" className="mb-1 block text-sm font-medium text-[var(--ink)]">URL gambar sampul (opsional)</label><input id="image_url" name="image_url" type="url" inputMode="url" placeholder="https://..." aria-describedby={described("image_url")} className="input-field"/>{err("image_url")}</div><button disabled={pending} className="button-primary">{pending?"Memproses...":"Publikasikan Berita"}</button></form></div>;
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(
+    null,
+  );
+  const [fields, setFields] = useState<Record<string, string>>({});
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setFeedback(null);
+    const form = new FormData(e.currentTarget);
+    const parsed = newsSchema.safeParse(Object.fromEntries(form));
+    if (!parsed.success) {
+      setFields(formatFieldErrors(parsed.error));
+      setFeedback({ type: "error", message: "Periksa isian formulir." });
+      return;
+    }
+    setFields({});
+    setPending(true);
+    try {
+      const r = await fetch("/api/berita", { method: "POST", body: form });
+      const result = await r.json().catch(() => ({}));
+      if (!r.ok || result.error) {
+        setFields(result.fields || {});
+        setFeedback({ type: "error", message: result.error || "Gagal mempublikasikan berita." });
+      } else {
+        router.push("/admin/berita");
+        router.refresh();
+      }
+    } catch {
+      setFeedback({ type: "error", message: "Terjadi kesalahan jaringan saat menyimpan berita." });
+    } finally {
+      setPending(false);
+    }
+  }
+
+  const describedBy = (id: string) =>
+    [fields[id] ? `${id}-error` : null, `${id}-hint`].filter(Boolean).join(" ") || undefined;
+
+  return (
+    <div className="panel mx-auto max-w-3xl p-6 sm:p-8">
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-[var(--line)] pb-4">
+        <div>
+          <h1 className="text-2xl font-bold text-[var(--navy)]">Tambah berita</h1>
+          <p className="mt-1 text-sm text-slate-600">
+            Setelah dipublikasikan, artikel tampil di situs dengan layout majalah (breadcrumb, foto,
+            lead, bagikan, berita terkait).
+          </p>
+        </div>
+        <Link
+          href="/admin/berita"
+          className="text-sm font-medium text-[var(--teal)] hover:text-[var(--teal-dark)]"
+        >
+          ← Batal
+        </Link>
+      </div>
+
+      <AdminFeedback result={feedback} />
+
+      <form onSubmit={submit} className="space-y-8">
+        <BeritaFormFields fields={fields} describedBy={describedBy} />
+        <div className="flex flex-wrap items-center gap-3 border-t border-[var(--line)] pt-6">
+          <button type="submit" disabled={pending} className="button-primary">
+            {pending ? "Memproses..." : "Publikasikan berita"}
+          </button>
+          <Link href="/admin/berita" className="button-secondary">
+            Batal
+          </Link>
+        </div>
+      </form>
+    </div>
+  );
 }

@@ -22,7 +22,7 @@ type BeritaCard = {
 };
 
 export default async function BeritaPage() {
-  const beritaData = (await getBeritaKesehatan()) as BeritaCard[];
+  const beritaData = (await getBeritaKesehatan({ limit: 24 })) as BeritaCard[];
 
   return (
     <>

@@ -9,8 +9,13 @@ export const metadata: Metadata = { title: "Kelola Berita | Admin" };
 
 export default async function KelolaBeritaPage() {
   await requireAdmin();
-  const berita = await getBeritaKesehatan() as Berita[];
-  const date = (value: string | Date) => new Date(value).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  const berita = (await getBeritaKesehatan({ limit: 50 })) as Berita[];
+  const date = (value: string | Date) =>
+    new Date(value).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
   const action = (item: Berita) => (
     <div className="flex gap-4">
       <Link href={`/admin/berita/edit/${item.slug}`} className="text-sm font-medium text-[var(--teal)] hover:text-[var(--teal-dark)]">Edit</Link>
@@ -24,7 +29,9 @@ export default async function KelolaBeritaPage() {
         <div>
           <p className="eyebrow">Konten</p>
           <h1 className="mt-1 text-3xl font-bold tracking-tight text-[var(--navy)]">Kelola Berita</h1>
-          <p className="mt-2 text-[var(--muted)]">Manajemen artikel dan pengumuman kesehatan Puskesmas.</p>
+          <p className="mt-2 text-[var(--muted)]">
+            Artikel dipublikasikan ke layout majalah di situs publik. Daftar menampilkan hingga 50 berita terbaru.
+          </p>
         </div>
         <Link href="/admin/berita/tambah" className="button-primary">
           + Tambah Berita Baru

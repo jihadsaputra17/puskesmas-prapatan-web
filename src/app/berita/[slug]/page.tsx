@@ -47,6 +47,7 @@ function authorInitials(name: string) {
     .join("") || "AP";
 }
 
+/** Maps legacy DB `template` column → public category chip (one layout for all). */
 function categoryLabel(template?: string) {
   if (template === "hero-overlay") return "Sorotan";
   if (template === "minimalist") return "Artikel";
