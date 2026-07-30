@@ -226,7 +226,8 @@ body {
   border-radius: 5px;
 }
 
-/* Berita article body — civic magazine template */
+/* Berita article body — civic magazine template.
+   Justify via CSS only — never rely on &nbsp; padding from editors. */
 .article-body {
   font-size: 1.0625rem;
   line-height: 1.7;
@@ -234,6 +235,8 @@ body {
   text-align: justify;
   text-justify: inter-word;
   hyphens: auto;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 .article-body > *:first-child {
   margin-top: 0;
@@ -242,6 +245,9 @@ body {
   margin: 0 0 1.35rem;
   text-align: justify;
   text-justify: inter-word;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
 }
 /* Keep headings/lists/captions left; justify body copy only */
 .article-body h2,
@@ -251,10 +257,21 @@ body {
 .article-body .photo-grid-caption {
   text-align: left;
   hyphens: manual;
+  overflow-wrap: break-word;
 }
 .article-body li {
   text-align: justify;
   text-justify: inter-word;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.article-body .lead,
+.article-lead {
+  text-align: justify;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
 }
 .article-body h2 {
   margin: 2.25rem 0 1rem;

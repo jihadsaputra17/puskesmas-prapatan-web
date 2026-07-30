@@ -36,23 +36,41 @@ const optionalNewsImage = z
 const optionalHttpUrl = z.union([httpUrl, z.literal("")]).optional();
 const requiredText = z.string().trim().min(1, "Required");
 
-/** Quill often submits <p><br></p> for empty — treat as empty string. */
+/** Quill often submits <p><br></p> / &nbsp; — normalize before store. */
 const newsContent = z
   .string()
   .transform((value) => {
-    const plain = value
-      .replace(/<[^>]*>/g, " ")
+    const normalized = value
       .replace(/&nbsp;/gi, " ")
+      .replace(/&#160;/gi, " ")
+      .replace(/&#x0*a0;/gi, " ")
+      .replace(/ /g, " ")
+      .trim();
+    const plain = normalized
+      .replace(/<[^>]*>/g, " ")
       .replace(/\s+/g, " ")
       .trim();
-    return plain ? value.trim() : "";
+    return plain ? normalized : "";
   })
+  .pipe(requiredText);
+
+const newsExcerpt = z
+  .string()
+  .transform((value) =>
+    value
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&#160;/gi, " ")
+      .replace(/&#x0*a0;/gi, " ")
+      .replace(/ /g, " ")
+      .replace(/\s+/g, " ")
+      .trim(),
+  )
   .pipe(requiredText);
 
 export const newsSchema = z.object({
   title: requiredText,
   slug: z.string().trim().min(1).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug"),
-  excerpt: requiredText,
+  excerpt: newsExcerpt,
   content: newsContent,
   image_url: optionalNewsImage,
   template: z.enum(["standard", "hero-overlay", "minimalist"]),
