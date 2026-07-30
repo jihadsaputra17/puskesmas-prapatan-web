@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
@@ -19,16 +20,17 @@ function isActive(pathname: string | null, href: string) {
   return path === href || path.startsWith(`${href}/`);
 }
 
-function ClinicMark({ className = "h-9 w-9" }: { className?: string }) {
+function ClinicMark({ className = "h-10 w-10" }: { className?: string }) {
   return (
-    <span
-      className={`inline-flex items-center justify-center rounded-xl bg-navy text-white shadow-sm ${className}`}
-      aria-hidden="true"
-    >
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
-        <rect x="3.5" y="3.5" width="17" height="17" rx="4" />
-      </svg>
+    <span className={`relative inline-flex shrink-0 overflow-hidden ${className}`} aria-hidden="true">
+      <Image
+        src="/images/logo-pkm.png"
+        alt=""
+        fill
+        className="object-contain"
+        sizes="40px"
+        priority
+      />
     </span>
   );
 }

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const SOCIAL_LINKS = [
@@ -30,14 +31,14 @@ export default function SiteFooter({ settings }: { settings: Record<string, stri
       <div className="content-container grid gap-10 py-12 md:grid-cols-[1.2fr_1fr_1fr] md:py-14">
         <div>
           <div className="flex items-center gap-3">
-            <span
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white"
-              aria-hidden="true"
-            >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
-                <rect x="3.5" y="3.5" width="17" height="17" rx="4" />
-              </svg>
+            <span className="relative inline-flex h-10 w-10 shrink-0 overflow-hidden" aria-hidden="true">
+              <Image
+                src="/images/logo-pkm.png"
+                alt=""
+                fill
+                className="object-contain"
+                sizes="40px"
+              />
             </span>
             <p className="text-lg font-bold tracking-tight text-white">{name}</p>
           </div>
