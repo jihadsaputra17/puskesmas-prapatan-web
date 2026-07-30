@@ -1,10 +1,10 @@
 import { getBeritaBySlug, getBeritaKesehatan } from "../../../lib/actions";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
 import ArticleContent from "../../../components/berita/ArticleContent";
 import ArticleShare from "../../../components/berita/ArticleShare";
+import SmartImage from "../../../components/ui/SmartImage";
 
 export async function generateMetadata({
   params,
@@ -152,7 +152,7 @@ export default async function DetailBeritaPage({
 
       <figure className="content-container max-w-4xl">
         <div className="relative aspect-video w-full overflow-hidden rounded-[var(--radius-lg)] bg-clinic-soft">
-          <Image
+          <SmartImage
             src={imageUrl}
             alt={berita.title}
             fill
@@ -222,7 +222,7 @@ export default async function DetailBeritaPage({
                     className="group panel panel-lift overflow-hidden"
                   >
                     <div className="relative h-[8.5rem] w-full bg-clinic-soft">
-                      <Image
+                      <SmartImage
                         src={item.imageUrl || PLACEHOLDER}
                         alt=""
                         fill

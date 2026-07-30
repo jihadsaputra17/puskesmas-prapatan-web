@@ -5,9 +5,17 @@ import { requireAdmin, toAuthorizationResponse } from "@/lib/admin-auth";
 import { formatFieldErrors, newsSchema } from "@/lib/admin-schemas";
 
 function newsFromForm(formData: FormData) {
+  const image =
+    formData.get("image_url") ??
+    formData.get("images") ??
+    "";
   return {
-    title: formData.get("title"), slug: formData.get("slug"), excerpt: formData.get("excerpt"), content: formData.get("content"),
-    image_url: formData.get("image_url") ?? formData.get("images") ?? "", template: formData.get("template") || "standard",
+    title: formData.get("title"),
+    slug: formData.get("slug"),
+    excerpt: formData.get("excerpt"),
+    content: formData.get("content"),
+    image_url: typeof image === "string" ? image : "",
+    template: formData.get("template") || "standard",
   };
 }
 function invalidate() { revalidatePath("/admin/berita"); revalidatePath("/berita"); revalidatePath("/"); }

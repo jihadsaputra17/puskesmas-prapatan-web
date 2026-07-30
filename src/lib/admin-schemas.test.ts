@@ -19,6 +19,30 @@ it("rejects a javascript image URL", () => {
   }).success).toBe(false);
 });
 
+it("accepts compressed data-image cover uploads", () => {
+  const tiny =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  expect(newsSchema.safeParse({
+    title: "Info",
+    slug: "info",
+    excerpt: "Ringkas",
+    content: "<p>Isi berita</p>",
+    image_url: tiny,
+    template: "standard",
+  }).success).toBe(true);
+});
+
+it("rejects empty quill placeholder content", () => {
+  expect(newsSchema.safeParse({
+    title: "Info",
+    slug: "info",
+    excerpt: "Ringkas",
+    content: "<p><br></p>",
+    image_url: "",
+    template: "standard",
+  }).success).toBe(false);
+});
+
 it("requires service name and description", () => {
   expect(serviceSchema.safeParse({ nama_poli: "", deskripsi: "" }).success).toBe(false);
 });

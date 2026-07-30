@@ -372,3 +372,28 @@ body {
     height: 11rem;
   }
 }
+
+/* Admin berita Quill */
+.berita-quill .ql-toolbar.ql-snow {
+  border-color: #cbd5e1;
+  border-radius: 10px 10px 0 0;
+  background: #f8fafc;
+}
+.berita-quill .ql-container.ql-snow {
+  border-color: #cbd5e1;
+  border-radius: 0 0 10px 10px;
+  min-height: 220px;
+  font-size: 1rem;
+}
+.berita-quill .ql-editor {
+  min-height: 220px;
+  line-height: 1.65;
+}
+.berita-quill .ql-editor.ql-blank::before {
+  font-style: normal;
+  color: #94a3b8;
+}
+.berita-quill .ql-editor img {
+  max-width: 100%;
+  border-radius: 10px;
+}

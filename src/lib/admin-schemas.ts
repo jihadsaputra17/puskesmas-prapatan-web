@@ -12,15 +12,49 @@ const httpUrl = z.string().url().refine(
   { message: "URL must use HTTP or HTTPS" },
 );
 
+/** Cover: empty | http(s) URL | compressed data:image (client upload). */
+const optionalNewsImage = z
+  .string()
+  .optional()
+  .transform((value) => value?.trim() ?? "")
+  .refine(
+    (value) => {
+      if (!value) return true;
+      if (/^data:image\/(png|jpe?g|gif|webp);base64,/i.test(value)) {
+        return value.length <= 2_000_000;
+      }
+      try {
+        const protocol = new URL(value).protocol;
+        return protocol === "https:" || protocol === "http:";
+      } catch {
+        return false;
+      }
+    },
+    { message: "Gambar harus URL HTTP(S) atau unggahan gambar (max ~1.5MB terkompres)" },
+  );
+
 const optionalHttpUrl = z.union([httpUrl, z.literal("")]).optional();
 const requiredText = z.string().trim().min(1, "Required");
+
+/** Quill often submits <p><br></p> for empty — treat as empty string. */
+const newsContent = z
+  .string()
+  .transform((value) => {
+    const plain = value
+      .replace(/<[^>]*>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    return plain ? value.trim() : "";
+  })
+  .pipe(requiredText);
 
 export const newsSchema = z.object({
   title: requiredText,
   slug: z.string().trim().min(1).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug"),
   excerpt: requiredText,
-  content: requiredText,
-  image_url: optionalHttpUrl,
+  content: newsContent,
+  image_url: optionalNewsImage,
   template: z.enum(["standard", "hero-overlay", "minimalist"]),
 }).strict();
 

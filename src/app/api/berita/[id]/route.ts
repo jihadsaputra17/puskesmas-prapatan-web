@@ -8,7 +8,17 @@ const uuidSchema = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-
 const invalidate = () => { revalidatePath("/admin/berita"); revalidatePath("/berita"); revalidatePath("/"); };
 async function authorize() { try { await requireAdmin(); } catch (error) { const response = toAuthorizationResponse(error); if (response) return response; throw error; } }
 async function getId(params: Promise<{ id: string }>) { const { id } = await params; return uuidSchema.test(id) ? id : null; }
-function newsFromForm(formData: FormData) { return { title: formData.get("title"), slug: formData.get("slug"), excerpt: formData.get("excerpt"), content: formData.get("content"), image_url: formData.get("image_url") ?? formData.get("images") ?? "", template: formData.get("template") || "standard" }; }
+function newsFromForm(formData: FormData) {
+  const image = formData.get("image_url") ?? formData.get("images") ?? "";
+  return {
+    title: formData.get("title"),
+    slug: formData.get("slug"),
+    excerpt: formData.get("excerpt"),
+    content: formData.get("content"),
+    image_url: typeof image === "string" ? image : "",
+    template: formData.get("template") || "standard",
+  };
+}
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {

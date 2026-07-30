@@ -80,7 +80,12 @@ describe("CMS content mutations", () => {
     mockedGetServerSession.mockResolvedValue(admin);
     const response = await createNews(formRequest({ title: "Kabar", slug: "kabar", excerpt: "Ringkas", content: "Isi", image_url: "javascript:alert(1)", template: "standard" }));
     expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toMatchObject({ error: "Data berita tidak valid.", fields: { image_url: "URL must use HTTP or HTTPS" } });
+    await expect(response.json()).resolves.toMatchObject({
+      error: "Data berita tidak valid.",
+      fields: {
+        image_url: expect.stringMatching(/HTTP|gambar|URL/i),
+      },
+    });
     expect(mockedSql).not.toHaveBeenCalled();
   });
 

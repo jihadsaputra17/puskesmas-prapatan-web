@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { getBeritaKesehatan } from "../../lib/actions";
+import SmartImage from "../../components/ui/SmartImage";
 
 export const metadata: Metadata = {
   title: "Berita & Informasi",
@@ -46,7 +46,7 @@ export default async function BeritaPage() {
                   className="group panel panel-lift relative flex flex-col overflow-hidden"
                 >
                   <div className="relative h-48 w-full shrink-0 overflow-hidden bg-clinic-soft">
-                    <Image
+                    <SmartImage
                       src={berita.imageUrl || PLACEHOLDER}
                       alt=""
                       fill

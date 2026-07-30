@@ -1,5 +1,8 @@
 "use client";
 
+import CoverImageField from "@/components/admin/CoverImageField";
+import RichTextEditor from "@/components/admin/RichTextEditor";
+
 /** Shared field chrome for tambah/edit berita — magazine public template. */
 
 export const CATEGORY_OPTIONS = [
@@ -46,19 +49,15 @@ export function ContentGuide() {
           <strong>Ringkasan</strong> → teks pembuka (lead) + keterangan di bawah foto sampul
         </li>
         <li>
-          <strong>Gambar sampul</strong> → foto besar 16:9 di atas artikel
+          <strong>Gambar sampul</strong> → unggah file atau tempel URL (foto besar 16:9)
         </li>
         <li>
           <strong>Kategori</strong> → chip kecil di atas judul (bukan layout berbeda)
         </li>
         <li>
-          Isi boleh HTML aman: <code className="rounded bg-white px-1">&lt;p&gt;</code>,{" "}
-          <code className="rounded bg-white px-1">&lt;h2&gt;</code>,{" "}
-          <code className="rounded bg-white px-1">&lt;ul&gt;&lt;li&gt;</code>,{" "}
-          <code className="rounded bg-white px-1">&lt;img&gt;</code>,{" "}
-          <code className="rounded bg-white px-1">&lt;blockquote&gt;</code>
+          <strong>Isi berita</strong> → editor kaya (heading, daftar, kutipan, tautan, gambar)
         </li>
-        <li>Paragraf kosong diganti Enter biasa / bungkus tiap paragraf dengan &lt;p&gt;…&lt;/p&gt;</li>
+        <li>Paragraf di situs tampil rata kiri–kanan (justify) otomatis</li>
       </ul>
     </aside>
   );
@@ -143,7 +142,8 @@ export default function BeritaFormFields({
           placeholder="1–2 kalimat ringkas yang muncul sebagai lead dan caption foto."
         />
         <FieldHint id="excerpt">
-          Dipakai sebagai lead di atas isi, caption di bawah foto sampul, dan cuplikan di daftar berita.
+          Dipakai sebagai lead di atas isi, caption di bawah foto sampul, dan cuplikan di daftar
+          berita.
         </FieldHint>
         <FieldError id="excerpt" message={fields.excerpt} />
       </div>
@@ -152,7 +152,6 @@ export default function BeritaFormFields({
         <label htmlFor="category" className="mb-1 block text-sm font-medium text-[var(--ink)]">
           Kategori (chip di artikel)
         </label>
-        {/* Keep name="template" for API/DB column compatibility */}
         <select
           id="category"
           name="template"
@@ -172,44 +171,40 @@ export default function BeritaFormFields({
       </div>
 
       <div>
-        <label htmlFor="image_url" className="mb-1 block text-sm font-medium text-[var(--ink)]">
-          URL gambar sampul (opsional)
-        </label>
-        <input
-          id="image_url"
+        <p className="mb-1 block text-sm font-medium text-[var(--ink)]" id="image_url-label">
+          Gambar sampul
+        </p>
+        <CoverImageField
           name="image_url"
-          type="url"
-          inputMode="url"
           defaultValue={values.image_url}
-          placeholder="https://..."
-          aria-describedby={describedBy("image_url") || "image_url-hint"}
-          className="input-field"
+          error={fields.image_url}
+          describedBy={describedBy("image_url") || "image_url-hint"}
         />
         <FieldHint id="image_url">
-          Pakai tautan gambar HTTPS. Ideal rasio 16:9. Kosong = placeholder teal.
+          Unggah dari perangkat atau tempel URL HTTPS. Ideal rasio 16:9. Kosong = placeholder.
         </FieldHint>
-        <FieldError id="image_url" message={fields.image_url} />
       </div>
 
       <div>
-        <label htmlFor="content" className="mb-1 block text-sm font-medium text-[var(--ink)]">
+        <label
+          id="content-label"
+          htmlFor="content-editor"
+          className="mb-1 block text-sm font-medium text-[var(--ink)]"
+        >
           Isi berita
         </label>
-        <textarea
-          id="content"
+        <RichTextEditor
           name="content"
-          defaultValue={values.content}
-          rows={14}
-          required
-          aria-describedby={describedBy("content") || "content-hint"}
-          className="input-field font-mono text-sm leading-6"
-          placeholder={`<p>Paragraf pembuka...</p>\n\n<h2>Judul bagian</h2>\n<p>Lanjutan cerita...</p>\n\n<ul>\n  <li>Poin satu</li>\n  <li>Poin dua</li>\n</ul>\n\n<blockquote>Kutipan penting.\n<cite>— Nama sumber</cite></blockquote>`}
+          labelId="content-label"
+          defaultValue={values.content || ""}
+          error={fields.content}
+          describedBy={describedBy("content") || "content-hint"}
+          placeholder="Tulis isi berita. Gunakan toolbar untuk heading, daftar, kutipan, dan gambar."
         />
         <FieldHint id="content">
-          Teks biasa OK. Untuk heading, daftar, kutipan, dan gambar inline, gunakan HTML sederhana di atas.
-          Script dan tautan berbahaya dibersihkan otomatis.
+          Editor kaya teks. Konten disimpan sebagai HTML aman; skrip berbahaya dibersihkan di
+          server.
         </FieldHint>
-        <FieldError id="content" message={fields.content} />
       </div>
     </div>
   );

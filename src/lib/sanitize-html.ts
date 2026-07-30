@@ -35,6 +35,10 @@ export function sanitizeArticleHtml(html: string): string {
     allowedTags,
     allowedAttributes,
     allowedSchemes: ["http", "https"],
+    allowedSchemesByTag: {
+      img: ["http", "https", "data"],
+    },
+    allowedSchemesAppliedToAttributes: ["href", "src"],
     allowProtocolRelative: false,
     transformTags: {
       a: (tagName, attribs) => {
@@ -43,6 +47,20 @@ export function sanitizeArticleHtml(html: string): string {
           next.rel = "noopener noreferrer";
         }
         return { tagName, attribs: next };
+      },
+      img: (tagName, attribs) => {
+        const src = attribs.src || "";
+        const okHttp = /^https?:\/\//i.test(src);
+        const okData = /^data:image\/(png|jpe?g|gif|webp);base64,/i.test(src);
+        if (!okHttp && !okData) {
+          const { src: _drop, ...rest } = attribs;
+          return { tagName, attribs: rest };
+        }
+        if (okData && src.length > 2_000_000) {
+          const { src: _drop, ...rest } = attribs;
+          return { tagName, attribs: rest };
+        }
+        return { tagName, attribs };
       },
     },
   });

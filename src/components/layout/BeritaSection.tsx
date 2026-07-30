@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { getBeritaKesehatan } from "@/lib/actions";
+import SmartImage from "@/components/ui/SmartImage";
 import SectionHeading from "./SectionHeading";
 
 const PLACEHOLDER =
@@ -42,7 +42,7 @@ export default async function BeritaSection() {
                   className="group panel panel-lift relative flex flex-col overflow-hidden"
                 >
                   <div className="relative h-44 w-full shrink-0 overflow-hidden bg-clinic-soft">
-                    <Image
+                    <SmartImage
                       src={imgUrl}
                       alt=""
                       fill
