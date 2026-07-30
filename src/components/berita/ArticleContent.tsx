@@ -39,9 +39,8 @@ export default function ArticleContent({ content }: { content: string }) {
 
   return (
     <>
-      {/* Area Artikel */}
-      <div 
-        className="article-body prose prose-lg prose-slate max-w-none prose-a:text-teal-600 hover:prose-a:text-teal-700 whitespace-pre-wrap text-justify px-2 sm:px-0 prose-img:cursor-zoom-in"
+      <div
+        className="article-body"
         dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(content) }}
         onClick={handleClick}
       />

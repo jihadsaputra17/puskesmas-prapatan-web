@@ -33,13 +33,30 @@ export async function getBeritaCount(): Promise<number> {
   }
 }
 
-export async function getBeritaKesehatan() {
+export async function getBeritaKesehatan(options?: {
+  limit?: number;
+  excludeSlug?: string;
+}) {
+  const limit = Math.min(Math.max(options?.limit ?? 6, 1), 50);
+  const excludeSlug = options?.excludeSlug?.trim() || null;
+
   try {
+    if (excludeSlug) {
+      const { rows } = await sql`
+        SELECT id, title, slug, excerpt, image_url as "imageUrl", published_at as date
+        FROM health_news
+        WHERE slug <> ${excludeSlug}
+        ORDER BY published_at DESC
+        LIMIT ${limit}
+      `;
+      return rows;
+    }
+
     const { rows } = await sql`
       SELECT id, title, slug, excerpt, image_url as "imageUrl", published_at as date
       FROM health_news
       ORDER BY published_at DESC
-      LIMIT 6
+      LIMIT ${limit}
     `;
     return rows;
   } catch (error) {

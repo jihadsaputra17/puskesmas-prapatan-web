@@ -4,8 +4,11 @@ const allowedTags = [
   "a",
   "blockquote",
   "br",
+  "cite",
   "div",
   "em",
+  "figcaption",
+  "figure",
   "h2",
   "h3",
   "h4",
@@ -20,7 +23,10 @@ const allowedTags = [
 
 const allowedAttributes: Record<string, string[]> = {
   a: ["href", "title", "target", "rel", "class"],
-  img: ["src", "alt", "title", "class"],
+  img: ["src", "alt", "title", "class", "width", "height"],
+  figure: ["class"],
+  figcaption: ["class"],
+  blockquote: ["class"],
   "*": ["class"],
 };
 
