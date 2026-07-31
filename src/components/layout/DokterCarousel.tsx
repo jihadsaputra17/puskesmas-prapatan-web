@@ -15,7 +15,7 @@ function ArrowIcon({ dir }: { dir: "left" | "right" }) {
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-5 w-5"
+      className="h-[18px] w-[18px]"
       aria-hidden="true"
     >
       {dir === "left" ? <path d="M15 18l-6-6 6-6" /> : <path d="M9 6l6 6-6 6" />}
@@ -74,13 +74,13 @@ export default function DokterCarousel({ doctors }: { doctors: Dokter[] }) {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-end gap-2">
+      <div className="relative">
         <button
           type="button"
           onClick={() => scrollByOne(-1)}
           disabled={!canPrev}
           aria-label="Dokter sebelumnya"
-          className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white text-[var(--navy)] shadow-[var(--shadow-soft)] transition hover:border-teal-300 hover:text-[var(--teal)] disabled:cursor-not-allowed disabled:opacity-40"
+          className="absolute left-2 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-[var(--navy)] shadow-md backdrop-blur-md transition hover:scale-110 hover:bg-white hover:text-[var(--teal)] disabled:pointer-events-none disabled:opacity-35 sm:left-4"
         >
           <ArrowIcon dir="left" />
         </button>
@@ -89,27 +89,27 @@ export default function DokterCarousel({ doctors }: { doctors: Dokter[] }) {
           onClick={() => scrollByOne(1)}
           disabled={!canNext}
           aria-label="Dokter berikutnya"
-          className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white text-[var(--navy)] shadow-[var(--shadow-soft)] transition hover:border-teal-300 hover:text-[var(--teal)] disabled:cursor-not-allowed disabled:opacity-40"
+          className="absolute right-2 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-[var(--navy)] shadow-md backdrop-blur-md transition hover:scale-110 hover:bg-white hover:text-[var(--teal)] disabled:pointer-events-none disabled:opacity-35 sm:right-4"
         >
           <ArrowIcon dir="right" />
         </button>
-      </div>
 
-      <ul
-        ref={trackRef}
-        onScroll={update}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {doctors.map((d) => (
-          <li
-            key={d.id}
-            data-card
-            className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]"
-          >
-            <DokterCard d={d} />
-          </li>
-        ))}
-      </ul>
+        <ul
+          ref={trackRef}
+          onScroll={update}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {doctors.map((d) => (
+            <li
+              key={d.id}
+              data-card
+              className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]"
+            >
+              <DokterCard d={d} />
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <div className="mt-5 flex justify-center gap-2">
         {doctors.map((_, i) => (
