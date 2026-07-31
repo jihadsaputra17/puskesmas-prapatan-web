@@ -23,6 +23,7 @@ export function middleware(request: NextRequest) {
       object-src 'none';
       base-uri 'self';
       form-action 'self';
+      frame-src https://www.google.com;
       frame-ancestors 'none';
       block-all-mixed-content;
       upgrade-insecure-requests;
