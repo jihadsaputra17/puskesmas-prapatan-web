@@ -5,6 +5,7 @@ import DokterSection from "@/components/layout/DokterSection";
 import BeritaSection from "@/components/layout/BeritaSection";
 import FaqSection from "@/components/layout/FaqSection";
 import LayananSkeleton from "@/components/layout/LayananSkeleton";
+import DokterSkeleton from "@/components/layout/DokterSkeleton";
 import BeritaSkeleton from "@/components/layout/BeritaSkeleton";
 
 import type { Metadata } from "next";
@@ -24,7 +25,7 @@ export default async function HomePage() {
       <Suspense fallback={<LayananSkeleton />}>
         <LayananSection />
       </Suspense>
-      <Suspense fallback={null}>
+      <Suspense fallback={<DokterSkeleton />}>
         <DokterSection />
       </Suspense>
       <Suspense fallback={<BeritaSkeleton />}>
