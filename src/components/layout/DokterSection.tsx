@@ -20,6 +20,7 @@ export default async function DokterSection() {
           id="dokter-heading"
           eyebrow="Tim medis"
           title="Dokter kami"
+          description="Tenaga medis yang melayani di Puskesmas Prapatan sesuai data yang dipublikasikan."
         />
         {doctors.length >= CAROUSEL_MIN ? (
           <div className="mt-10">
@@ -34,10 +35,6 @@ export default async function DokterSection() {
             ))}
           </ul>
         )}
-        <p className="mt-8 text-center text-sm text-slate-500">
-          Tenaga medis yang melayani di Puskesmas Prapatan sesuai data yang
-          dipublikasikan.
-        </p>
       </div>
     </section>
   );
