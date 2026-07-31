@@ -1,6 +1,6 @@
 # Session Handoff — 2026-07-31
 
-**Head commit:** `828c894`
+**Head commit:** `45c1403`
 **Branch:** `main`
 **Live:** https://pkmprapatanbpn.web.id ✅ (custom domain active)
 **Fallback:** https://puskesmas-prapatan-web.vercel.app
@@ -9,7 +9,7 @@
 
 ## Last Update
 
-Custom domain `pkmprapatanbpn.web.id` **fully live**: NS switched to Vercel, SSL cert issued, env vars swapped to new domain, production redeployed. NextAuth signin/callback URLs + sitemap now use new domain. Earlier: Pengaduan form connected to email via SMTP → `puskesmasprapatan123@gmail.com`. Works ✅
+FAQ section (Bantuan) revised: first item open by default, answer updates (Call Center 119 link), 2 new FAQs (biaya non-BPJS + alur rujukan — still placeholder `[Isi...]`, needs real data), FAQPage JSON-LD schema added. Earlier this session: custom domain fully live, pengaduan phone field digits-only.
 
 ## Custom domain — DONE ✅ (follow-up)
 
