@@ -10,6 +10,8 @@ vi.mock("@/lib/settings-actions", () => ({ updateSettings: mockedUpdateSettings 
 
 import { POST as createNews } from "./berita/route";
 import { PUT as updateNews } from "./berita/[id]/route";
+import { POST as createDokter } from "./dokter/route";
+import { PUT as updateDokter } from "./dokter/[id]/route";
 import { POST as createSchedule } from "./jadwal/route";
 import { PUT as updateSchedule } from "./jadwal/[id]/route";
 import { POST as createService } from "./layanan/route";
@@ -57,9 +59,10 @@ describe("CMS content mutations", () => {
       createService(malformedJson()), updateService(malformedJson(), params),
       createSchedule(malformedJson()), updateSchedule(malformedJson(), params),
       updateSettings(malformedJson()), createNews(malformedForm()), updateNews(malformedForm(), params),
+      createDokter(malformedJson()), updateDokter(malformedJson(), params),
     ]);
 
-    expect(responses.map((response) => response.status)).toEqual([400, 400, 400, 400, 400, 400, 400]);
+    expect(responses.map((response) => response.status)).toEqual([400, 400, 400, 400, 400, 400, 400, 400, 400]);
     await expect(responses[0].json()).resolves.toMatchObject({ error: "Data layanan tidak valid.", fields: {} });
     await expect(responses[2].json()).resolves.toMatchObject({ error: "Data jadwal tidak valid.", fields: {} });
     await expect(responses[4].json()).resolves.toMatchObject({ error: "Data pengaturan tidak valid.", fields: {} });
@@ -102,5 +105,51 @@ describe("CMS content mutations", () => {
     const response = await updateSettings(new Request("http://test/api/settings", { method: "POST", body: JSON.stringify({ site_name: "Puskesmas", instagram: "https://instagram.com/puskesmas" }) }));
     expect(response.status).toBe(200);
     expect(mockedUpdateSettings).toHaveBeenCalledWith({ site_name: "Puskesmas", instagram: "https://instagram.com/puskesmas" });
+  });
+
+  it("returns 401 for unauthenticated dokter creation before SQL", async () => {
+    mockedGetServerSession.mockResolvedValue(null);
+    const response = await createDokter(
+      new Request("http://test/api/dokter", {
+        method: "POST",
+        body: JSON.stringify({ nama: "Dr. Sari", poli: "Umum", foto_url: "" }),
+      }),
+    );
+    expect(response.status).toBe(401);
+    expect(mockedSql).not.toHaveBeenCalled();
+  });
+
+  it("rejects invalid dokter fields before SQL", async () => {
+    mockedGetServerSession.mockResolvedValue(admin);
+    const response = await createDokter(
+      new Request("http://test/api/dokter", {
+        method: "POST",
+        body: JSON.stringify({ nama: "", poli: "", foto_url: "" }),
+      }),
+    );
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      error: "Data dokter tidak valid.",
+    });
+    expect(mockedSql).not.toHaveBeenCalled();
+  });
+
+  it("inserts dokter for authorized admin", async () => {
+    mockedGetServerSession.mockResolvedValue(admin);
+    const response = await createDokter(
+      new Request("http://test/api/dokter", {
+        method: "POST",
+        body: JSON.stringify({
+          nama: "Dr. Sari",
+          poli: "Poli Umum",
+          foto_url: "https://cdn.example.test/sari.webp",
+          urutan: 1,
+          aktif: true,
+        }),
+      }),
+    );
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ success: true });
+    expect(mockedSql).toHaveBeenCalledTimes(1);
   });
 });
