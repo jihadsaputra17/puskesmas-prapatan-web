@@ -12,6 +12,7 @@ describe("AdminNav", () => {
 
     expect(screen.getByRole("link", { name: /kelola berita/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /layanan poli/i })).toBeVisible();
+    expect(screen.getByRole("link", { name: /kelola dokter/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /jadwal dokter/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /pengaturan situs/i })).toBeVisible();
     expect(screen.queryByRole("link", { name: /manajemen pengguna/i })).not.toBeInTheDocument();
@@ -21,6 +22,7 @@ describe("AdminNav", () => {
     render(<AdminNav role="superadmin" userName="Rina" />);
 
     expect(screen.getByRole("link", { name: /manajemen pengguna/i })).toBeVisible();
+    expect(screen.getByRole("link", { name: /kelola dokter/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /kelola berita/i })).toHaveAttribute("aria-current", "page");
   });
 });

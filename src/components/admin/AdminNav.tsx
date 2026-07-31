@@ -12,6 +12,7 @@ const sharedLinks = [
   { href: "/admin", label: "Dashboard Utama" },
   { href: "/admin/berita", label: "Kelola Berita" },
   { href: "/admin/layanan", label: "Layanan Poli" },
+  { href: "/admin/dokter", label: "Kelola Dokter" },
   { href: "/admin/jadwal", label: "Jadwal Dokter" },
   { href: "/admin/settings", label: "Pengaturan Situs" },
 ];
