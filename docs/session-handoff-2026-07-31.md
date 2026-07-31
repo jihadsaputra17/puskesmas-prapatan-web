@@ -1,15 +1,24 @@
 # Session Handoff — 2026-07-31
 
-**Head commit:** `0dceee3`
+**Head commit:** `828c894`
 **Branch:** `main`
-**Live:** https://puskesmas-prapatan-web.vercel.app
-**Custom domain (in progress):** `pkmprapatanbpn.web.id`
+**Live:** https://pkmprapatanbpn.web.id ✅ (custom domain active)
+**Fallback:** https://puskesmas-prapatan-web.vercel.app
 
 ---
 
 ## Last Update
 
-Custom domain `pkmprapatanbpn.web.id` (bought at idwebhost) being pointed to Vercel — NS delegation switch pending, see `docs/checkpoint-domain-pkmprapatanbpn-2026-07-31.md`. Earlier: Pengaduan form connected to email via SMTP → `puskesmasprapatan123@gmail.com`. Works ✅
+Custom domain `pkmprapatanbpn.web.id` **fully live**: NS switched to Vercel, SSL cert issued, env vars swapped to new domain, production redeployed. NextAuth signin/callback URLs + sitemap now use new domain. Earlier: Pengaduan form connected to email via SMTP → `puskesmasprapatan123@gmail.com`. Works ✅
+
+## Custom domain — DONE ✅ (follow-up)
+
+- NS switch propagated: registry shows `ns1/ns2.vercel-dns.com`
+- A records resolve (216.198.79.1, 64.29.17.1), www via Vercel wildcard ALIAS
+- SSL cert auto-issued (notAfter Oct 29 2026)
+- Env swapped: `NEXTAUTH_URL` + `NEXT_PUBLIC_SITE_URL` → `https://pkmprapatanbpn.web.id`
+- `vercel --prod` redeployed, aliased to new domain
+- Verified: auth providers callback/signin → new domain; sitemap.xml → new domain
 
 ## Custom domain progress (evening)
 
