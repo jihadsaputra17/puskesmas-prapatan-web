@@ -110,6 +110,11 @@ export default function PengaduanForm() {
               id="phone"
               name="phone"
               required
+              inputMode="numeric"
+              pattern="[0-9]*"
+              onChange={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, "");
+              }}
               disabled={status.type === "sending"}
               className="input-field"
               placeholder="08xxxxxxxxxx"

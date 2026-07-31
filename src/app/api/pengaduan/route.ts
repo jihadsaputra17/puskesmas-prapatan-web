@@ -21,9 +21,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const cleanPhone = phone.replace(/\D/g, "");
+    if (!cleanPhone) {
+      return NextResponse.json(
+        { error: "Nomor HP hanya boleh berisi angka." },
+        { status: 400 },
+      );
+    }
+
     await kirimPengaduan({
       name: name.trim(),
-      phone: phone.trim(),
+      phone: cleanPhone,
       email: email?.trim() || "",
       message: message.trim(),
     });
