@@ -8,6 +8,12 @@ type Props = {
   defaultValue?: string;
   error?: string;
   describedBy?: string;
+  /** Tailwind aspect class for the preview box, e.g. "aspect-[3/4]". Default 16:9 cover. */
+  aspectClass?: string;
+  /** Label shown in helper text, e.g. "3:4". Default "16:9". */
+  aspectLabel?: string;
+  /** Client-side crop to this aspect ratio during compression (e.g. 0.75 = 3:4). */
+  cropAspect?: number;
 };
 
 export default function CoverImageField({
@@ -15,6 +21,9 @@ export default function CoverImageField({
   defaultValue = "",
   error,
   describedBy,
+  aspectClass = "aspect-video",
+  aspectLabel = "16:9",
+  cropAspect,
 }: Props) {
   const inputId = useId();
   const fileId = useId();
@@ -38,7 +47,11 @@ export default function CoverImageField({
     setBusy(true);
     setLocalError(null);
     try {
-      const dataUrl = await compressImageFile(file, { maxWidth: 1400, quality: 0.82 });
+      const dataUrl = await compressImageFile(file, {
+        maxWidth: 1400,
+        quality: 0.82,
+        ...(cropAspect ? { cropAspect } : {}),
+      });
       setValue(dataUrl);
       setUrlDraft("");
     } catch {
@@ -46,7 +59,7 @@ export default function CoverImageField({
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [cropAspect]);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -101,14 +114,19 @@ export default function CoverImageField({
           {busy ? "Mengompres gambar…" : "Tarik foto sampul ke sini, atau klik untuk pilih"}
         </p>
         <p className="mt-1 text-xs text-slate-500">
-          Satu gambar cover · otomatis diperkecil (max ~1400px) · WebP
+          Satu gambar · diperkecil (max ~1400px)
+          {cropAspect ? ` · potong otomatis rasio ${aspectLabel}` : ""} · WebP
         </p>
       </div>
 
       {preview ? (
         <div className="relative overflow-hidden rounded-[var(--radius)] border border-slate-200 bg-clinic-soft">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={value} alt="Pratinjau sampul" className="aspect-video w-full object-cover" />
+          <img
+            src={value}
+            alt="Pratinjau sampul"
+            className={`w-full object-cover ${aspectClass}`}
+          />
           <div className="absolute right-2 top-2 flex gap-2">
             <button
               type="button"
@@ -119,7 +137,7 @@ export default function CoverImageField({
             </button>
           </div>
           <p className="bg-navy/80 px-3 py-1 text-center text-xs font-medium text-white">
-            Sampul utama (16:9 di situs)
+            Rasio {aspectLabel} di situs
           </p>
         </div>
       ) : null}

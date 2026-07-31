@@ -1,16 +1,37 @@
-/** Browser-only: compress image file → data URL (WebP, max width). */
+/** Browser-only: compress image file → data URL (WebP, max width, optional aspect crop). */
 
 export async function compressImageFile(
   file: File,
-  options?: { maxWidth?: number; quality?: number },
+  options?: { maxWidth?: number; quality?: number; cropAspect?: number },
 ): Promise<string> {
   const maxWidth = options?.maxWidth ?? 1200;
   const quality = options?.quality ?? 0.8;
+  const cropAspect = options?.cropAspect;
 
   const bitmap = await createImageBitmap(file);
-  const scale = bitmap.width > maxWidth ? maxWidth / bitmap.width : 1;
-  const width = Math.max(1, Math.round(bitmap.width * scale));
-  const height = Math.max(1, Math.round(bitmap.height * scale));
+
+  // Crop to aspect ratio BEFORE scaling so stored image is already uniform.
+  // Tall images crop from the top (keeps face); wide images crop centered.
+  let sx = 0;
+  let sy = 0;
+  let sw = bitmap.width;
+  let sh = bitmap.height;
+  if (cropAspect && cropAspect > 0) {
+    const current = bitmap.width / bitmap.height;
+    if (current > cropAspect) {
+      // Too wide → crop width, centered.
+      sw = Math.round(bitmap.height * cropAspect);
+      sx = Math.round((bitmap.width - sw) / 2);
+    } else if (current < cropAspect) {
+      // Too tall → crop height from top (keeps face).
+      sh = Math.round(bitmap.width / cropAspect);
+      sy = 0;
+    }
+  }
+
+  const scale = sw > maxWidth ? maxWidth / sw : 1;
+  const width = Math.max(1, Math.round(sw * scale));
+  const height = Math.max(1, Math.round(sh * scale));
 
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -20,7 +41,7 @@ export async function compressImageFile(
     bitmap.close();
     throw new Error("Canvas tidak tersedia di browser ini.");
   }
-  ctx.drawImage(bitmap, 0, 0, width, height);
+  ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, width, height);
   bitmap.close();
 
   const webp = canvas.toDataURL("image/webp", quality);

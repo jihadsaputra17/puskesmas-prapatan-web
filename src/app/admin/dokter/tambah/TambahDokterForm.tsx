@@ -98,8 +98,17 @@ export default function TambahDokterForm() {
         </div>
 
         <div>
-          <p className="mb-1 block text-sm font-medium text-[var(--ink)]">Foto Dokter</p>
-          <CoverImageField name="foto_url" error={fields.foto_url} describedBy={error("foto_url")} />
+          <p className="mb-1 block text-sm font-medium text-[var(--ink)]">
+            Foto Dokter <span className="font-normal text-[var(--muted)]">(otomatis dipotong 3:4)</span>
+          </p>
+          <CoverImageField
+            name="foto_url"
+            error={fields.foto_url}
+            describedBy={error("foto_url")}
+            aspectClass="aspect-[3/4]"
+            aspectLabel="3:4"
+            cropAspect={0.75}
+          />
         </div>
 
         <div>
