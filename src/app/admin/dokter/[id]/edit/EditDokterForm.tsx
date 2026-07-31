@@ -105,16 +105,16 @@ export default function EditDokterForm({ dokter }: { dokter: Dokter }) {
 
         <div>
           <p className="mb-1 block text-sm font-medium text-[var(--ink)]">
-            Foto Dokter <span className="font-normal text-[var(--muted)]">(otomatis dipotong 3:4)</span>
+            Foto Dokter <span className="font-normal text-[var(--muted)]">(otomatis dipotong 4:5)</span>
           </p>
           <CoverImageField
             name="foto_url"
             defaultValue={dokter.foto_url}
             error={fields.foto_url}
             describedBy={error("foto_url")}
-            aspectClass="aspect-[3/4]"
-            aspectLabel="3:4"
-            cropAspect={0.75}
+            aspectClass="aspect-[4/5]"
+            aspectLabel="4:5"
+            cropAspect={0.8}
           />
         </div>
 

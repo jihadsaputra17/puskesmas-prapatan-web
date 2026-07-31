@@ -33,7 +33,7 @@ export default async function DokterSection() {
             <li key={d.id}>
               <article className="panel panel-lift flex h-full flex-col overflow-hidden">
                 {d.foto_url ? (
-                  <div className="relative aspect-[3/4] w-full overflow-hidden bg-[var(--teal-soft)]">
+                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--teal-soft)]">
                     <SmartImage
                       src={d.foto_url}
                       alt={d.nama}
@@ -44,7 +44,7 @@ export default async function DokterSection() {
                   </div>
                 ) : (
                   <div
-                    className="flex aspect-[3/4] w-full items-center justify-center bg-[var(--teal-soft)] text-3xl font-bold text-[var(--navy)]"
+                    className="flex aspect-[4/5] w-full items-center justify-center bg-[var(--teal-soft)] text-3xl font-bold text-[var(--navy)]"
                     aria-hidden="true"
                   >
                     {initials(d.nama) || "Dr"}
