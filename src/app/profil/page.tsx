@@ -199,7 +199,7 @@ export default function ProfilPage() {
             </p>
             <iframe
               title="Lokasi Puskesmas Prapatan"
-              src="https://www.google.com/maps?q=-1.273145,116.820868&z=17&output=embed"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d249.30208068394845!2d116.82057021651418!3d-1.273194055199423!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df1473fec75d6c9%3A0x84589db9a99b3a15!2sPuskesmas%20Prapatan!5e0!3m2!1sen!2sus!4v1785490729632!5m2!1sen!2sus"
               width="100%"
               height="180"
               style={{ border: 0 }}
