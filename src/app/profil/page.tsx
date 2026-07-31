@@ -197,6 +197,16 @@ export default function ProfilPage() {
                 @puskesmas.prapatan
               </a>
             </p>
+            <iframe
+              title="Lokasi Puskesmas Prapatan"
+              src="https://www.google.com/maps?q=-1.2731932,116.8208627&z=17&output=embed"
+              width="100%"
+              height="180"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="mt-6 rounded-lg"
+            />
           </div>
         </div>
       </section>
