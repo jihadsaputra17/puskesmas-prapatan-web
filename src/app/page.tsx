@@ -1,6 +1,7 @@
 import HeroSlideshow from "@/components/layout/HeroSlideshow";
 import QuickAccess from "@/components/layout/QuickAccess";
 import LayananSection from "@/components/layout/LayananSection";
+import DokterSection from "@/components/layout/DokterSection";
 import BeritaSection from "@/components/layout/BeritaSection";
 import FaqSection from "@/components/layout/FaqSection";
 import LayananSkeleton from "@/components/layout/LayananSkeleton";
@@ -22,6 +23,9 @@ export default async function HomePage() {
       <QuickAccess />
       <Suspense fallback={<LayananSkeleton />}>
         <LayananSection />
+      </Suspense>
+      <Suspense fallback={null}>
+        <DokterSection />
       </Suspense>
       <Suspense fallback={<BeritaSkeleton />}>
         <BeritaSection />

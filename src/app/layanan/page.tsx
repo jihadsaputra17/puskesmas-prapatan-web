@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import DokterSection from "@/components/layout/DokterSection";
 
 export const metadata: Metadata = {
   title: "Layanan",
@@ -256,6 +257,8 @@ export default function LayananPage() {
           </div>
         </div>
       </section>
+
+      <DokterSection />
     </>
   );
 }
