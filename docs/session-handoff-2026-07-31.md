@@ -1,14 +1,23 @@
 # Session Handoff — 2026-07-31
 
-**Head commit:** `b4d7fad`
+**Head commit:** `0dceee3`
 **Branch:** `main`
 **Live:** https://puskesmas-prapatan-web.vercel.app
+**Custom domain (in progress):** `pkmprapatanbpn.web.id`
 
 ---
 
 ## Last Update
 
-Pengaduan form connected to email via SMTP → `puskesmasprapatan123@gmail.com`. Works ✅
+Custom domain `pkmprapatanbpn.web.id` (bought at idwebhost) being pointed to Vercel — NS delegation switch pending, see `docs/checkpoint-domain-pkmprapatanbpn-2026-07-31.md`. Earlier: Pengaduan form connected to email via SMTP → `puskesmasprapatan123@gmail.com`. Works ✅
+
+## Custom domain progress (evening)
+
+- `vercel domains add pkmprapatanbpn.web.id puskesmas-prapatan-web` ✅
+- idwebhost DNS records added (A 216.198.79.1 + 64.29.17.1, www CNAME cname.vercel-dns.com) but zone REFUSED on their NS (lame delegation)
+- Nameservers switched at idwebhost → `ns1.vercel-dns.com` / `ns2.vercel-dns.com` (saved, propagation pending, ~24h worst case)
+- Polled 18:18–18:23: registry still shows idwebhost NS
+- **Next:** once NS = vercel-dns.com → `vercel dns add` A/CNAME → swap NEXTAUTH_URL + NEXT_PUBLIC_SITE_URL to `https://pkmprapatanbpn.web.id` → `vercel --prod` → SSL auto-cert
 
 ## Progress This Session
 
