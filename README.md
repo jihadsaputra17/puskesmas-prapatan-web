@@ -40,9 +40,10 @@ Sebelum deploy pertama, dan sebelum deploy versi aplikasi yang memakai tabel CMS
 
 ```bash
 psql "$POSTGRES_URL" -v ON_ERROR_STOP=1 -f db/migrations/001_cms_schema.sql
+psql "$POSTGRES_URL" -v ON_ERROR_STOP=1 -f db/migrations/002_dokter_profiles.sql
 ```
 
-Migration membuat tabel CMS yang belum ada (`users`, `health_news`, `layanan_poli`, `jadwal_dokter`, `website_settings`), index, dan default setting yang belum ada. Aman dijalankan ulang: tidak menghapus, mengubah, atau menimpa schema/data CMS yang sudah ada. Jalankan sebelum application rollout; akun admin awal tetap harus dibuat sesuai prosedur operator yang aman, bukan dari request runtime tanpa autentikasi.
+Migration `001` membuat tabel CMS yang belum ada (`users`, `health_news`, `layanan_poli`, `jadwal_dokter`, `website_settings`), index, dan default setting yang belum ada. Migration `002` menambah tabel `dokter` (profil foto + nama + poli untuk blok Pelayanan). Keduanya aman dijalankan ulang: tidak menghapus, mengubah, atau menimpa schema/data CMS yang sudah ada. Jalankan sebelum application rollout yang memakai tabel terkait; akun admin awal tetap harus dibuat sesuai prosedur operator yang aman, bukan dari request runtime tanpa autentikasi.
 
 Static guard untuk migration:
 
