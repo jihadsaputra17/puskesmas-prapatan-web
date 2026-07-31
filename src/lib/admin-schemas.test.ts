@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import {
+  dokterSchema,
   newsSchema,
   passwordResetSchema,
   scheduleSchema,
@@ -75,4 +76,45 @@ it("rejects unknown user roles and short passwords", () => {
 
 it("requires password reset target and secure replacement", () => {
   expect(passwordResetSchema.safeParse({ id: "", password: "short" }).success).toBe(false);
+});
+
+it("requires dokter nama and poli", () => {
+  expect(dokterSchema.safeParse({ nama: "", poli: "", foto_url: "" }).success).toBe(false);
+});
+
+it("accepts dokter with https photo and defaults", () => {
+  const parsed = dokterSchema.safeParse({
+    nama: "Dr. Sari",
+    poli: "Poli Umum",
+    foto_url: "https://cdn.example.test/dr-sari.webp",
+  });
+  expect(parsed.success).toBe(true);
+  if (parsed.success) {
+    expect(parsed.data.urutan).toBe(0);
+    expect(parsed.data.aktif).toBe(true);
+  }
+});
+
+it("accepts compressed data-image dokter photo", () => {
+  const tiny =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  expect(
+    dokterSchema.safeParse({
+      nama: "Dr. Sari",
+      poli: "Poli Gigi",
+      foto_url: tiny,
+      urutan: 2,
+      aktif: false,
+    }).success,
+  ).toBe(true);
+});
+
+it("rejects javascript dokter photo URL", () => {
+  expect(
+    dokterSchema.safeParse({
+      nama: "Dr. Sari",
+      poli: "Umum",
+      foto_url: "javascript:alert(1)",
+    }).success,
+  ).toBe(false);
 });

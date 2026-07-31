@@ -90,6 +90,33 @@ export const scheduleSchema = z.object({
   jam_selesai: requiredText,
 }).strict();
 
+/** Same image rules as berita covers — shared CMS photo field. */
+export const optionalCmsImage = optionalNewsImage;
+
+export const dokterSchema = z
+  .object({
+    nama: requiredText,
+    poli: requiredText,
+    foto_url: optionalCmsImage,
+    urutan: z.coerce.number().int().min(0).optional().default(0),
+    aktif: z
+      .union([
+        z.boolean(),
+        z.literal("true"),
+        z.literal("false"),
+        z.literal("on"),
+        z.literal(""),
+      ])
+      .optional()
+      .transform((value) => {
+        if (value === undefined || value === "") return true;
+        if (value === true || value === "true" || value === "on") return true;
+        if (value === false || value === "false") return false;
+        return true;
+      }),
+  })
+  .strict();
+
 export const settingsSchema = z.object({
   site_name: z.string().trim().min(1).optional(),
   phone: z.string().trim().min(1).optional(),
