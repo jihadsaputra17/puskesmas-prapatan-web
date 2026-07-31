@@ -20,7 +20,12 @@ export default async function DokterSection() {
           id="dokter-heading"
           eyebrow="Tim medis"
           title="Dokter kami"
-          description="Tenaga medis yang melayani di Puskesmas Prapatan sesuai data yang dipublikasikan."
+          description={
+            <span className="whitespace-nowrap">
+              Tenaga medis yang melayani di Puskesmas Prapatan sesuai data yang
+              dipublikasikan.
+            </span>
+          }
         />
         {doctors.length >= CAROUSEL_MIN ? (
           <div className="mt-10">

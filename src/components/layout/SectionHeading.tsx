@@ -8,7 +8,7 @@ export default function SectionHeading({
   action,
 }: {
   title: string;
-  description?: string;
+  description?: ReactNode;
   id?: string;
   eyebrow?: string;
   action?: ReactNode;
