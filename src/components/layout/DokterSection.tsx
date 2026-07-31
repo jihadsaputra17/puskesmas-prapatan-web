@@ -32,14 +32,14 @@ export default async function DokterSection() {
           {doctors.map((d) => (
             <li key={d.id}>
               <article className="panel panel-lift flex h-full flex-col overflow-hidden">
-                <div className="relative h-10 w-10 overflow-hidden rounded-full bg-[var(--teal-soft)]">
+                <div className="relative h-44 w-full bg-[var(--teal-soft)]">
                   {d.foto_url ? (
                     <SmartImage
                       src={d.foto_url}
                       alt={d.nama}
                       fill
                       className="object-cover"
-                      sizes="40px"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : (
                     <div
