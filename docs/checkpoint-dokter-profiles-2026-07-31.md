@@ -26,3 +26,20 @@
 - Swiper carousel
 - FK dokter ↔ jadwal
 - Vercel Blob storage
+
+## Photo sizing iterations (same day, after launch)
+
+User feedback: photo too small → then cropped. Commits on `main` (pushed, Vercel auto-deploy):
+
+1. `0bda21e` — 40px circle (`h-10 w-10` + `sizes="40px"`) — **too small**
+2. `b65d58c` — fixed 176px (`relative h-44 w-full` + `fill object-cover`) — **cropped**
+3. `bf2b560` — natural aspect (`w-full h-auto object-contain`, `width=400 height=500`, no fixed height) — **approved ✅**
+
+**Final markup** (`src/components/layout/DokterSection.tsx`):
+
+- Photo: `<SmartImage ... width={400} height={500} className="h-auto w-full object-contain" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />` — full image, no crop
+- Fallback (no photo): `aspect-[4/5]` teal block with initials
+
+Also fixed during session: Kelola Dokter missing `loading.tsx` skeleton (commit `4affb8b`, user confirmed working).
+
+**Lesson:** verify live via `curl https://puskesmas-prapatan-web.vercel.app/` (grep for class) — browser cache and unpulled worktree caused false "nothing changed" reports; tell user Ctrl+Shift+R / incognito.
