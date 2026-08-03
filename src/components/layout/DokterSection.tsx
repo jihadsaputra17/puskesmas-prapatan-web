@@ -21,7 +21,7 @@ export default async function DokterSection() {
           eyebrow="Tim medis"
           title="Dokter kami"
           description={
-            <span className="whitespace-nowrap">
+            <span className="md:whitespace-nowrap">
               Tenaga medis yang melayani di Puskesmas Prapatan sesuai data yang
               dipublikasikan.
             </span>
