@@ -19,17 +19,18 @@ const faqData: Array<{
   },
   {
     id: "faq-3",
-    question: "Jam berapa layanan Poli Gigi beroperasi?",
+    question: "Jam berapa layanan loket dan Poli Gigi beroperasi?",
     answer:
-      "Poli Gigi beroperasi dari hari Senin hingga Sabtu. Pendaftaran dibuka mulai pukul 07.30 WITA hingga 11.30 WITA. Hari Minggu dan libur nasional tutup.",
+      "Loket pelayanan Puskesmas Prapatan buka Senin–Kamis pukul 08.00–12.00 WITA, Jumat pukul 08.00–10.00 WITA, dan Sabtu pukul 08.00–11.30 WITA. Hari Minggu dan libur nasional tutup.",
   },
   {
     id: "faq-4",
     question: "Apakah ada layanan gawat darurat (UGD) 24 Jam?",
     answer: (
       <>
-        Saat ini Puskesmas Prapatan melayani gawat darurat pada jam operasional
-        kerja. Untuk keadaan darurat di luar jam kerja, segera hubungi{" "}
+        Saat ini Puskesmas Prapatan melayani tindakan gawat darurat ringan pada
+        jam operasional kerja. Untuk keadaan darurat di luar jam kerja, segera
+        hubungi{" "}
         <a
           href="tel:119"
           className="font-semibold text-clinic-teal underline underline-offset-2"
@@ -44,13 +45,13 @@ const faqData: Array<{
     id: "faq-5",
     question: "Berapa biaya berobat untuk pasien umum (non-BPJS)?",
     answer:
-      "[Isi sesuai tarif resmi retribusi Puskesmas Kota Balikpapan yang berlaku — cek Perda/Perwali terkait tarif layanan kesehatan.]",
+      "Biaya pelayanan bagi pasien umum (non-BPJS) mengacu pada tarif resmi Retribusi Pelayanan Kesehatan Daerah Kota Balikpapan yang berlaku sesuai jenis pemeriksaan atau tindakan medis. Informasi rincian tarif tersedia secara transparan di loket pendaftaran dan kasir Puskesmas.",
   },
   {
     id: "faq-6",
     question: "Bagaimana cara mengajukan rujukan ke rumah sakit?",
     answer:
-      "[Isi alur rujukan: dokter memeriksa terlebih dahulu, jika perlu penanganan lanjutan akan diterbitkan surat rujukan sesuai sistem rujukan berjenjang BPJS.]",
+      "Pasien wajib menjalani pemeriksaan terlebih dahulu oleh dokter di Puskesmas Prapatan. Apabila berdasarkan indikasi medis diperlukan penanganan spesialistik lebih lanjut, dokter akan menerbitkan surat rujukan sesuai prosedur rujukan berjenjang BPJS Kesehatan.",
   },
 ];
 
@@ -76,10 +77,10 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Jam berapa layanan Poli Gigi beroperasi?",
+      name: "Jam berapa layanan loket dan Poli Gigi beroperasi?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Poli Gigi beroperasi dari hari Senin hingga Sabtu. Pendaftaran dibuka mulai pukul 07.30 WITA hingga 11.30 WITA. Hari Minggu dan libur nasional tutup.",
+        text: "Loket pelayanan Puskesmas Prapatan buka Senin–Kamis pukul 08.00–12.00 WITA, Jumat pukul 08.00–10.00 WITA, dan Sabtu pukul 08.00–11.30 WITA. Hari Minggu dan libur nasional tutup.",
       },
     },
     {
@@ -87,7 +88,23 @@ const faqSchema = {
       name: "Apakah ada layanan gawat darurat (UGD) 24 Jam?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Saat ini Puskesmas Prapatan melayani gawat darurat pada jam operasional kerja. Untuk keadaan darurat di luar jam kerja, segera hubungi Call Center 119 (layanan darurat Kementerian Kesehatan) atau langsung menuju RS terdekat.",
+        text: "Saat ini Puskesmas Prapatan melayani tindakan gawat darurat ringan pada jam operasional kerja. Untuk keadaan darurat di luar jam kerja, segera hubungi Call Center 119 (layanan darurat Kementerian Kesehatan) atau langsung menuju RS terdekat.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Berapa biaya berobat untuk pasien umum (non-BPJS)?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Biaya pelayanan bagi pasien umum (non-BPJS) mengacu pada tarif resmi Retribusi Pelayanan Kesehatan Daerah Kota Balikpapan yang berlaku sesuai jenis pemeriksaan atau tindakan medis. Informasi rincian tarif tersedia secara transparan di loket pendaftaran dan kasir Puskesmas.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Bagaimana cara mengajukan rujukan ke rumah sakit?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Pasien wajib menjalani pemeriksaan terlebih dahulu oleh dokter di Puskesmas Prapatan. Apabila berdasarkan indikasi medis diperlukan penanganan spesialistik lebih lanjut, dokter akan menerbitkan surat rujukan sesuai prosedur rujukan berjenjang BPJS Kesehatan.",
       },
     },
   ],

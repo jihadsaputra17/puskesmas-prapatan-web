@@ -79,7 +79,10 @@ export default async function DetailBeritaPage({
     month: "long",
     year: "numeric",
   });
-  const shareUrl = `https://puskesmas-prapatan-web.vercel.app/berita/${berita.slug}`;
+  const siteBaseUrl = (
+    process.env.NEXT_PUBLIC_SITE_URL || "https://pkmprapatanbpn.web.id"
+  ).replace(/\/$/, "");
+  const shareUrl = `${siteBaseUrl}/berita/${berita.slug}`;
 
   const related = (await getBeritaKesehatan({
     limit: 3,

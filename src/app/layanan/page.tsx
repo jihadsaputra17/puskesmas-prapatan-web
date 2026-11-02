@@ -1,4 +1,9 @@
 import { Metadata } from "next";
+import LayananFilterGrid, {
+  type CmsLayananRow,
+  type StaticServiceItem,
+} from "@/components/layanan/LayananFilterGrid";
+import { getLayanan } from "@/lib/layanan-actions";
 
 export const metadata: Metadata = {
   title: "Layanan",
@@ -6,9 +11,10 @@ export const metadata: Metadata = {
     "Daftar layanan kesehatan di UPTD Puskesmas Prapatan — poli umum, gigi, KIA, laboratorium, farmasi, dan program kesehatan masyarakat.",
 };
 
-const services = [
+const services: StaticServiceItem[] = [
   {
     emoji: "🩺",
+    tag: "Poli Umum",
     title: "Poli Umum",
     desc: "Pemeriksaan kesehatan umum bagi dewasa, diagnosis, pengobatan, serta rujukan bila diperlukan penanganan lebih lanjut.",
     items: [
@@ -20,6 +26,7 @@ const services = [
   },
   {
     emoji: "🦷",
+    tag: "Poli Gigi",
     title: "Poli Gigi & Mulut",
     desc: "Pemeriksaan dan perawatan kesehatan gigi serta mulut untuk seluruh kelompok usia.",
     items: [
@@ -31,6 +38,7 @@ const services = [
   },
   {
     emoji: "🤰",
+    tag: "KIA & KB",
     title: "KIA & KB (Kesehatan Ibu, Anak & Keluarga Berencana)",
     desc: "Pelayanan kesehatan ibu hamil, bersalin, nifas, serta layanan keluarga berencana.",
     items: [
@@ -42,6 +50,7 @@ const services = [
   },
   {
     emoji: "👶",
+    tag: "MTBS / Anak",
     title: "Poli Anak / MTBS",
     desc: "Pemeriksaan tumbuh kembang dan kesehatan anak, termasuk imunisasi dasar.",
     items: [
@@ -52,6 +61,7 @@ const services = [
   },
   {
     emoji: "🥗",
+    tag: "Gizi",
     title: "Poli Gizi",
     desc: "Konsultasi gizi untuk balita, ibu hamil, dan masyarakat umum dalam rangka pencegahan masalah gizi termasuk stunting.",
     items: [
@@ -62,6 +72,7 @@ const services = [
   },
   {
     emoji: "💧",
+    tag: "Sanitasi",
     title: "Poli Sanitasi",
     desc: "Konseling dan penyuluhan terkait kesehatan lingkungan serta penyakit berbasis lingkungan.",
     items: [
@@ -71,6 +82,7 @@ const services = [
   },
   {
     emoji: "🚨",
+    tag: "Tindakan / UGD",
     title: "Ruang Tindakan / Gawat Darurat",
     desc: "Penanganan kasus kegawatdaruratan ringan dan tindakan medis sederhana.",
     items: [
@@ -81,6 +93,7 @@ const services = [
   },
   {
     emoji: "🧪",
+    tag: "Laboratorium",
     title: "Laboratorium",
     desc: "Pemeriksaan penunjang diagnosis sederhana untuk mendukung pengobatan pasien.",
     items: [
@@ -92,6 +105,7 @@ const services = [
   },
   {
     emoji: "💊",
+    tag: "Farmasi",
     title: "Farmasi",
     desc: "Penyediaan dan penyerahan obat sesuai resep dokter bagi seluruh pasien Puskesmas.",
     items: [
@@ -99,18 +113,6 @@ const services = [
       "Edukasi penggunaan obat",
     ],
   },
-];
-
-const filterTags = [
-  "Poli Umum",
-  "Poli Gigi",
-  "KIA & KB",
-  "MTBS / Anak",
-  "Gizi",
-  "Sanitasi",
-  "Tindakan / UGD",
-  "Laboratorium",
-  "Farmasi",
 ];
 
 const programs = [
@@ -136,7 +138,9 @@ const programs = [
   },
 ];
 
-export default function LayananPage() {
+export default async function LayananPage() {
+  const cmsServices = (await getLayanan()) as CmsLayananRow[];
+
   return (
     <>
       {/* Hero */}
@@ -161,50 +165,7 @@ export default function LayananPage() {
             umum maupun peserta BPJS Kesehatan.
           </p>
 
-          {/* Filter tags */}
-          <div className="flex flex-wrap justify-center gap-2">
-            {filterTags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-[var(--teal-soft)] px-4 py-1.5 text-xs font-semibold text-[var(--teal)]"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* Service cards */}
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((s) => (
-              <article
-                key={s.title}
-                className="panel panel-lift flex h-full flex-col p-5"
-              >
-                <span
-                  className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[var(--teal-soft)] text-xl"
-                  aria-hidden="true"
-                >
-                  {s.emoji}
-                </span>
-                <h3 className="mt-4 text-base font-bold tracking-tight text-navy">
-                  {s.title}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{s.desc}</p>
-                {s.items.length > 0 && (
-                  <ul className="mt-3 flex-grow space-y-1.5">
-                    {s.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start gap-2 text-sm leading-5 text-slate-600 before:mt-1.5 before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-[var(--teal)]"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </article>
-            ))}
-          </div>
+          <LayananFilterGrid services={services} cmsServices={cmsServices} />
 
           {/* Footnote */}
           <p className="text-xs leading-5 text-slate-400">
@@ -230,8 +191,6 @@ export default function LayananPage() {
               </div>
             ))}
           </div>
-
-
 
           {/* CTA */}
           <div className="rounded-panel bg-gradient-to-br from-navy to-[var(--navy-deep)] p-8 text-center text-white">
