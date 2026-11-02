@@ -6,6 +6,7 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getSettings } from "@/lib/settings-actions";
+import { getPpidItems } from "@/lib/ppid-actions";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -30,12 +31,18 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [session, settings] = await Promise.all([
+  const [session, settings, ppidItems] = await Promise.all([
     getServerSession(authOptions),
     getSettings(),
+    getPpidItems({ limit: 15 }),
   ]);
   const isAdmin =
     session?.user?.role === "admin" || session?.user?.role === "superadmin";
+  const ppidLinks = ppidItems.map((item) => ({
+    title: item.title,
+    slug: item.slug,
+    category: item.category,
+  }));
 
   return (
     <html lang="id">
@@ -43,7 +50,11 @@ export default async function RootLayout({
         <a className="skip-link" href="#main-content">
           Lewati ke isi utama
         </a>
-        <SiteHeader isAdmin={isAdmin} siteName={settings.site_name || "Puskesmas Prapatan"} />
+        <SiteHeader
+          isAdmin={isAdmin}
+          siteName={settings.site_name || "Puskesmas Prapatan"}
+          ppidLinks={ppidLinks}
+        />
         <main id="main-content" className="flex-grow">
           {children}
         </main>

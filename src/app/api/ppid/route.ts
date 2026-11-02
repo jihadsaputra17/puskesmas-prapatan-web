@@ -19,6 +19,7 @@ function ppidFromForm(formData: FormData) {
 }
 
 function invalidate() {
+  revalidatePath("/", "layout");
   revalidatePath("/admin/ppid");
   revalidatePath("/ppid");
   revalidatePath("/");

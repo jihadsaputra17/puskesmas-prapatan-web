@@ -22,4 +22,20 @@ describe("SiteHeader", () => {
     expect(button).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByRole("navigation", { name: "Navigasi utama" })).toBeVisible();
   });
+
+  it("shows added PPID items in the PPID dropdown menu", () => {
+    render(
+      <SiteHeader
+        isAdmin={false}
+        ppidLinks={[
+          { title: "Maklumat Pelayanan 2026", slug: "maklumat-pelayanan-2026", category: "berkala" },
+        ]}
+      />,
+    );
+
+    const toggle = screen.getByRole("button", { name: "Tampilkan daftar menu PPID" });
+    fireEvent.click(toggle);
+
+    expect(screen.getByText("Maklumat Pelayanan 2026")).toBeVisible();
+  });
 });
