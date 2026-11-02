@@ -54,9 +54,11 @@ const requestSteps = [
 
 const categoryKeys: PpidCategory[] = [
   "berkala",
-  "serta-merta",
   "setiap-saat",
-  "regulasi",
+  "pelayanan-informasi",
+  "sarana-prasarana",
+  "digitalisasi-medsos",
+  "komitmen",
 ];
 
 export default async function PpidPage() {
@@ -125,10 +127,10 @@ export default async function PpidPage() {
             <div className="accent-bar mb-6">
               <p className="eyebrow">Klasifikasi</p>
               <h2 className="mt-1 text-2xl font-bold tracking-tight text-navy sm:text-3xl">
-                Jenis Informasi Publik
+                Kategori Informasi Publik (PPID)
               </h2>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {categoryKeys.map((key) => {
                 const meta = PPID_CATEGORY_META[key];
                 return (

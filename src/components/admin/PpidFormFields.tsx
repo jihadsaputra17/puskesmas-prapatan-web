@@ -8,23 +8,27 @@ import { FieldError, FieldHint, slugifyTitle } from "@/components/admin/BeritaFo
 export const PPID_CATEGORY_OPTIONS = [
   {
     value: "berkala",
-    label: "Informasi Berkala",
-    hint: "Wajib disediakan dan diumumkan secara berkala (profil, program kerja, laporan kinerja)",
-  },
-  {
-    value: "serta-merta",
-    label: "Informasi Serta Merta",
-    hint: "Informasi darurat / peringatan dini terkait keselamatan dan kesehatan masyarakat",
+    label: "INFORMASI PUBLIK YANG WAJIB DIUMUMKAN SECARA BERKALA",
   },
   {
     value: "setiap-saat",
-    label: "Informasi Setiap Saat",
-    hint: "Wajib tersedia setiap saat (Daftar Informasi Publik, SOP pelayanan, rencana kerja)",
+    label: "INFORMASI PUBLIK TERSEDIA SETIAP SAAT",
   },
   {
-    value: "regulasi",
-    label: "Regulasi & Standar Pelayanan",
-    hint: "Peraturan, SK Kepala Puskesmas, Maklumat Pelayanan, tarif retribusi resmi",
+    value: "pelayanan-informasi",
+    label: "PELAYANAN INFORMASI PUBLIK",
+  },
+  {
+    value: "sarana-prasarana",
+    label: "SARANA DAN PRASARANA BADAN PUBLIK",
+  },
+  {
+    value: "digitalisasi-medsos",
+    label: "DIGITALISASI KETERBUKAAN INFORMASI PUBLIK DI MEDIA SOSIAL",
+  },
+  {
+    value: "komitmen",
+    label: "KOMITMEN BADAN PUBLIK",
   },
 ] as const;
 
@@ -38,8 +42,8 @@ export function PpidContentGuide() {
           mengetik judul informasi
         </li>
         <li>
-          <strong>Kategori PPID</strong> → menentukan pengelompokan dokumen di halaman publik{" "}
-          <code>/ppid</code> (Informasi Berkala, Serta Merta, Setiap Saat, atau Regulasi &amp; SOP)
+          <strong>Kategori Informasi Publik (PPID)</strong> → pilih salah satu dari 6 kategori resmi
+          PPID Badan Publik
         </li>
         <li>
           <strong>Tautan Dokumen / PDF (Opsional)</strong> → tempel link Google Drive, OneDrive, atau
@@ -168,12 +172,12 @@ export default function PpidFormFields({
         >
           {PPID_CATEGORY_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
-              {opt.label} — {opt.hint}
+              {opt.label}
             </option>
           ))}
         </select>
         <FieldHint id="category">
-          Klasifikasi informasi publik sesuai Undang-Undang No. 14 Tahun 2008 (KIP).
+          Klasifikasi resmi Kategori Informasi Publik (PPID) Badan Publik.
         </FieldHint>
         <FieldError id="category" message={fields.category} />
       </div>

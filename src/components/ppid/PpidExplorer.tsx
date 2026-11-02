@@ -5,7 +5,7 @@ import Link from "next/link";
 import SmartImage from "@/components/ui/SmartImage";
 import {
   PPID_CATEGORY_META,
-  getPpidCategoryLabel,
+  getPpidCategoryShortLabel,
   type PpidItem,
 } from "@/lib/ppid-actions";
 import type { PpidCategory } from "@/lib/admin-schemas";
@@ -16,9 +16,11 @@ const PLACEHOLDER =
 const FILTER_TABS: Array<{ value: "all" | PpidCategory; label: string }> = [
   { value: "all", label: "Semua Informasi" },
   { value: "berkala", label: PPID_CATEGORY_META.berkala.label },
-  { value: "serta-merta", label: PPID_CATEGORY_META["serta-merta"].label },
   { value: "setiap-saat", label: PPID_CATEGORY_META["setiap-saat"].label },
-  { value: "regulasi", label: PPID_CATEGORY_META.regulasi.label },
+  { value: "pelayanan-informasi", label: PPID_CATEGORY_META["pelayanan-informasi"].label },
+  { value: "sarana-prasarana", label: PPID_CATEGORY_META["sarana-prasarana"].label },
+  { value: "digitalisasi-medsos", label: PPID_CATEGORY_META["digitalisasi-medsos"].label },
+  { value: "komitmen", label: PPID_CATEGORY_META.komitmen.label },
 ];
 
 export default function PpidExplorer({ items }: { items: PpidItem[] }) {
@@ -41,7 +43,26 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
   return (
     <div className="space-y-6">
       {/* Filter & Search Bar */}
-      <div className="panel flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="panel space-y-4 p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs font-bold uppercase tracking-wider text-navy">
+            Filter Kategori Informasi Publik (PPID)
+          </p>
+          <div className="w-full sm:max-w-xs">
+            <label htmlFor="ppid-search" className="sr-only">
+              Cari dokumen atau informasi PPID
+            </label>
+            <input
+              id="ppid-search"
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cari judul atau topik informasi..."
+              className="input-field text-sm"
+            />
+          </div>
+        </div>
+
         <div
           className="flex flex-wrap gap-2"
           role="group"
@@ -55,7 +76,7 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
                 type="button"
                 aria-pressed={active}
                 onClick={() => setSelectedCategory(tab.value)}
-                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                className={`rounded-full px-3.5 py-1.5 text-left text-xs font-semibold transition ${
                   active
                     ? "bg-[var(--teal)] text-white shadow-sm"
                     : "bg-[var(--teal-soft)] text-[var(--teal)] hover:bg-teal-100"
@@ -65,20 +86,6 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
               </button>
             );
           })}
-        </div>
-
-        <div className="w-full sm:max-w-xs">
-          <label htmlFor="ppid-search" className="sr-only">
-            Cari dokumen atau informasi PPID
-          </label>
-          <input
-            id="ppid-search"
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari judul atau topik informasi..."
-            className="input-field text-sm"
-          />
         </div>
       </div>
 
@@ -110,7 +117,7 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <span className="absolute left-3 top-3 rounded-full bg-navy/85 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
-                    {getPpidCategoryLabel(item.category)}
+                    {getPpidCategoryShortLabel(item.category)}
                   </span>
                 </Link>
 

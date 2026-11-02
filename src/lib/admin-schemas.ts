@@ -78,9 +78,11 @@ export const newsSchema = z.object({
 
 export const PPID_CATEGORIES = [
   "berkala",
-  "serta-merta",
   "setiap-saat",
-  "regulasi",
+  "pelayanan-informasi",
+  "sarana-prasarana",
+  "digitalisasi-medsos",
+  "komitmen",
 ] as const;
 
 export type PpidCategory = (typeof PPID_CATEGORIES)[number];

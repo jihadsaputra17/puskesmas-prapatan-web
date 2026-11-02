@@ -1,5 +1,5 @@
 import { sql } from "@vercel/postgres";
-import type { PpidCategory } from "@/lib/admin-schemas";
+import { PPID_CATEGORIES, type PpidCategory } from "@/lib/admin-schemas";
 
 export type PpidItem = {
   id: string;
@@ -18,28 +18,40 @@ export const PPID_CATEGORY_META: Record<
   { label: string; shortLabel: string; description: string }
 > = {
   berkala: {
-    label: "Informasi Berkala",
-    shortLabel: "Berkala",
+    label: "Informasi Publik yang Wajib Diumumkan Secara Berkala",
+    shortLabel: "Wajib Berkala",
     description:
-      "Informasi yang wajib disediakan dan diumumkan secara rutin serta berkala oleh Puskesmas Prapatan (profil, program kerja, laporan kinerja, dan standar layanan).",
-  },
-  "serta-merta": {
-    label: "Informasi Serta Merta",
-    shortLabel: "Serta Merta",
-    description:
-      "Informasi yang berkaitan dengan hajat hidup orang banyak serta ketertiban dan keselamatan umum (peringatan dini wabah, bencana kesehatan, atau pengumuman darurat layanan).",
+      "Informasi yang wajib disediakan dan diumumkan secara rutin serta berkala oleh UPTD Puskesmas Prapatan (profil badan publik, program kerja, laporan kinerja, dan standar layanan).",
   },
   "setiap-saat": {
-    label: "Informasi Setiap Saat",
-    shortLabel: "Setiap Saat",
+    label: "Informasi Publik Tersedia Setiap Saat",
+    shortLabel: "Tersedia Setiap Saat",
     description:
-      "Informasi yang wajib tersedia untuk diakses oleh pemohon informasi publik setiap saat (Daftar Informasi Publik, SOP pelayanan, rencana strategis, dan dokumen publik).",
+      "Informasi yang wajib tersedia untuk diakses oleh pemohon informasi publik setiap saat (Daftar Informasi Publik, SOP pelayanan, peraturan/SK, dan dokumen publik).",
   },
-  regulasi: {
-    label: "Regulasi & Standar Pelayanan",
-    shortLabel: "Regulasi & SOP",
+  "pelayanan-informasi": {
+    label: "Pelayanan Informasi Publik",
+    shortLabel: "Pelayanan Informasi",
     description:
-      "Peraturan, Surat Keputusan (SK), Maklumat Pelayanan, tarif retribusi resmi, serta pedoman pelaksanaan keterbukaan informasi publik.",
+      "Standar operasional prosedur permohonan informasi, tata cara pengajuan keberatan, maklumat pelayanan informasi, serta laporan layanan informasi publik.",
+  },
+  "sarana-prasarana": {
+    label: "Sarana dan Prasarana Badan Publik",
+    shortLabel: "Sarana & Prasarana",
+    description:
+      "Informasi mengenai fasilitas, ruang layanan PPID, meja informasi, kelengkapan penunjang, serta aksesibilitas pelayanan informasi di Puskesmas Prapatan.",
+  },
+  "digitalisasi-medsos": {
+    label: "Digitalisasi Keterbukaan Informasi Publik di Media Sosial",
+    shortLabel: "Digitalisasi & Medsos",
+    description:
+      "Pemanfaatan kanal digital, website resmi, dan media sosial Puskesmas Prapatan untuk penyebarluasan informasi publik yang cepat, mudah diakses, dan transparan.",
+  },
+  komitmen: {
+    label: "Komitmen Badan Publik",
+    shortLabel: "Komitmen Badan Publik",
+    description:
+      "Bentuk komitmen pimpinan dan seluruh jajaran UPTD Puskesmas Prapatan dalam menyelenggarakan keterbukaan informasi publik yang akuntabel.",
   },
 };
 
@@ -51,15 +63,19 @@ export function getPpidCategoryLabel(category?: string): string {
   );
 }
 
+export function getPpidCategoryShortLabel(category?: string): string {
+  if (!category) return PPID_CATEGORY_META.berkala.shortLabel;
+  return (
+    PPID_CATEGORY_META[category as PpidCategory]?.shortLabel ??
+    PPID_CATEGORY_META.berkala.shortLabel
+  );
+}
+
 function mapPpidRow(row: Record<string, unknown>): PpidItem {
   const rawCat = String(row.category ?? "berkala");
-  const validCat: PpidCategory =
-    rawCat === "berkala" ||
-    rawCat === "serta-merta" ||
-    rawCat === "setiap-saat" ||
-    rawCat === "regulasi"
-      ? rawCat
-      : "berkala";
+  const validCat: PpidCategory = (PPID_CATEGORIES as readonly string[]).includes(rawCat)
+    ? (rawCat as PpidCategory)
+    : "berkala";
 
   return {
     id: String(row.id),

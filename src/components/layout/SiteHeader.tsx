@@ -22,10 +22,12 @@ const links = [
 ];
 
 const CATEGORY_SHORT_LABEL: Record<string, string> = {
-  berkala: "Informasi Berkala",
-  "serta-merta": "Informasi Serta Merta",
-  "setiap-saat": "Informasi Setiap Saat",
-  regulasi: "Regulasi & SOP",
+  berkala: "Informasi Wajib Berkala",
+  "setiap-saat": "Tersedia Setiap Saat",
+  "pelayanan-informasi": "Pelayanan Informasi Publik",
+  "sarana-prasarana": "Sarana & Prasarana",
+  "digitalisasi-medsos": "Digitalisasi & Medsos",
+  komitmen: "Komitmen Badan Publik",
 };
 
 function isActive(pathname: string | null, href: string) {
