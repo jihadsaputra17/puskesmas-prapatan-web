@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   getBeritaCount: vi.fn(),
   getLayananCount: vi.fn(),
   getJadwalCount: vi.fn(),
+  getPpidCount: vi.fn(),
 }));
 
 vi.mock("next-auth", () => ({ getServerSession: vi.fn() }));
@@ -17,6 +18,7 @@ vi.mock("@/lib/actions", () => ({
 }));
 vi.mock("@/lib/layanan-actions", () => ({ getLayananCount: mocks.getLayananCount }));
 vi.mock("@/lib/jadwal-actions", () => ({ getJadwalCount: mocks.getJadwalCount }));
+vi.mock("@/lib/ppid-actions", () => ({ getPpidCount: mocks.getPpidCount }));
 
 const mockedGetServerSession = vi.mocked(getServerSession);
 
@@ -31,6 +33,7 @@ describe("AdminDashboard", () => {
     mocks.getBeritaCount.mockResolvedValue(0);
     mocks.getLayananCount.mockResolvedValue(0);
     mocks.getJadwalCount.mockResolvedValue(0);
+    mocks.getPpidCount.mockResolvedValue(0);
   });
 
   it("shows actual empty counts after successful loaders", async () => {

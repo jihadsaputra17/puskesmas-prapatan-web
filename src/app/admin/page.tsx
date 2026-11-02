@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { getBeritaCount, getBeritaKesehatan } from "@/lib/actions";
 import { getLayananCount } from "@/lib/layanan-actions";
 import { getJadwalCount } from "@/lib/jadwal-actions";
+import { getPpidCount } from "@/lib/ppid-actions";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Puskesmas Prapatan",
@@ -23,17 +24,19 @@ async function loadData<T>(load: () => Promise<T>): Promise<LoadResult<T>> {
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
-  const [newsCount, recentNews, layananCount, jadwalCount] = await Promise.all([
+  const [newsCount, recentNews, layananCount, jadwalCount, ppidCount] = await Promise.all([
     loadData(getBeritaCount),
     loadData(getBeritaKesehatan),
     loadData(getLayananCount),
     loadData(getJadwalCount),
+    loadData(getPpidCount),
   ]);
   const latestNews = recentNews.status === "available"
     ? recentNews.data[0] as { title?: string; date?: string } | undefined
     : undefined;
   const summaries = [
     ["Berita", newsCount],
+    ["Informasi PPID", ppidCount],
     ["Layanan Poli", layananCount],
     ["Jadwal Dokter", jadwalCount],
   ] as const;
@@ -50,7 +53,7 @@ export default async function AdminDashboard() {
         </p>
       </header>
 
-      <section aria-label="Ringkasan konten" className="grid gap-5 sm:grid-cols-3">
+      <section aria-label="Ringkasan konten" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {summaries.map(([label, result]) => (
           <article key={label} className="panel p-5">
             <p className="text-sm font-medium text-[var(--muted)]">{label}</p>

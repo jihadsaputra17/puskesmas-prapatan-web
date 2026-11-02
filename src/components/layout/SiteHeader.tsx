@@ -11,6 +11,7 @@ const links = [
   { href: "/layanan", label: "Layanan" },
   { href: "/jadwal-dokter", label: "Jadwal" },
   { href: "/berita", label: "Berita" },
+  { href: "/ppid", label: "PPID" },
   { href: "/pengaduan", label: "Pengaduan" },
 ];
 

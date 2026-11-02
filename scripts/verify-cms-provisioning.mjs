@@ -3,6 +3,7 @@ import { glob } from "node:fs/promises";
 
 const migration001 = await readFile("db/migrations/001_cms_schema.sql", "utf8");
 const migration002 = await readFile("db/migrations/002_dokter_profiles.sql", "utf8");
+const migration003 = await readFile("db/migrations/003_ppid_items.sql", "utf8");
 
 const requiredTables001 = ["users", "health_news", "layanan_poli", "jadwal_dokter", "website_settings"];
 for (const table of requiredTables001) {
@@ -25,6 +26,15 @@ if (!/CREATE TABLE IF NOT EXISTS dokter\b/i.test(migration002)) {
 for (const col of ["nama", "poli", "foto_url", "urutan", "aktif"]) {
   if (!new RegExp(`\\b${col}\\b`, "i").test(migration002)) {
     throw new Error(`dokter migration 002 missing column ${col}.`);
+  }
+}
+
+if (!/CREATE TABLE IF NOT EXISTS ppid_items\b/i.test(migration003)) {
+  throw new Error("Missing idempotent provisioning for ppid_items in 003.");
+}
+for (const col of ["title", "slug", "category", "excerpt", "content", "image_url", "file_url", "published_at"]) {
+  if (!new RegExp(`\\b${col}\\b`, "i").test(migration003)) {
+    throw new Error(`ppid_items migration 003 missing column ${col}.`);
   }
 }
 

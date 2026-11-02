@@ -5,6 +5,7 @@ vi.mock("@/lib/admin-auth", () => mocks);
 vi.mock("@/lib/actions", () => ({ getBeritaKesehatan: vi.fn(), getBeritaBySlug: vi.fn() }));
 vi.mock("@/lib/layanan-actions", () => ({ getLayanan: vi.fn(), getLayananById: vi.fn() }));
 vi.mock("@/lib/jadwal-actions", () => ({ getJadwal: vi.fn(), getJadwalById: vi.fn() }));
+vi.mock("@/lib/ppid-actions", () => ({ getPpidItems: vi.fn(), getPpidBySlug: vi.fn() }));
 vi.mock("@/lib/settings-actions", () => ({ getSettings: vi.fn() }));
 vi.mock("next/navigation", () => ({ redirect: vi.fn(), notFound: vi.fn() }));
 
@@ -17,6 +18,9 @@ import EditJadwalPage from "./jadwal/[id]/edit/page";
 import SettingsPage from "./settings/page";
 import BeritaPage from "./berita/page";
 import EditBeritaPage from "./berita/edit/[slug]/page";
+import PpidAdminPage from "./ppid/page";
+import TambahPpidPage from "./ppid/tambah/page";
+import EditPpidPage from "./ppid/edit/[slug]/page";
 
 describe("admin content page authorization", () => {
   beforeEach(() => {
@@ -33,6 +37,9 @@ describe("admin content page authorization", () => {
     ["settings", () => SettingsPage()],
     ["news list", () => BeritaPage()],
     ["news edit", () => EditBeritaPage({ params: Promise.resolve({ slug: "news" }) })],
+    ["ppid list", () => PpidAdminPage()],
+    ["ppid create", () => TambahPpidPage()],
+    ["ppid edit", () => EditPpidPage({ params: Promise.resolve({ slug: "ppid" }) })],
   ])("uses requireAdmin before %s loader", async (_name, load) => {
     mocks.requireAdmin.mockRejectedValueOnce(new Error("blocked"));
     await expect(load()).rejects.toThrow("blocked");

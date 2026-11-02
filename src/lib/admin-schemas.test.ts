@@ -3,6 +3,7 @@ import {
   dokterSchema,
   newsSchema,
   passwordResetSchema,
+  ppidSchema,
   scheduleSchema,
   serviceSchema,
   settingsSchema,
@@ -115,6 +116,45 @@ it("rejects javascript dokter photo URL", () => {
       nama: "Dr. Sari",
       poli: "Umum",
       foto_url: "javascript:alert(1)",
+    }).success,
+  ).toBe(false);
+});
+
+it("accepts valid PPID item with category and optional file_url", () => {
+  const parsed = ppidSchema.safeParse({
+    title: "Maklumat Pelayanan 2026",
+    slug: "maklumat-pelayanan-2026",
+    category: "berkala",
+    excerpt: "Maklumat pelayanan publik UPTD Puskesmas Prapatan.",
+    content: "<p>Isi maklumat pelayanan.</p>",
+    image_url: "",
+    file_url: "https://drive.google.com/file/d/123/view",
+  });
+  expect(parsed.success).toBe(true);
+});
+
+it("rejects invalid PPID category or non-http file_url", () => {
+  expect(
+    ppidSchema.safeParse({
+      title: "Maklumat Pelayanan",
+      slug: "maklumat-pelayanan",
+      category: "invalid-cat",
+      excerpt: "Ringkasan",
+      content: "<p>Isi</p>",
+      image_url: "",
+      file_url: "",
+    }).success,
+  ).toBe(false);
+
+  expect(
+    ppidSchema.safeParse({
+      title: "Maklumat Pelayanan",
+      slug: "maklumat-pelayanan",
+      category: "berkala",
+      excerpt: "Ringkasan",
+      content: "<p>Isi</p>",
+      image_url: "",
+      file_url: "javascript:alert(1)",
     }).success,
   ).toBe(false);
 });

@@ -71,6 +71,7 @@ export default function SiteFooter({ settings }: { settings: Record<string, stri
             <Link className="footer-link mt-0" href="/layanan">Layanan</Link>
             <Link className="footer-link mt-0" href="/jadwal-dokter">Jadwal dokter</Link>
             <Link className="footer-link mt-0" href="/berita">Berita</Link>
+            <Link className="footer-link mt-0" href="/ppid">PPID</Link>
             <Link className="footer-link mt-0" href="/pengaduan">Pengaduan</Link>
             <Link className="footer-link mt-0" href="/profil">Profil</Link>
           </div>

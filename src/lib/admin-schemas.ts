@@ -76,6 +76,29 @@ export const newsSchema = z.object({
   template: z.enum(["standard", "hero-overlay", "minimalist"]),
 }).strict();
 
+export const PPID_CATEGORIES = [
+  "berkala",
+  "serta-merta",
+  "setiap-saat",
+  "regulasi",
+] as const;
+
+export type PpidCategory = (typeof PPID_CATEGORIES)[number];
+
+export const ppidSchema = z.object({
+  title: requiredText,
+  slug: z.string().trim().min(1).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug"),
+  category: z.enum(PPID_CATEGORIES),
+  excerpt: newsExcerpt,
+  content: newsContent,
+  image_url: optionalNewsImage,
+  file_url: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() ?? "")
+    .pipe(z.union([httpUrl, z.literal("")])),
+}).strict();
+
 export const serviceSchema = z.object({
   nama_poli: requiredText,
   deskripsi: requiredText,

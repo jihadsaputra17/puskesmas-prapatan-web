@@ -11,6 +11,7 @@ type AdminNavProps = {
 const sharedLinks = [
   { href: "/admin", label: "Dashboard Utama" },
   { href: "/admin/berita", label: "Kelola Berita" },
+  { href: "/admin/ppid", label: "Kelola PPID" },
   { href: "/admin/layanan", label: "Layanan Poli" },
   { href: "/admin/dokter", label: "Kelola Dokter" },
   { href: "/admin/jadwal", label: "Jadwal Dokter" },
