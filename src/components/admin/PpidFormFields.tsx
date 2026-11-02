@@ -324,6 +324,7 @@ export default function PpidFormFields({
           defaultValue={values.image_url}
           error={fields.image_url}
           describedBy={describedBy("image_url") || "image_url-hint"}
+          previewTitle={title}
         />
         <FieldHint id="image_url">
           Unggah gambar sampul/infografis (mis. poster maklumat pelayanan, bagan alur) atau biarkan

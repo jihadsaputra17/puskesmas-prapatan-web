@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useId, useState } from "react";
+import DefaultCoverBanner from "@/components/ui/DefaultCoverBanner";
 import { compressImageFile, isDataImageUrl, isHttpImageUrl } from "@/lib/image-compress";
 
 type Props = {
@@ -14,6 +15,8 @@ type Props = {
   aspectLabel?: string;
   /** Client-side crop to this aspect ratio during compression (e.g. 0.75 = 3:4). */
   cropAspect?: number;
+  /** Optional title for the default cover preview when no custom image is uploaded. */
+  previewTitle?: string;
 };
 
 export default function CoverImageField({
@@ -24,6 +27,7 @@ export default function CoverImageField({
   aspectClass = "aspect-video",
   aspectLabel = "16:9",
   cropAspect,
+  previewTitle,
 }: Props) {
   const inputId = useId();
   const fileId = useId();
@@ -34,32 +38,35 @@ export default function CoverImageField({
     defaultValue && isHttpImageUrl(defaultValue) ? defaultValue : "",
   );
 
-  const applyFile = useCallback(async (file: File | null) => {
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setLocalError("Pilih file gambar (JPG, PNG, WebP, GIF).");
-      return;
-    }
-    if (file.size > 8 * 1024 * 1024) {
-      setLocalError("Ukuran file maksimal 8 MB sebelum kompresi.");
-      return;
-    }
-    setBusy(true);
-    setLocalError(null);
-    try {
-      const dataUrl = await compressImageFile(file, {
-        maxWidth: 1400,
-        quality: 0.82,
-        ...(cropAspect ? { cropAspect } : {}),
-      });
-      setValue(dataUrl);
-      setUrlDraft("");
-    } catch {
-      setLocalError("Gagal memproses gambar. Coba file lain.");
-    } finally {
-      setBusy(false);
-    }
-  }, [cropAspect]);
+  const applyFile = useCallback(
+    async (file: File | null) => {
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setLocalError("Pilih file gambar (JPG, PNG, WebP, GIF).");
+        return;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        setLocalError("Ukuran file maksimal 8 MB sebelum kompresi.");
+        return;
+      }
+      setBusy(true);
+      setLocalError(null);
+      try {
+        const dataUrl = await compressImageFile(file, {
+          maxWidth: 1400,
+          quality: 0.82,
+          ...(cropAspect ? { cropAspect } : {}),
+        });
+        setValue(dataUrl);
+        setUrlDraft("");
+      } catch {
+        setLocalError("Gagal memproses gambar. Coba file lain.");
+      } finally {
+        setBusy(false);
+      }
+    },
+    [cropAspect],
+  );
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -88,7 +95,9 @@ export default function CoverImageField({
     setLocalError(null);
   };
 
-  const preview = value && (isDataImageUrl(value) || isHttpImageUrl(value) || value.startsWith("data:image/"));
+  const preview =
+    value &&
+    (isDataImageUrl(value) || isHttpImageUrl(value) || value.startsWith("data:image/"));
 
   return (
     <div className="space-y-3">
@@ -98,7 +107,9 @@ export default function CoverImageField({
         onDragOver={(e) => e.preventDefault()}
         onDrop={onDrop}
         className={`relative rounded-[var(--radius)] border-2 border-dashed p-6 text-center transition ${
-          busy ? "border-teal-400 bg-clinic-soft/80" : "border-slate-300 bg-slate-50 hover:bg-slate-100"
+          busy
+            ? "border-teal-400 bg-clinic-soft/80"
+            : "border-slate-300 bg-slate-50 hover:bg-slate-100"
         }`}
       >
         <input
@@ -140,7 +151,20 @@ export default function CoverImageField({
             Rasio {aspectLabel} di situs
           </p>
         </div>
-      ) : null}
+      ) : (
+        <div className="overflow-hidden rounded-[var(--radius)] border border-slate-200 bg-clinic-soft">
+          <div className={`relative w-full overflow-hidden ${aspectClass}`}>
+            <DefaultCoverBanner
+              title={previewTitle || "Sampul Resmi Otomatis Puskesmas Prapatan"}
+              badge="Sampul Default (Otomatis)"
+              variant="card"
+            />
+          </div>
+          <p className="bg-navy/85 px-3 py-1.5 text-center text-xs font-medium text-white">
+            Pratinjau Sampul Default — otomatis digunakan jika Anda tidak mengunggah gambar sampul
+          </p>
+        </div>
+      )}
 
       <div>
         <label htmlFor={`${inputId}-url`} className="mb-1 block text-xs font-medium text-slate-600">
