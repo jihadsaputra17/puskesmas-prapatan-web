@@ -4,6 +4,7 @@ import { glob } from "node:fs/promises";
 const migration001 = await readFile("db/migrations/001_cms_schema.sql", "utf8");
 const migration002 = await readFile("db/migrations/002_dokter_profiles.sql", "utf8");
 const migration003 = await readFile("db/migrations/003_ppid_items.sql", "utf8");
+const migration004 = await readFile("db/migrations/004_website_poll.sql", "utf8");
 
 const requiredTables001 = ["users", "health_news", "layanan_poli", "jadwal_dokter", "website_settings"];
 for (const table of requiredTables001) {
@@ -36,6 +37,10 @@ for (const col of ["title", "slug", "category", "excerpt", "content", "image_url
   if (!new RegExp(`\\b${col}\\b`, "i").test(migration003)) {
     throw new Error(`ppid_items migration 003 missing column ${col}.`);
   }
+}
+
+if (!/CREATE TABLE IF NOT EXISTS website_poll\b/i.test(migration004)) {
+  throw new Error("Missing idempotent provisioning for website_poll in 004.");
 }
 
 for await (const path of glob("src/**/*.{ts,tsx}")) {

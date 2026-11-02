@@ -19,21 +19,23 @@ if (!process.env.POSTGRES_URL) {
   }
 }
 
-const migration = await readFile(path.join(rootDir, "db/migrations/003_ppid_items.sql"), "utf8");
-const statements = migration
-  .split(";")
-  .map((s) =>
-    s
-      .split(/\r?\n/)
-      .filter((line) => !line.trim().startsWith("--"))
-      .join("\n")
-      .trim(),
-  )
-  .filter(Boolean);
+for (const file of ["db/migrations/003_ppid_items.sql", "db/migrations/004_website_poll.sql"]) {
+  const migration = await readFile(path.join(rootDir, file), "utf8");
+  const statements = migration
+    .split(";")
+    .map((s) =>
+      s
+        .split(/\r?\n/)
+        .filter((line) => !line.trim().startsWith("--"))
+        .join("\n")
+        .trim(),
+    )
+    .filter(Boolean);
 
-for (const stmt of statements) {
-  await sql.query(stmt);
+  for (const stmt of statements) {
+    await sql.query(stmt);
+  }
 }
 
-console.log("Successfully provisioned ppid_items table and indexes in Postgres.");
+console.log("Successfully provisioned ppid_items and website_poll tables in Postgres.");
 process.exit(0);

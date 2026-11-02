@@ -4,6 +4,7 @@ import LayananSection from "@/components/layout/LayananSection";
 import DokterSection from "@/components/layout/DokterSection";
 import BeritaSection from "@/components/layout/BeritaSection";
 import FaqSection from "@/components/layout/FaqSection";
+import PollingSection from "@/components/layout/PollingSection";
 import LayananSkeleton from "@/components/layout/LayananSkeleton";
 import DokterSkeleton from "@/components/layout/DokterSkeleton";
 import BeritaSkeleton from "@/components/layout/BeritaSkeleton";
@@ -32,6 +33,9 @@ export default async function HomePage() {
         <BeritaSection />
       </Suspense>
       <FaqSection />
+      <Suspense fallback={null}>
+        <PollingSection />
+      </Suspense>
     </>
   );
 }
