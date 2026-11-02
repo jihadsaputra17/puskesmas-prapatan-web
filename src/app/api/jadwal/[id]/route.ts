@@ -33,8 +33,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const hari = Array.isArray(scheduleBody.hari) ? scheduleBody.hari : typeof scheduleBody.hari === "string" ? scheduleBody.hari.split(",").map((day: string) => day.trim()).filter(Boolean) : scheduleBody.hari;
     const parsed = scheduleSchema.safeParse({ ...scheduleBody, hari });
     if (!parsed.success) return NextResponse.json({ error: "Data jadwal tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
-    const { nama_dokter, poli, hari: days, jam_mulai, jam_selesai } = parsed.data;
-    await sql`UPDATE jadwal_dokter SET nama_dokter = ${nama_dokter}, poli = ${poli}, hari = ${days.join(", ")}, jam_mulai = ${jam_mulai}, jam_selesai = ${jam_selesai} WHERE id = ${id}::uuid`;
+    const { nama_dokter, jenis_tenaga_medis, poli, hari: days, jam_mulai, jam_selesai } = parsed.data;
+    await sql`UPDATE jadwal_dokter SET nama_dokter = ${nama_dokter}, jenis_tenaga_medis = ${jenis_tenaga_medis}, poli = ${poli}, hari = ${days.join(", ")}, jam_mulai = ${jam_mulai}, jam_selesai = ${jam_selesai} WHERE id = ${id}::uuid`;
     invalidate(); return NextResponse.json({ success: true });
   } catch (error) {
     console.error("API Update Jadwal Error:", error);

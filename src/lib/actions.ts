@@ -3,6 +3,7 @@ import { sql } from "@vercel/postgres";
 export type JadwalDokter = {
   id: string;
   doctor: string;
+  jenis_tenaga_medis?: string;
   poli: string;
   day: string;
   hours: string;
@@ -13,7 +14,9 @@ export type JadwalDokter = {
 export async function getJadwalDokter(): Promise<JadwalDokter[]> {
   try {
     const { rows } = await sql`
-      SELECT id, nama_dokter as doctor,
+      SELECT id,
+        nama_dokter as doctor,
+        COALESCE(jenis_tenaga_medis, 'Dokter') as jenis_tenaga_medis,
         poli,
         hari as day,
         jam_mulai || ' - ' || jam_selesai as hours,

@@ -109,6 +109,7 @@ export const serviceSchema = z.object({
 
 export const scheduleSchema = z.object({
   nama_dokter: requiredText,
+  jenis_tenaga_medis: z.string().trim().min(1).optional().default("Dokter"),
   poli: requiredText,
   hari: z.array(requiredText).min(1),
   jam_mulai: requiredText,

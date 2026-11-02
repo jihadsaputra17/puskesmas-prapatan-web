@@ -9,9 +9,120 @@ const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
 type Feedback = { type: "success" | "error"; message: string } | null;
 
 export default function TambahJadwalForm() {
-  const router = useRouter(); const [hari, setHari] = useState<string[]>([]); const [pending, setPending] = useState(false); const [feedback, setFeedback] = useState<Feedback>(null); const [fields, setFields] = useState<Record<string, string>>({});
-  const error = (name: string) => fields[name] ? `${name}-error` : undefined;
-  const field = (name: string, label: string, type = "text") => <div><label htmlFor={name} className="mb-1 block text-sm font-medium text-[var(--ink)]">{label}</label><input id={name} name={name} type={type} required aria-describedby={error(name)} className="input-field"/>{fields[name] && <p id={`${name}-error`} className="mt-1 text-sm text-red-700">{fields[name]}</p>}</div>;
-  async function submit(event: React.FormEvent<HTMLFormElement>) { event.preventDefault(); const form = new FormData(event.currentTarget); const parsed = scheduleSchema.safeParse({ nama_dokter: String(form.get("nama_dokter") || ""), poli: String(form.get("poli") || ""), hari, jam_mulai: String(form.get("jam_mulai") || ""), jam_selesai: String(form.get("jam_selesai") || "") }); if (!parsed.success) { setFields(formatFieldErrors(parsed.error)); setFeedback({ type: "error", message: "Periksa isian formulir." }); return; } setFields({}); setFeedback(null); setPending(true); try { const response = await fetch("/api/jadwal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(parsed.data) }); const result: { error?: string; fields?: Record<string, string> } = await response.json().catch(() => ({})); if (!response.ok || result.error) { setFields(result.fields || {}); setFeedback({ type: "error", message: result.error || "Gagal menyimpan jadwal." }); return; } router.push("/admin/jadwal"); router.refresh(); } catch { setFeedback({ type: "error", message: "Terjadi kesalahan jaringan saat menyimpan jadwal." }); } finally { setPending(false); } }
-  return <div className="panel p-8"><AdminFeedback result={feedback}/><form onSubmit={submit} className="space-y-6"><div className="grid gap-4 md:grid-cols-2">{field("nama_dokter", "Nama Dokter")}{field("poli", "Poli Pelayanan")}</div><fieldset aria-describedby={error("hari")}><legend className="mb-2 text-sm font-medium text-[var(--ink)]">Hari Praktik</legend><div className="flex flex-wrap gap-3">{days.map(day => <label key={day} className="flex items-center gap-1.5 text-sm text-[var(--ink)]"><input type="checkbox" checked={hari.includes(day)} onChange={() => setHari(current => current.includes(day) ? current.filter(value => value !== day) : [...current, day])} className="h-4 w-4 accent-[var(--teal)]"/> {day}</label>)}</div>{fields.hari && <p id="hari-error" className="mt-1 text-sm text-red-700">{fields.hari}</p>}</fieldset><div className="grid gap-4 md:grid-cols-2">{field("jam_mulai", "Jam Mulai", "time")}{field("jam_selesai", "Jam Selesai", "time")}</div><button type="submit" disabled={pending} className="button-primary">{pending ? "Menyimpan..." : "Simpan Jadwal Dokter"}</button></form></div>;
+  const router = useRouter();
+  const [hari, setHari] = useState<string[]>([]);
+  const [pending, setPending] = useState(false);
+  const [feedback, setFeedback] = useState<Feedback>(null);
+  const [fields, setFields] = useState<Record<string, string>>({});
+  const error = (name: string) => (fields[name] ? `${name}-error` : undefined);
+  const field = (name: string, label: string, type = "text", defaultValue = "") => (
+    <div>
+      <label htmlFor={name} className="mb-1 block text-sm font-medium text-[var(--ink)]">
+        {label}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        defaultValue={defaultValue}
+        required
+        aria-describedby={error(name)}
+        className="input-field"
+      />
+      {fields[name] && (
+        <p id={`${name}-error`} className="mt-1 text-sm text-red-700">
+          {fields[name]}
+        </p>
+      )}
+    </div>
+  );
+
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const parsed = scheduleSchema.safeParse({
+      nama_dokter: String(form.get("nama_dokter") || ""),
+      jenis_tenaga_medis: String(form.get("jenis_tenaga_medis") || "Dokter"),
+      poli: String(form.get("poli") || ""),
+      hari,
+      jam_mulai: String(form.get("jam_mulai") || ""),
+      jam_selesai: String(form.get("jam_selesai") || ""),
+    });
+    if (!parsed.success) {
+      setFields(formatFieldErrors(parsed.error));
+      setFeedback({ type: "error", message: "Periksa isian formulir." });
+      return;
+    }
+    setFields({});
+    setFeedback(null);
+    setPending(true);
+    try {
+      const response = await fetch("/api/jadwal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsed.data),
+      });
+      const result: { error?: string; fields?: Record<string, string> } = await response
+        .json()
+        .catch(() => ({}));
+      if (!response.ok || result.error) {
+        setFields(result.fields || {});
+        setFeedback({ type: "error", message: result.error || "Gagal menyimpan jadwal." });
+        return;
+      }
+      router.push("/admin/jadwal");
+      router.refresh();
+    } catch {
+      setFeedback({ type: "error", message: "Terjadi kesalahan jaringan saat menyimpan jadwal." });
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <div className="panel p-8">
+      <AdminFeedback result={feedback} />
+      <form onSubmit={submit} className="space-y-6">
+        <div className="grid gap-4 md:grid-cols-3">
+          {field("nama_dokter", "Nama Tenaga Medis")}
+          {field("jenis_tenaga_medis", "Jenis Tenaga Medis", "text", "Dokter")}
+          {field("poli", "Poli Pelayanan")}
+        </div>
+        <fieldset aria-describedby={error("hari")}>
+          <legend className="mb-2 text-sm font-medium text-[var(--ink)]">Hari Praktik</legend>
+          <div className="flex flex-wrap gap-3">
+            {days.map((day) => (
+              <label key={day} className="flex items-center gap-1.5 text-sm text-[var(--ink)]">
+                <input
+                  type="checkbox"
+                  checked={hari.includes(day)}
+                  onChange={() =>
+                    setHari((current) =>
+                      current.includes(day)
+                        ? current.filter((value) => value !== day)
+                        : [...current, day],
+                    )
+                  }
+                  className="h-4 w-4 accent-[var(--teal)]"
+                />{" "}
+                {day}
+              </label>
+            ))}
+          </div>
+          {fields.hari && (
+            <p id="hari-error" className="mt-1 text-sm text-red-700">
+              {fields.hari}
+            </p>
+          )}
+        </fieldset>
+        <div className="grid gap-4 md:grid-cols-2">
+          {field("jam_mulai", "Jam Mulai", "time")}
+          {field("jam_selesai", "Jam Selesai", "time")}
+        </div>
+        <button type="submit" disabled={pending} className="button-primary">
+          {pending ? "Menyimpan..." : "Simpan Jadwal"}
+        </button>
+      </form>
+    </div>
+  );
 }

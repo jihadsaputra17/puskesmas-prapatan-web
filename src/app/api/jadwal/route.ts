@@ -19,8 +19,8 @@ export async function POST(request: Request) {
     const hari = Array.isArray(scheduleBody.hari) ? scheduleBody.hari : typeof scheduleBody.hari === "string" ? scheduleBody.hari.split(",").map((day: string) => day.trim()).filter(Boolean) : scheduleBody.hari;
     const parsed = scheduleSchema.safeParse({ ...scheduleBody, hari });
     if (!parsed.success) return NextResponse.json({ error: "Data jadwal tidak valid.", fields: formatFieldErrors(parsed.error) }, { status: 400 });
-    const { nama_dokter, poli, hari: days, jam_mulai, jam_selesai } = parsed.data;
-    await sql`INSERT INTO jadwal_dokter (nama_dokter, poli, hari, jam_mulai, jam_selesai) SELECT ${nama_dokter}, ${poli}, hari, ${jam_mulai}, ${jam_selesai} FROM jsonb_array_elements_text(${JSON.stringify(days)}::jsonb) AS hari`;
+    const { nama_dokter, jenis_tenaga_medis, poli, hari: days, jam_mulai, jam_selesai } = parsed.data;
+    await sql`INSERT INTO jadwal_dokter (nama_dokter, jenis_tenaga_medis, poli, hari, jam_mulai, jam_selesai) SELECT ${nama_dokter}, ${jenis_tenaga_medis}, ${poli}, hari, ${jam_mulai}, ${jam_selesai} FROM jsonb_array_elements_text(${JSON.stringify(days)}::jsonb) AS hari`;
     revalidatePath("/admin/jadwal"); revalidatePath("/jadwal-dokter"); revalidatePath("/");
     return NextResponse.json({ success: true });
   } catch (error) {
