@@ -14,9 +14,11 @@ export default function ArticleShare({
   const encodedTitle = encodeURIComponent(title);
   const encodedTextAndUrl = encodeURIComponent(`${title} — ${url}`);
 
-  function showNotice(msg: string) {
+  function showNotice(msg: string | null) {
     setNotice(msg);
-    window.setTimeout(() => setNotice(null), 2600);
+    if (msg) {
+      window.setTimeout(() => setNotice(null), 2600);
+    }
   }
 
   async function copyLink() {

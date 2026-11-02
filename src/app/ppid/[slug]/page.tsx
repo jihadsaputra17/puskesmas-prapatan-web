@@ -29,9 +29,6 @@ export async function generateMetadata({
   };
 }
 
-const PLACEHOLDER =
-  "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%220 0 800 400%22%3E%3Crect width%3D%22800%22 height%3D%22400%22 fill%3D%22%23e8f4f3%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2246%25%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 font-family%3D%22sans-serif%22 font-weight%3D%22bold%22 font-size%3D%2228%22 fill%3D%22%230f766e%22%3EPPID%3C%2Ftext%3E%3Ctext x%3D%2250%25%22 y%3D%2258%25%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 font-family%3D%22sans-serif%22 font-size%3D%2216%22 fill%3D%22%230b2a3f%22%3EInformasi Publik Puskesmas Prapatan%3C%2Ftext%3E%3C%2Fsvg%3E";
-
 function plainTextFromHtml(html: string) {
   return html
     .replace(/<[^>]+>/g, " ")
@@ -59,7 +56,6 @@ export default async function DetailPpidPage({
     notFound();
   }
 
-  const imageUrl = item.imageUrl || PLACEHOLDER;
   const categoryLabel = getPpidCategoryLabel(item.category);
   const attachments = parsePpidAttachments(item.fileUrl);
   const minutes = readingMinutes(String(item.content || ""), String(item.excerpt || ""));
