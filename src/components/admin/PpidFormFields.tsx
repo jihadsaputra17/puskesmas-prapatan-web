@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import CoverImageField from "@/components/admin/CoverImageField";
 import RichTextEditor from "@/components/admin/RichTextEditor";
-import { FieldError, FieldHint } from "@/components/admin/BeritaFormFields";
+import { FieldError, FieldHint, slugifyTitle } from "@/components/admin/BeritaFormFields";
 
 export const PPID_CATEGORY_OPTIONS = [
   {
@@ -33,15 +34,19 @@ export function PpidContentGuide() {
       <p className="font-semibold text-navy">Panduan Pengisian Informasi PPID</p>
       <ul className="mt-2 list-disc space-y-1 pl-5 text-xs leading-5 text-slate-600">
         <li>
+          <strong>Judul &amp; Tautan Otomatis</strong> → tautan (slug) dibuat otomatis saat Anda
+          mengetik judul informasi
+        </li>
+        <li>
           <strong>Kategori PPID</strong> → menentukan pengelompokan dokumen di halaman publik{" "}
-          <code>/ppid</code> (Informasi Berkala, Serta Merta, Setiap Saat, atau Regulasi & SOP)
+          <code>/ppid</code> (Informasi Berkala, Serta Merta, Setiap Saat, atau Regulasi &amp; SOP)
         </li>
         <li>
           <strong>Tautan Dokumen / PDF (Opsional)</strong> → tempel link Google Drive, OneDrive, atau
           URL PDF resmi agar warga dapat langsung mengunduh/membuka dokumen
         </li>
         <li>
-          <strong>Gambar Sampul & Isi Informasi</strong> → mendukung foto sampul serta isi artikel
+          <strong>Gambar Sampul &amp; Isi Informasi</strong> → mendukung foto sampul serta isi artikel
           lengkap (heading, tabel/daftar, gambar, tautan) seperti halaman Berita
         </li>
       </ul>
@@ -69,6 +74,23 @@ export default function PpidFormFields({
   describedBy: (id: string) => string | undefined;
 }) {
   const category = values.category || "berkala";
+  const [title, setTitle] = useState(values.title ?? "");
+  const [slug, setSlug] = useState(values.slug ?? "");
+  const [manualSlug, setManualSlug] = useState(Boolean(values.slug));
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextTitle = e.target.value;
+    setTitle(nextTitle);
+    if (!manualSlug) {
+      setSlug(slugifyTitle(nextTitle));
+    }
+  };
+
+  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextSlug = e.target.value;
+    setSlug(nextSlug);
+    setManualSlug(nextSlug.trim().length > 0);
+  };
 
   return (
     <div className="space-y-6">
@@ -81,7 +103,8 @@ export default function PpidFormFields({
         <input
           id="title"
           name="title"
-          defaultValue={values.title}
+          value={title}
+          onChange={handleTitleChange}
           required
           aria-describedby={describedBy("title") || "title-hint"}
           className="input-field"
@@ -94,25 +117,40 @@ export default function PpidFormFields({
       </div>
 
       <div>
-        <label htmlFor="slug" className="mb-1 block text-sm font-medium text-[var(--ink)]">
-          Tautan / slug
-        </label>
+        <div className="mb-1 flex items-center justify-between gap-2">
+          <label htmlFor="slug" className="block text-sm font-medium text-[var(--ink)]">
+            Tautan / slug (otomatis dari judul)
+          </label>
+          {manualSlug && title.trim() && (
+            <button
+              type="button"
+              onClick={() => {
+                setSlug(slugifyTitle(title));
+                setManualSlug(false);
+              }}
+              className="text-xs font-semibold text-[var(--teal)] hover:underline"
+            >
+              Sesuaikan dengan judul
+            </button>
+          )}
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs text-slate-500">/ppid/</span>
           <input
             id="slug"
             name="slug"
-            defaultValue={values.slug}
+            value={slug}
+            onChange={handleSlugChange}
             required
             aria-describedby={describedBy("slug") || "slug-hint"}
-            className="input-field min-w-0 flex-1"
+            className="input-field min-w-0 flex-1 bg-slate-50/70"
             placeholder="maklumat-pelayanan-publik-2026"
             pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
           />
         </div>
         <FieldHint id="slug">
-          Huruf kecil, angka, dan tanda hubung saja. Contoh:{" "}
-          <code>daftar-informasi-publik-2026</code>
+          Terisi otomatis saat Anda mengetik judul di atas (Anda juga tetap bisa mengubahnya jika
+          perlu).
         </FieldHint>
         <FieldError id="slug" message={fields.slug} />
       </div>

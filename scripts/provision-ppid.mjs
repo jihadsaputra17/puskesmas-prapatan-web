@@ -1,9 +1,11 @@
 import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { sql } from "@vercel/postgres";
 
-// Load .env.local if POSTGRES_URL is not set
+const rootDir = path.resolve(import.meta.dirname, "..");
+
 if (!process.env.POSTGRES_URL) {
-  const envText = await readFile(".env.local", "utf8");
+  const envText = await readFile(path.join(rootDir, ".env.local"), "utf8");
   for (const line of envText.split(/\r?\n/)) {
     const match = line.match(/^([A-Z0-9_]+)=(.*)$/);
     if (match) {
@@ -17,7 +19,7 @@ if (!process.env.POSTGRES_URL) {
   }
 }
 
-const migration = await readFile("db/migrations/003_ppid_items.sql", "utf8");
+const migration = await readFile(path.join(rootDir, "db/migrations/003_ppid_items.sql"), "utf8");
 const statements = migration
   .split(";")
   .map((s) =>
@@ -34,3 +36,4 @@ for (const stmt of statements) {
 }
 
 console.log("Successfully provisioned ppid_items table and indexes in Postgres.");
+process.exit(0);
