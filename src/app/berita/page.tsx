@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { getBeritaKesehatan } from "../../lib/actions";
+import DefaultCoverBanner from "../../components/ui/DefaultCoverBanner";
 import SmartImage from "../../components/ui/SmartImage";
 
 export const metadata: Metadata = {
@@ -8,9 +9,6 @@ export const metadata: Metadata = {
   description:
     "Berita terbaru, pengumuman, dan artikel kesehatan dari Puskesmas Prapatan.",
 };
-
-const PLACEHOLDER =
-  "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%220 0 400 300%22%3E%3Crect width%3D%22400%22 height%3D%22300%22 fill%3D%22%23e8f4f3%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 font-family%3D%22sans-serif%22 font-size%3D%2216%22 fill%3D%22%230f766e%22%3EBerita%3C%2Ftext%3E%3C%2Fsvg%3E";
 
 type BeritaCard = {
   id: string;
@@ -29,7 +27,7 @@ export default async function BeritaPage() {
       <section className="page-intro">
         <div className="content-container max-w-3xl">
           <p className="eyebrow">Informasi</p>
-          <h1 className="page-intro-title mt-3">Berita & informasi</h1>
+          <h1 className="page-intro-title mt-3">Berita &amp; informasi</h1>
           <p className="page-intro-copy">
             Kabar, pengumuman, dan informasi kesehatan dari Puskesmas Prapatan.
           </p>
@@ -46,13 +44,21 @@ export default async function BeritaPage() {
                   className="group panel panel-lift relative flex flex-col overflow-hidden"
                 >
                   <div className="relative h-48 w-full shrink-0 overflow-hidden bg-clinic-soft">
-                    <SmartImage
-                      src={berita.imageUrl || PLACEHOLDER}
-                      alt=""
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
+                    {berita.imageUrl ? (
+                      <SmartImage
+                        src={berita.imageUrl}
+                        alt=""
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <DefaultCoverBanner
+                        title={berita.title}
+                        badge="Berita & Informasi"
+                        variant="card"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-grow flex-col p-5">
                     <time

@@ -10,6 +10,7 @@ import { Metadata } from "next";
 import ArticleContent from "@/components/berita/ArticleContent";
 import ArticleShare from "@/components/berita/ArticleShare";
 import PpidDocumentList from "@/components/ppid/PpidDocumentList";
+import DefaultCoverBanner from "@/components/ui/DefaultCoverBanner";
 import SmartImage from "@/components/ui/SmartImage";
 
 export async function generateMetadata({
@@ -142,15 +143,24 @@ export default async function DetailPpidPage({
       </header>
 
       <figure className="content-container max-w-4xl">
-        <div className="relative aspect-video w-full overflow-hidden rounded-[var(--radius-lg)] bg-clinic-soft">
-          <SmartImage
-            src={imageUrl}
-            alt={item.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 896px) 100vw, 896px"
-            priority
-          />
+        <div className="relative aspect-video w-full overflow-hidden rounded-[var(--radius-lg)] bg-clinic-soft shadow-[var(--shadow-soft)]">
+          {item.imageUrl ? (
+            <SmartImage
+              src={item.imageUrl}
+              alt={item.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 896px) 100vw, 896px"
+              priority
+            />
+          ) : (
+            <DefaultCoverBanner
+              title={item.title}
+              badge={`PPID · ${categoryLabel}`}
+              subtitle="Pejabat Pengelola Informasi dan Dokumentasi · Puskesmas Prapatan"
+              variant="hero"
+            />
+          )}
         </div>
         {item.excerpt ? (
           <figcaption className="mt-2.5 text-center text-[0.8125rem] text-slate-400">
@@ -224,14 +234,22 @@ export default async function DetailPpidPage({
                     href={`/ppid/${rel.slug}`}
                     className="group panel panel-lift overflow-hidden"
                   >
-                    <div className="relative h-[8.5rem] w-full bg-clinic-soft">
-                      <SmartImage
-                        src={rel.imageUrl || PLACEHOLDER}
-                        alt=""
-                        fill
-                        className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                        sizes="(max-width: 640px) 100vw, 33vw"
-                      />
+                    <div className="relative h-[8.5rem] w-full overflow-hidden bg-clinic-soft">
+                      {rel.imageUrl ? (
+                        <SmartImage
+                          src={rel.imageUrl}
+                          alt=""
+                          fill
+                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                          sizes="(max-width: 640px) 100vw, 33vw"
+                        />
+                      ) : (
+                        <DefaultCoverBanner
+                          title={rel.title}
+                          badge="PPID Puskesmas Prapatan"
+                          variant="compact"
+                        />
+                      )}
                     </div>
                     <div className="p-4">
                       <span className="text-[0.6875rem] font-bold uppercase tracking-wide text-clinic-teal">

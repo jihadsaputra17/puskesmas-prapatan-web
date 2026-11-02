@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import ArticleContent from "../../../components/berita/ArticleContent";
 import ArticleShare from "../../../components/berita/ArticleShare";
+import DefaultCoverBanner from "../../../components/ui/DefaultCoverBanner";
 import SmartImage from "../../../components/ui/SmartImage";
 
 export async function generateMetadata({
@@ -22,9 +23,6 @@ export async function generateMetadata({
   };
 }
 
-const PLACEHOLDER =
-  "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%220 0 800 400%22%3E%3Crect width%3D%22800%22 height%3D%22400%22 fill%3D%22%23e8f4f3%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 font-family%3D%22sans-serif%22 font-size%3D%2220%22 fill%3D%22%230f766e%22%3EBerita%3C%2Ftext%3E%3C%2Fsvg%3E";
-
 function plainTextFromHtml(html: string) {
   return html
     .replace(/<[^>]+>/g, " ")
@@ -34,17 +32,21 @@ function plainTextFromHtml(html: string) {
 }
 
 function readingMinutes(content: string, excerpt?: string) {
-  const words = plainTextFromHtml(`${excerpt || ""} ${content}`).split(/\s+/).filter(Boolean).length;
+  const words = plainTextFromHtml(`${excerpt || ""} ${content}`)
+    .split(/\s+/)
+    .filter(Boolean).length;
   return Math.max(1, Math.ceil(words / 200));
 }
 
 function authorInitials(name: string) {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("") || "AP";
+  return (
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "AP"
+  );
 }
 
 /** Maps legacy DB `template` column → public category chip (one layout for all). */
@@ -66,7 +68,6 @@ export default async function DetailBeritaPage({
     notFound();
   }
 
-  const imageUrl = berita.image_url || PLACEHOLDER;
   const template = berita.template || "standard";
   const category = categoryLabel(template);
   const authorName = "Admin Puskesmas";
@@ -97,7 +98,10 @@ export default async function DetailBeritaPage({
 
   return (
     <div className="bg-white">
-      <nav className="content-container max-w-4xl pt-5 text-[0.8125rem] text-slate-400" aria-label="Breadcrumb">
+      <nav
+        className="content-container max-w-4xl pt-5 text-[0.8125rem] text-slate-400"
+        aria-label="Breadcrumb"
+      >
         <ol className="flex flex-wrap items-center gap-x-1">
           <li>
             <Link href="/" className="text-slate-600 transition hover:text-clinic-teal">
@@ -154,15 +158,24 @@ export default async function DetailBeritaPage({
       </header>
 
       <figure className="content-container max-w-4xl">
-        <div className="relative aspect-video w-full overflow-hidden rounded-[var(--radius-lg)] bg-clinic-soft">
-          <SmartImage
-            src={imageUrl}
-            alt={berita.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 896px) 100vw, 896px"
-            priority
-          />
+        <div className="relative aspect-video w-full overflow-hidden rounded-[var(--radius-lg)] bg-clinic-soft shadow-[var(--shadow-soft)]">
+          {berita.image_url ? (
+            <SmartImage
+              src={berita.image_url}
+              alt={berita.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 896px) 100vw, 896px"
+              priority
+            />
+          ) : (
+            <DefaultCoverBanner
+              title={berita.title}
+              badge={category}
+              subtitle="Tim Promosi Kesehatan · UPTD Puskesmas Prapatan"
+              variant="hero"
+            />
+          )}
         </div>
         {berita.excerpt ? (
           <figcaption className="mt-2.5 text-center text-[0.8125rem] text-slate-400">
@@ -210,9 +223,15 @@ export default async function DetailBeritaPage({
       </div>
 
       {related.length > 0 ? (
-        <section className="mt-8 bg-clinic-wash py-12 md:py-14" aria-labelledby="related-berita-heading">
+        <section
+          className="mt-8 bg-clinic-wash py-12 md:py-14"
+          aria-labelledby="related-berita-heading"
+        >
           <div className="content-container max-w-5xl">
-            <h2 id="related-berita-heading" className="text-[1.375rem] font-extrabold tracking-tight text-navy">
+            <h2
+              id="related-berita-heading"
+              className="text-[1.375rem] font-extrabold tracking-tight text-navy"
+            >
               Berita terkait
             </h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -228,14 +247,22 @@ export default async function DetailBeritaPage({
                     href={`/berita/${item.slug}`}
                     className="group panel panel-lift overflow-hidden"
                   >
-                    <div className="relative h-[8.5rem] w-full bg-clinic-soft">
-                      <SmartImage
-                        src={item.imageUrl || PLACEHOLDER}
-                        alt=""
-                        fill
-                        className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                        sizes="(max-width: 640px) 100vw, 33vw"
-                      />
+                    <div className="relative h-[8.5rem] w-full overflow-hidden bg-clinic-soft">
+                      {item.imageUrl ? (
+                        <SmartImage
+                          src={item.imageUrl}
+                          alt=""
+                          fill
+                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                          sizes="(max-width: 640px) 100vw, 33vw"
+                        />
+                      ) : (
+                        <DefaultCoverBanner
+                          title={item.title}
+                          badge="Berita Puskesmas"
+                          variant="compact"
+                        />
+                      )}
                     </div>
                     <div className="p-4">
                       <time className="text-[0.6875rem] font-bold uppercase tracking-wide text-clinic-teal">

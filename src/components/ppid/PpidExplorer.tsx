@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import DefaultCoverBanner from "@/components/ui/DefaultCoverBanner";
 import SmartImage from "@/components/ui/SmartImage";
 import {
   PPID_CATEGORY_META,
@@ -111,14 +112,22 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
                   className="relative block h-44 w-full shrink-0 overflow-hidden bg-clinic-soft"
                   aria-label={`Lihat rincian ${item.title}`}
                 >
-                  <SmartImage
-                    src={item.imageUrl || PLACEHOLDER}
-                    alt=""
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  <span className="absolute left-3 top-3 rounded-full bg-navy/85 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
+                  {item.imageUrl ? (
+                    <SmartImage
+                      src={item.imageUrl}
+                      alt=""
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <DefaultCoverBanner
+                      title={item.title}
+                      badge={`PPID · ${getPpidCategoryShortLabel(item.category)}`}
+                      variant="card"
+                    />
+                  )}
+                  <span className="absolute left-3 top-3 z-20 rounded-full bg-navy/85 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
                     {getPpidCategoryShortLabel(item.category)}
                   </span>
                 </Link>
