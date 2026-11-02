@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 export type PpidNavLink = {
   title: string;
@@ -59,35 +59,14 @@ export default function SiteHeader({
   ppidLinks?: PpidNavLink[];
 }) {
   const [open, setOpen] = useState(false);
-  const [ppidOpen, setPpidOpen] = useState(false);
-  const [mobilePpidOpen, setMobilePpidOpen] = useState(false);
-  const ppidMenuRef = useRef<HTMLDivElement>(null);
+  const [ppidHover, setPpidHover] = useState(false);
   const pathname = usePathname();
   const menuId = useId();
-  const ppidDropdownId = useId();
 
   useEffect(() => {
     setOpen(false);
-    setPpidOpen(false);
+    setPpidHover(false);
   }, [pathname]);
-
-  useEffect(() => {
-    if (!ppidOpen) return;
-    const onPointerDown = (event: MouseEvent) => {
-      if (ppidMenuRef.current && !ppidMenuRef.current.contains(event.target as Node)) {
-        setPpidOpen(false);
-      }
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setPpidOpen(false);
-    };
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [ppidOpen]);
 
   useEffect(() => {
     if (!open) return;
@@ -129,79 +108,35 @@ export default function SiteHeader({
               return (
                 <div
                   key={link.href}
-                  ref={ppidMenuRef}
                   className="group/ppid relative"
-                  onMouseEnter={() => setPpidOpen(true)}
-                  onMouseLeave={() => setPpidOpen(false)}
+                  onMouseEnter={() => setPpidHover(true)}
+                  onMouseLeave={() => setPpidHover(false)}
                 >
-                  <div className="inline-flex items-center">
-                    <Link
-                      href="/ppid"
-                      aria-current={active ? "page" : undefined}
-                      onClick={() => setPpidOpen(false)}
-                      className="nav-link gap-1"
-                    >
-                      <span>{link.label}</span>
-                      <svg
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        className={`h-4 w-4 text-slate-500 transition-transform duration-200 group-hover/ppid:rotate-180 ${
-                          ppidOpen ? "rotate-180" : ""
-                        }`}
-                        aria-hidden="true"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </Link>
-                    <button
-                      type="button"
-                      aria-label="Tampilkan daftar menu PPID"
-                      aria-expanded={ppidOpen}
-                      aria-controls={ppidDropdownId}
-                      onClick={() => setPpidOpen((v) => !v)}
-                      className="sr-only focus:not-sr-only focus:inline-flex focus:h-9 focus:w-7 focus:items-center focus:justify-center focus:rounded-md"
-                    >
-                      ▾
-                    </button>
-                  </div>
+                  <Link
+                    href="/ppid"
+                    aria-current={active ? "page" : undefined}
+                    onClick={() => setPpidHover(false)}
+                    className="nav-link"
+                  >
+                    {link.label}
+                  </Link>
 
                   <div
-                    id={ppidDropdownId}
-                    className={`absolute left-0 top-full z-50 w-80 pt-2 transition-all duration-150 ${
-                      ppidOpen
+                    className={`absolute left-0 top-full z-50 w-72 pt-2 transition-all duration-150 ${
+                      ppidHover
                         ? "visible translate-y-0 opacity-100"
-                        : "invisible -translate-y-1 opacity-0 group-hover/ppid:visible group-hover/ppid:translate-y-0 group-hover/ppid:opacity-100 group-focus-within/ppid:visible group-focus-within/ppid:translate-y-0 group-focus-within/ppid:opacity-100"
+                        : "invisible pointer-events-none -translate-y-1 opacity-0 group-hover/ppid:visible group-hover/ppid:pointer-events-auto group-hover/ppid:translate-y-0 group-hover/ppid:opacity-100"
                     }`}
                   >
                     <div className="overflow-hidden rounded-[var(--radius)] border border-slate-200 bg-white shadow-[var(--shadow-lift)]">
-                      <div className="border-b border-slate-100 bg-[var(--teal-soft)]/60 px-4 py-3">
-                        <Link
-                          href="/ppid"
-                          onClick={() => setPpidOpen(false)}
-                          className="flex items-center justify-between text-sm font-bold text-navy hover:text-[var(--teal)]"
-                        >
-                          <span>Halaman Utama PPID</span>
-                          <span className="text-xs font-semibold text-[var(--teal)]">
-                            Lihat semua →
-                          </span>
-                        </Link>
-                        <p className="mt-0.5 text-xs text-slate-500">
-                          Profil, Tugas &amp; Daftar Informasi Publik
-                        </p>
-                      </div>
-
                       {ppidLinks.length > 0 ? (
                         <ul className="max-h-80 divide-y divide-slate-100 overflow-y-auto py-1">
                           {ppidLinks.map((item) => (
                             <li key={item.slug}>
                               <Link
                                 href={`/ppid/${item.slug}`}
-                                onClick={() => setPpidOpen(false)}
-                                className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/50"
+                                onClick={() => setPpidHover(false)}
+                                className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/60"
                               >
                                 {item.category && (
                                   <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
@@ -217,8 +152,7 @@ export default function SiteHeader({
                         </ul>
                       ) : (
                         <div className="px-4 py-3 text-xs text-slate-500">
-                          Belum ada dokumen PPID tambahan. Klik Halaman Utama PPID untuk info
-                          lengkap.
+                          Belum ada informasi PPID yang ditambahkan.
                         </div>
                       )}
                     </div>
@@ -290,41 +224,15 @@ export default function SiteHeader({
                 if (link.href === "/ppid") {
                   return (
                     <div key={link.href} className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <Link
-                          href="/ppid"
-                          aria-current={isActive(pathname, "/ppid") ? "page" : undefined}
-                          onClick={() => setOpen(false)}
-                          className="nav-link flex-1"
-                        >
-                          {link.label}
-                        </Link>
-                        {ppidLinks.length > 0 && (
-                          <button
-                            type="button"
-                            aria-label="Tampilkan daftar PPID"
-                            aria-expanded={mobilePpidOpen}
-                            onClick={() => setMobilePpidOpen((v) => !v)}
-                            className="button-icon"
-                          >
-                            <svg
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              className={`h-5 w-5 transition-transform ${
-                                mobilePpidOpen ? "rotate-180" : ""
-                              }`}
-                              aria-hidden="true"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </button>
-                        )}
-                      </div>
-                      {mobilePpidOpen && ppidLinks.length > 0 && (
+                      <Link
+                        href="/ppid"
+                        aria-current={isActive(pathname, "/ppid") ? "page" : undefined}
+                        onClick={() => setOpen(false)}
+                        className="nav-link w-full"
+                      >
+                        {link.label}
+                      </Link>
+                      {ppidLinks.length > 0 && (
                         <ul className="ml-3 space-y-1 border-l-2 border-[var(--teal-soft)] pl-3">
                           {ppidLinks.map((item) => (
                             <li key={item.slug}>

@@ -23,7 +23,7 @@ describe("SiteHeader", () => {
     expect(screen.getByRole("navigation", { name: "Navigasi utama" })).toBeVisible();
   });
 
-  it("shows added PPID items in the PPID dropdown menu", () => {
+  it("shows added PPID items on hover without an arrow button", () => {
     render(
       <SiteHeader
         isAdmin={false}
@@ -33,8 +33,8 @@ describe("SiteHeader", () => {
       />,
     );
 
-    const toggle = screen.getByRole("button", { name: "Tampilkan daftar menu PPID" });
-    fireEvent.click(toggle);
+    const ppidLink = screen.getByRole("link", { name: "PPID" });
+    fireEvent.mouseEnter(ppidLink.parentElement!);
 
     expect(screen.getByText("Maklumat Pelayanan 2026")).toBeVisible();
   });
