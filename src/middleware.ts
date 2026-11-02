@@ -1,25 +1,18 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
-  
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-nonce', nonce);
 
-  // Hanya terapkan CSP dan header keamanan lainnya di lingkungan produksi
-  if (process.env.NODE_ENV === 'production') {
-    // Atur Content Security Policy (CSP)
-    // Kebijakan ini membantu mencegah serangan XSS.
-    // 'self' mengizinkan sumber daya dari origin yang sama.
-    // 'unsafe-inline' untuk style diperlukan jika Anda menggunakan style inline, namun sebaiknya dihindari.
-    // 'nonce-${nonce}' memungkinkan eksekusi skrip inline yang memiliki atribut nonce yang cocok.
+  // Terapkan CSP dan header keamanan lainnya di lingkungan produksi
+  if (process.env.NODE_ENV === "production") {
     const cspHeader = `
       default-src 'self';
-      script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+      script-src 'self' 'unsafe-inline';
       style-src 'self' 'unsafe-inline';
       img-src 'self' https: blob: data:;
-      font-src 'self';
+      font-src 'self' data:;
+      connect-src 'self' https:;
       object-src 'none';
       base-uri 'self';
       form-action 'self';
@@ -30,17 +23,18 @@ export function middleware(request: NextRequest) {
     `;
 
     requestHeaders.set(
-      'Content-Security-Policy',
-      // Ganti newline dan spasi berlebih
-      cspHeader.replace(/\s{2,}/g, ' ').trim()
+      "Content-Security-Policy",
+      cspHeader.replace(/\s{2,}/g, " ").trim(),
     );
 
-    // Atur header keamanan lainnya
-    requestHeaders.set('Referrer-Policy', 'origin-when-cross-origin');
-    requestHeaders.set('X-Content-Type-Options', 'nosniff');
-    requestHeaders.set('X-DNS-Prefetch-Control', 'on');
-    requestHeaders.set('X-Frame-Options', 'DENY'); // Mencegah clickjacking
-    requestHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload'); // HSTS
+    requestHeaders.set("Referrer-Policy", "origin-when-cross-origin");
+    requestHeaders.set("X-Content-Type-Options", "nosniff");
+    requestHeaders.set("X-DNS-Prefetch-Control", "on");
+    requestHeaders.set("X-Frame-Options", "DENY");
+    requestHeaders.set(
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubDomains; preload",
+    );
   }
 
   return NextResponse.next({
@@ -53,18 +47,11 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Cocokkan semua path request kecuali untuk file statis internal Next.js.
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     {
-      source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+      source: "/((?!api|_next/static|_next/image|favicon.ico).*)",
       missing: [
-        { type: 'header', key: 'next-router-prefetch' },
-        { type: 'header', key: 'purpose', value: 'prefetch' },
+        { type: "header", key: "next-router-prefetch" },
+        { type: "header", key: "purpose", value: "prefetch" },
       ],
     },
   ],

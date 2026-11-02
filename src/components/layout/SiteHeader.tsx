@@ -130,7 +130,7 @@ export default function SiteHeader({
                 <div
                   key={link.href}
                   ref={ppidMenuRef}
-                  className="relative"
+                  className="group/ppid relative"
                   onMouseEnter={() => setPpidOpen(true)}
                   onMouseLeave={() => setPpidOpen(false)}
                 >
@@ -139,24 +139,13 @@ export default function SiteHeader({
                       href="/ppid"
                       aria-current={active ? "page" : undefined}
                       onClick={() => setPpidOpen(false)}
-                      className="nav-link pr-1.5"
+                      className="nav-link gap-1"
                     >
-                      {link.label}
-                    </Link>
-                    <button
-                      type="button"
-                      aria-label="Tampilkan daftar menu PPID"
-                      aria-expanded={ppidOpen}
-                      aria-controls={ppidDropdownId}
-                      onClick={() => setPpidOpen((v) => !v)}
-                      className={`inline-flex h-9 w-7 items-center justify-center rounded-md text-slate-600 transition hover:bg-[var(--teal-soft)] hover:text-[var(--teal)] ${
-                        active ? "text-[var(--teal)]" : ""
-                      }`}
-                    >
+                      <span>{link.label}</span>
                       <svg
                         viewBox="0 0 20 20"
                         fill="currentColor"
-                        className={`h-4 w-4 transition-transform duration-200 ${
+                        className={`h-4 w-4 text-slate-500 transition-transform duration-200 group-hover/ppid:rotate-180 ${
                           ppidOpen ? "rotate-180" : ""
                         }`}
                         aria-hidden="true"
@@ -167,61 +156,73 @@ export default function SiteHeader({
                           clipRule="evenodd"
                         />
                       </svg>
+                    </Link>
+                    <button
+                      type="button"
+                      aria-label="Tampilkan daftar menu PPID"
+                      aria-expanded={ppidOpen}
+                      aria-controls={ppidDropdownId}
+                      onClick={() => setPpidOpen((v) => !v)}
+                      className="sr-only focus:not-sr-only focus:inline-flex focus:h-9 focus:w-7 focus:items-center focus:justify-center focus:rounded-md"
+                    >
+                      ▾
                     </button>
                   </div>
 
-                  {ppidOpen && (
-                    <div
-                      id={ppidDropdownId}
-                      className="absolute left-0 top-full z-50 w-80 pt-2"
-                    >
-                      <div className="overflow-hidden rounded-[var(--radius)] border border-slate-200 bg-white shadow-[var(--shadow-lift)]">
-                        <div className="border-b border-slate-100 bg-[var(--teal-soft)]/60 px-4 py-3">
-                          <Link
-                            href="/ppid"
-                            onClick={() => setPpidOpen(false)}
-                            className="flex items-center justify-between text-sm font-bold text-navy hover:text-[var(--teal)]"
-                          >
-                            <span>Halaman Utama PPID</span>
-                            <span className="text-xs font-semibold text-[var(--teal)]">
-                              Lihat semua →
-                            </span>
-                          </Link>
-                          <p className="mt-0.5 text-xs text-slate-500">
-                            Profil, Tugas &amp; Daftar Informasi Publik
-                          </p>
-                        </div>
-
-                        {ppidLinks.length > 0 ? (
-                          <ul className="max-h-80 divide-y divide-slate-100 overflow-y-auto py-1">
-                            {ppidLinks.map((item) => (
-                              <li key={item.slug}>
-                                <Link
-                                  href={`/ppid/${item.slug}`}
-                                  onClick={() => setPpidOpen(false)}
-                                  className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/50"
-                                >
-                                  {item.category && (
-                                    <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
-                                      {CATEGORY_SHORT_LABEL[item.category] || "Informasi PPID"}
-                                    </span>
-                                  )}
-                                  <span className="mt-0.5 block line-clamp-2 text-sm font-semibold text-navy">
-                                    {item.title}
-                                  </span>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <div className="px-4 py-3 text-xs text-slate-500">
-                            Belum ada dokumen PPID tambahan. Klik Halaman Utama PPID untuk info
-                            lengkap.
-                          </div>
-                        )}
+                  <div
+                    id={ppidDropdownId}
+                    className={`absolute left-0 top-full z-50 w-80 pt-2 transition-all duration-150 ${
+                      ppidOpen
+                        ? "visible translate-y-0 opacity-100"
+                        : "invisible -translate-y-1 opacity-0 group-hover/ppid:visible group-hover/ppid:translate-y-0 group-hover/ppid:opacity-100 group-focus-within/ppid:visible group-focus-within/ppid:translate-y-0 group-focus-within/ppid:opacity-100"
+                    }`}
+                  >
+                    <div className="overflow-hidden rounded-[var(--radius)] border border-slate-200 bg-white shadow-[var(--shadow-lift)]">
+                      <div className="border-b border-slate-100 bg-[var(--teal-soft)]/60 px-4 py-3">
+                        <Link
+                          href="/ppid"
+                          onClick={() => setPpidOpen(false)}
+                          className="flex items-center justify-between text-sm font-bold text-navy hover:text-[var(--teal)]"
+                        >
+                          <span>Halaman Utama PPID</span>
+                          <span className="text-xs font-semibold text-[var(--teal)]">
+                            Lihat semua →
+                          </span>
+                        </Link>
+                        <p className="mt-0.5 text-xs text-slate-500">
+                          Profil, Tugas &amp; Daftar Informasi Publik
+                        </p>
                       </div>
+
+                      {ppidLinks.length > 0 ? (
+                        <ul className="max-h-80 divide-y divide-slate-100 overflow-y-auto py-1">
+                          {ppidLinks.map((item) => (
+                            <li key={item.slug}>
+                              <Link
+                                href={`/ppid/${item.slug}`}
+                                onClick={() => setPpidOpen(false)}
+                                className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/50"
+                              >
+                                {item.category && (
+                                  <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
+                                    {CATEGORY_SHORT_LABEL[item.category] || "Informasi PPID"}
+                                  </span>
+                                )}
+                                <span className="mt-0.5 block line-clamp-2 text-sm font-semibold text-navy">
+                                  {item.title}
+                                </span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="px-4 py-3 text-xs text-slate-500">
+                          Belum ada dokumen PPID tambahan. Klik Halaman Utama PPID untuk info
+                          lengkap.
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             }
