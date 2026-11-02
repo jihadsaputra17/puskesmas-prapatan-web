@@ -3,6 +3,7 @@ import {
   getPpidCategoryLabel,
   getPpidItems,
 } from "@/lib/ppid-actions";
+import { parsePpidAttachments, toEmbedPreviewUrl } from "@/lib/ppid-files";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
@@ -58,6 +59,7 @@ export default async function DetailPpidPage({
 
   const imageUrl = item.imageUrl || PLACEHOLDER;
   const categoryLabel = getPpidCategoryLabel(item.category);
+  const attachments = parsePpidAttachments(item.fileUrl);
   const minutes = readingMinutes(String(item.content || ""), String(item.excerpt || ""));
   const published = new Date(item.date);
   const dateLabel = published.toLocaleDateString("id-ID", {
@@ -157,27 +159,6 @@ export default async function DetailPpidPage({
       </figure>
 
       <div className="content-container max-w-4xl pb-4 pt-8">
-        {item.fileUrl ? (
-          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[var(--radius)] border border-teal-200 bg-[var(--teal-soft)]/70 p-5 sm:flex-row sm:items-center">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-[var(--teal)]">
-                Dokumen Resmi / Lampiran PPID
-              </p>
-              <p className="mt-1 text-sm font-semibold text-navy">
-                Dokumen lengkap tersedia untuk dilihat atau diunduh oleh publik.
-              </p>
-            </div>
-            <a
-              href={item.fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="button-primary shrink-0"
-            >
-              📎 Buka / Unduh Dokumen ↗
-            </a>
-          </div>
-        ) : null}
-
         {item.excerpt ? (
           <p className="article-lead mb-6 text-xl font-medium leading-relaxed text-slate-900">
             {String(item.excerpt || "")
@@ -189,6 +170,78 @@ export default async function DetailPpidPage({
         ) : null}
 
         <ArticleContent content={String(item.content || "")} />
+
+        {attachments.length > 0 ? (
+          <section className="mt-10 space-y-6" aria-labelledby="ppid-documents-heading">
+            <div className="accent-bar">
+              <p className="eyebrow">Dokumen Resmi PPID</p>
+              <h2
+                id="ppid-documents-heading"
+                className="mt-1 text-xl font-extrabold tracking-tight text-navy sm:text-2xl"
+              >
+                Lampiran Dokumen Informasi Publik ({attachments.length} File)
+              </h2>
+              <p className="mt-1 text-sm text-slate-600">
+                Seluruh dokumen ditampilkan langsung pada halaman ini dan dapat dibaca atau diunduh oleh publik.
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              {attachments.map((att, index) => {
+                const { embedUrl, openUrl, isImage } = toEmbedPreviewUrl(att.url);
+                const docTitle =
+                  att.label ||
+                  (attachments.length > 1
+                    ? `${item.title} — Dokumen ${index + 1}`
+                    : item.title);
+
+                return (
+                  <div
+                    key={`${att.url}-${index}`}
+                    className="overflow-hidden rounded-[var(--radius)] border border-teal-200 bg-white shadow-[var(--shadow-soft)]"
+                  >
+                    <div className="flex flex-col justify-between gap-3 border-b border-teal-100 bg-[var(--teal-soft)]/70 px-5 py-4 sm:flex-row sm:items-center">
+                      <div>
+                        <span className="inline-block rounded-full bg-[var(--teal)] px-2.5 py-0.5 text-[0.6875rem] font-bold uppercase tracking-wider text-white">
+                          Dokumen #{index + 1}
+                        </span>
+                        <h3 className="mt-1.5 text-base font-bold text-navy">{docTitle}</h3>
+                      </div>
+                      <a
+                        href={openUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="button-primary shrink-0 text-xs"
+                      >
+                        📎 Buka Layar Penuh / Unduh ↗
+                      </a>
+                    </div>
+
+                    <div className="bg-slate-100">
+                      {isImage ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={embedUrl}
+                          alt={docTitle}
+                          className="mx-auto max-h-[44rem] w-full object-contain"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <iframe
+                          src={embedUrl}
+                          title={docTitle}
+                          className="h-[34rem] w-full border-0 bg-slate-100 md:h-[44rem]"
+                          allow="autoplay"
+                          loading="lazy"
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
         <ArticleShare title={String(item.title)} url={shareUrl} />
 

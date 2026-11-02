@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPpidFileUrlField } from "@/lib/ppid-files";
 
 const httpUrl = z.string().url().refine(
   (value) => {
@@ -98,7 +99,9 @@ export const ppidSchema = z.object({
     .string()
     .optional()
     .transform((value) => value?.trim() ?? "")
-    .pipe(z.union([httpUrl, z.literal("")])),
+    .refine(isValidPpidFileUrlField, {
+      message: "Semua tautan dokumen harus berupa URL HTTP atau HTTPS yang valid",
+    }),
 }).strict();
 
 export const serviceSchema = z.object({

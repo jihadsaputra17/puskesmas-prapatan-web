@@ -4,6 +4,11 @@ import { useState } from "react";
 import CoverImageField from "@/components/admin/CoverImageField";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import { FieldError, FieldHint, slugifyTitle } from "@/components/admin/BeritaFormFields";
+import {
+  parsePpidAttachments,
+  serializePpidAttachments,
+  type PpidAttachment,
+} from "@/lib/ppid-files";
 
 export const PPID_CATEGORY_OPTIONS = [
   {
@@ -46,8 +51,10 @@ export function PpidContentGuide() {
           PPID Badan Publik
         </li>
         <li>
-          <strong>Tautan Dokumen / PDF (Opsional)</strong> → tempel link Google Drive, OneDrive, atau
-          URL PDF resmi agar warga dapat langsung mengunduh/membuka dokumen
+          <strong>Tautan Dokumen / File Lampiran (Bisa Lebih dari 1 File)</strong> → tempel link
+          satuan file Google Drive (<code>https://drive.google.com/file/d/.../view</code>) atau PDF
+          resmi. Setiap file akan langsung ditampilkan (preview embed) di dalam halaman website tanpa
+          harus membuka folder Google Drive
         </li>
         <li>
           <strong>Gambar Sampul &amp; Isi Informasi</strong> → mendukung foto sampul serta isi artikel
@@ -82,6 +89,11 @@ export default function PpidFormFields({
   const [slug, setSlug] = useState(values.slug ?? "");
   const [manualSlug, setManualSlug] = useState(Boolean(values.slug));
 
+  const [attachments, setAttachments] = useState<PpidAttachment[]>(() => {
+    const parsed = parsePpidAttachments(values.file_url);
+    return parsed.length > 0 ? parsed : [{ label: "", url: "" }];
+  });
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nextTitle = e.target.value;
     setTitle(nextTitle);
@@ -95,6 +107,27 @@ export default function PpidFormFields({
     setSlug(nextSlug);
     setManualSlug(nextSlug.trim().length > 0);
   };
+
+  const updateAttachment = (index: number, patch: Partial<PpidAttachment>) => {
+    setAttachments((prev) =>
+      prev.map((item, idx) => (idx === index ? { ...item, ...patch } : item)),
+    );
+  };
+
+  const addAttachmentRow = () => {
+    setAttachments((prev) => [...prev, { label: "", url: "" }]);
+  };
+
+  const removeAttachmentRow = (index: number) => {
+    setAttachments((prev) => {
+      if (prev.length <= 1) {
+        return [{ label: "", url: "" }];
+      }
+      return prev.filter((_, idx) => idx !== index);
+    });
+  };
+
+  const serializedFileUrl = serializePpidAttachments(attachments);
 
   return (
     <div className="space-y-6">
@@ -183,21 +216,81 @@ export default function PpidFormFields({
       </div>
 
       <div>
-        <label htmlFor="file_url" className="mb-1 block text-sm font-medium text-[var(--ink)]">
-          Tautan Dokumen / File Lampiran (Opsional)
-        </label>
-        <input
-          id="file_url"
-          name="file_url"
-          type="url"
-          defaultValue={values.file_url}
-          aria-describedby={describedBy("file_url") || "file_url-hint"}
-          className="input-field"
-          placeholder="https://drive.google.com/file/d/..."
-        />
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <label className="block text-sm font-medium text-[var(--ink)]">
+            Tautan Dokumen / File Lampiran (Opsional — Bisa Lebih dari 1 File)
+          </label>
+          <button
+            type="button"
+            onClick={addAttachmentRow}
+            className="inline-flex items-center gap-1 rounded-lg bg-[var(--teal-soft)] px-3 py-1.5 text-xs font-bold text-[var(--teal)] transition hover:bg-[var(--teal)] hover:text-white"
+          >
+            + Tambah Tautan Dokumen
+          </button>
+        </div>
+
+        <input type="hidden" name="file_url" value={serializedFileUrl} />
+
+        <div className="space-y-3" aria-describedby={describedBy("file_url") || "file_url-hint"}>
+          {attachments.map((att, index) => (
+            <div
+              key={index}
+              className="rounded-[var(--radius-sm)] border border-slate-200 bg-slate-50/70 p-3.5"
+            >
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-navy">
+                  Dokumen #{index + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeAttachmentRow(index)}
+                  className="text-xs font-semibold text-red-600 hover:underline"
+                >
+                  {attachments.length > 1 ? "Hapus dokumen ini" : "Kosongkan"}
+                </button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-[1fr_1.6fr]">
+                <div>
+                  <label
+                    htmlFor={`file-label-${index}`}
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                  >
+                    Nama / Judul Dokumen (Opsional)
+                  </label>
+                  <input
+                    id={`file-label-${index}`}
+                    type="text"
+                    value={att.label}
+                    onChange={(e) => updateAttachment(index, { label: e.target.value })}
+                    className="input-field text-sm"
+                    placeholder={`Contoh: SK PPID / Dokumen ${index + 1}`}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor={`file-url-${index}`}
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                  >
+                    URL File Google Drive / PDF
+                  </label>
+                  <input
+                    id={`file-url-${index}`}
+                    type="url"
+                    value={att.url}
+                    onChange={(e) => updateAttachment(index, { url: e.target.value })}
+                    className="input-field text-sm"
+                    placeholder="https://drive.google.com/file/d/.../view?usp=sharing"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <FieldHint id="file_url">
-          Opsional. Isi dengan URL HTTPS (mis. Google Drive, PDF resmi) jika ada dokumen yang dapat
-          diunduh atau dilihat langsung oleh masyarakat.
+          Tempel tautan langsung ke masing-masing file di Google Drive (klik kanan file → Bagikan →
+          Salin link, pastikan akses &ldquo;Siapa saja yang memiliki link&rdquo;). Semua file yang
+          ditambahkan akan langsung tampil (preview di dalam halaman website) secara berurutan.
         </FieldHint>
         <FieldError id="file_url" message={fields.file_url} />
       </div>

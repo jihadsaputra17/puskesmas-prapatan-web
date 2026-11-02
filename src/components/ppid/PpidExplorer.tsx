@@ -8,6 +8,7 @@ import {
   getPpidCategoryShortLabel,
   type PpidItem,
 } from "@/lib/ppid-actions";
+import { parsePpidAttachments } from "@/lib/ppid-files";
 import type { PpidCategory } from "@/lib/admin-schemas";
 
 const PLACEHOLDER =
@@ -98,6 +99,7 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
               month: "long",
               year: "numeric",
             });
+            const attachments = parsePpidAttachments(item.fileUrl);
 
             return (
               <article
@@ -149,15 +151,13 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
                     >
                       Baca rincian →
                     </Link>
-                    {item.fileUrl && (
-                      <a
-                        href={item.fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    {attachments.length > 0 && (
+                      <Link
+                        href={`/ppid/${item.slug}#ppid-documents-heading`}
                         className="inline-flex items-center gap-1 rounded-full bg-[var(--teal-soft)] px-3 py-1 text-xs font-semibold text-[var(--teal)] transition hover:bg-[var(--teal)] hover:text-white"
                       >
-                        📎 Dokumen ↗
-                      </a>
+                        📎 {attachments.length} Dokumen
+                      </Link>
                     )}
                   </div>
                 </div>
