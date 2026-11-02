@@ -80,15 +80,21 @@ export default function ProfilPage() {
                 Alamat
               </p>
               <p className="mt-1 text-sm leading-6 text-slate-700">
-                Jl. Prapatan RT.29 No.31, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota
-                Balikpapan, Kalimantan Timur 76111
+                Jl. Prapatan No. 31 (Jl. Prapatan Dalam), RT. 029, Kelurahan Prapatan, Kecamatan
+                Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111
               </p>
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-[var(--teal)]">
-                Telepon
+                Telepon &amp; Email
               </p>
               <p className="mt-1 text-sm leading-6 text-slate-700">(0542) 426008</p>
+              <a
+                href="mailto:puskesmasprapatan123@gmail.com"
+                className="inline-block text-sm font-medium leading-6 text-[var(--teal)] hover:text-navy"
+              >
+                puskesmasprapatan123@gmail.com
+              </a>
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-[var(--teal)]">
@@ -184,10 +190,17 @@ export default function ProfilPage() {
           <div className="rounded-panel bg-gradient-to-br from-navy to-[var(--navy-deep)] p-8 text-center text-white">
             <h2 className="text-xl font-bold tracking-tight sm:text-2xl">Hubungi Kami</h2>
             <p className="mt-2 text-sm leading-6 text-slate-200/90">
-              Jl. Prapatan RT.29 No.31, Kelurahan Prapatan, Balikpapan Kota, Balikpapan
+              Jl. Prapatan No. 31 (Jl. Prapatan Dalam), RT. 029, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111
             </p>
             <p className="mt-2 text-sm leading-6 text-slate-200/90">
-              Telp: (0542) 426008 &nbsp;|&nbsp; Instagram:{" "}
+              Telp: (0542) 426008 &nbsp;|&nbsp; Email:{" "}
+              <a
+                href="mailto:puskesmasprapatan123@gmail.com"
+                className="font-semibold text-teal-200 hover:text-white hover:underline"
+              >
+                puskesmasprapatan123@gmail.com
+              </a>{" "}
+              &nbsp;|&nbsp; Instagram:{" "}
               <a
                 href="https://www.instagram.com/puskesmas.prapatan/"
                 target="_blank"

@@ -7,11 +7,13 @@ const fallbackSettings = {
   site_name: "Puskesmas Prapatan",
   phone: "(0542) 426008",
   email: "puskesmasprapatan123@gmail.com",
-  address: "Jl. Prapatan RT.29 No.31, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111",
+  address:
+    "Jl. Prapatan No. 31 (Jl. Prapatan Dalam), RT. 029, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111",
   instagram: "https://www.instagram.com/puskesmas.prapatan/",
   facebook: "https://web.facebook.com/profile.php?id=61564150502560",
   hero_title: "Pelayanan Kesehatan Terbaik untuk Anda",
-  hero_subtitle: "Kami berkomitmen memberikan pelayanan kesehatan yang berkualitas, terjangkau, dan merata bagi seluruh warga Kota Balikpapan.",
+  hero_subtitle:
+    "Kami berkomitmen memberikan pelayanan kesehatan yang berkualitas, terjangkau, dan merata bagi seluruh warga Kota Balikpapan.",
 };
 
 type SettingsInput = z.infer<typeof settingsSchema>;
@@ -21,8 +23,11 @@ export async function updateSettings(settings: SettingsInput) {
   try {
     await client.query("BEGIN");
     for (const [key, value] of Object.entries(settings)) {
-      await client.query(`INSERT INTO website_settings (setting_key, setting_value)
-        VALUES ($1, $2) ON CONFLICT (setting_key) DO UPDATE SET setting_value = $2`, [key, value || ""]);
+      await client.query(
+        `INSERT INTO website_settings (setting_key, setting_value)
+        VALUES ($1, $2) ON CONFLICT (setting_key) DO UPDATE SET setting_value = $2`,
+        [key, value || ""],
+      );
     }
     await client.query("COMMIT");
   } catch (error) {

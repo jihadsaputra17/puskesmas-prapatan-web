@@ -7,6 +7,13 @@ const DEFAULT_SOCIAL = {
   youtube: "https://www.youtube.com/@puskesmasprapatanbalikpapa1711",
 };
 
+const DEFAULT_CONTACT = {
+  address:
+    "Jl. Prapatan No. 31 (Jl. Prapatan Dalam), RT. 029, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111",
+  phone: "(0542) 426008",
+  email: "puskesmasprapatan123@gmail.com",
+};
+
 function getSocialLinks(settings: Record<string, string>) {
   const fb =
     settings.facebook && !settings.facebook.includes("facebook.com/puskesmasprapatan")
@@ -44,6 +51,19 @@ export default function SiteFooter({ settings }: { settings: Record<string, stri
   const year = new Date().getFullYear();
   const socialLinks = getSocialLinks(settings);
 
+  const address =
+    settings.address && !settings.address.includes("Jl. Prapatan No. 1")
+      ? settings.address
+      : DEFAULT_CONTACT.address;
+  const phone =
+    settings.phone && !settings.phone.includes("123456")
+      ? settings.phone
+      : DEFAULT_CONTACT.phone;
+  const email =
+    settings.email && !settings.email.includes("info@puskesmasprapatan.com")
+      ? settings.email
+      : DEFAULT_CONTACT.email;
+
   return (
     <footer className="mt-auto bg-navy text-slate-100">
       <div className="content-container grid gap-10 py-12 md:grid-cols-[1.2fr_1fr_1fr] md:py-14">
@@ -80,16 +100,20 @@ export default function SiteFooter({ settings }: { settings: Record<string, stri
         <address className="not-italic">
           <p className="text-sm font-semibold uppercase tracking-[0.12em] text-teal-200">Hubungi kami</p>
           <div className="mt-4 space-y-2 text-sm leading-7 text-slate-200">
-            {settings.address && <p>{settings.address}</p>}
-            {settings.phone && (
-              <a className="footer-link mt-0" href={`tel:${settings.phone.replace(/[^+\d]/g, "")}`}>
-                {settings.phone}
-              </a>
+            {address && <p>{address}</p>}
+            {phone && (
+              <p>
+                <a className="footer-link mt-0" href={`tel:${phone.replace(/[^+\d]/g, "")}`}>
+                  {phone}
+                </a>
+              </p>
             )}
-            {settings.email && (
-              <a className="footer-link mt-0" href={`mailto:${settings.email}`}>
-                {settings.email}
-              </a>
+            {email && (
+              <p>
+                <a className="footer-link mt-0" href={`mailto:${email}`}>
+                  {email}
+                </a>
+              </p>
             )}
           </div>
         </address>

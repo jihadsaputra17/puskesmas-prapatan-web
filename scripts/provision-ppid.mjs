@@ -81,5 +81,25 @@ await sql`
   WHERE nama = 'dr. Tien Fatimatuzzahra'
 `;
 
-console.log("Successfully provisioned migrations and updated official jadwal_dokter records.");
+// Synchronize official Puskesmas Prapatan contact information in website_settings
+const officialSettings = [
+  [
+    "address",
+    "Jl. Prapatan No. 31 (Jl. Prapatan Dalam), RT. 029, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111",
+  ],
+  ["email", "puskesmasprapatan123@gmail.com"],
+  ["phone", "(0542) 426008"],
+  ["instagram", "https://www.instagram.com/puskesmas.prapatan/"],
+  ["facebook", "https://web.facebook.com/profile.php?id=61564150502560"],
+];
+
+for (const [key, value] of officialSettings) {
+  await sql`
+    INSERT INTO website_settings (setting_key, setting_value)
+    VALUES (${key}, ${value})
+    ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value
+  `;
+}
+
+console.log("Successfully provisioned migrations and updated official jadwal_dokter and website_settings records.");
 process.exit(0);
