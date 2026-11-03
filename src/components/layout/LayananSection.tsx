@@ -3,7 +3,8 @@ import SectionHeading from "./SectionHeading";
 
 const services = [
   {
-    emoji: "🩺",
+    code: "01",
+    category: "Layanan Medis",
     title: "Poli Umum",
     desc: "Pemeriksaan kesehatan umum bagi dewasa, diagnosis, pengobatan, serta rujukan bila diperlukan penanganan lebih lanjut.",
     items: [
@@ -14,7 +15,8 @@ const services = [
     ],
   },
   {
-    emoji: "🦷",
+    code: "02",
+    category: "Kesehatan Gigi",
     title: "Poli Gigi & Mulut",
     desc: "Pemeriksaan dan perawatan kesehatan gigi serta mulut untuk seluruh kelompok usia.",
     items: [
@@ -25,7 +27,8 @@ const services = [
     ],
   },
   {
-    emoji: "🤰",
+    code: "03",
+    category: "Ibu & Keluarga",
     title: "KIA & KB",
     desc: "Pelayanan kesehatan ibu hamil, bersalin, nifas, serta layanan keluarga berencana.",
     items: [
@@ -36,7 +39,8 @@ const services = [
     ],
   },
   {
-    emoji: "👶",
+    code: "04",
+    category: "Kesehatan Anak",
     title: "Poli Anak / MTBS",
     desc: "Pemeriksaan tumbuh kembang dan kesehatan anak, termasuk imunisasi dasar.",
     items: [
@@ -46,7 +50,8 @@ const services = [
     ],
   },
   {
-    emoji: "🥗",
+    code: "05",
+    category: "Nutrisi & Dietetik",
     title: "Poli Gizi",
     desc: "Konsultasi gizi untuk balita, ibu hamil, dan masyarakat umum dalam rangka pencegahan masalah gizi.",
     items: [
@@ -56,7 +61,8 @@ const services = [
     ],
   },
   {
-    emoji: "🧪",
+    code: "06",
+    category: "Penunjang Diagnostik",
     title: "Laboratorium",
     desc: "Pemeriksaan penunjang diagnosis sederhana untuk mendukung pengobatan pasien.",
     items: [
@@ -83,26 +89,42 @@ export default function LayananSection() {
           }
         />
 
-        <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
             <li key={s.title}>
               <Link
                 href="/layanan"
-                className="panel panel-lift flex h-full flex-col overflow-hidden p-5"
+                className="group panel panel-lift flex h-full flex-col overflow-hidden border-t-4 border-t-[var(--teal)] p-6"
               >
-                <span
-                  className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-clinic-soft text-lg"
-                  aria-hidden="true"
-                >
-                  {s.emoji}
-                </span>
-                <h3 className="mt-4 text-base font-bold tracking-tight text-navy">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--teal-soft)] text-xs font-extrabold tracking-wider text-[var(--teal)] transition-colors group-hover:bg-[var(--teal)] group-hover:text-white">
+                    {s.code}
+                  </span>
+                  <span className="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-slate-400">
+                    {s.category}
+                  </span>
+                </div>
+
+                <h3 className="mt-4 text-lg font-bold tracking-tight text-navy transition-colors group-hover:text-clinic-teal">
                   {s.title}
                 </h3>
-                <p className="mt-2 flex-grow text-sm leading-6 text-slate-600 line-clamp-3">
+
+                <p className="mt-2 text-sm leading-6 text-slate-600">
                   {s.desc}
                 </p>
-                <span className="mt-4 text-sm font-semibold text-clinic-teal">
+
+                <ul className="mt-4 flex-grow space-y-1.5 border-t border-slate-100 pt-3.5">
+                  {s.items.slice(0, 3).map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2 text-xs leading-5 text-slate-600 before:mt-1.5 before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-[var(--teal)]"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <span className="mt-5 inline-flex items-center text-sm font-semibold text-clinic-teal">
                   Lihat detail →
                 </span>
               </Link>

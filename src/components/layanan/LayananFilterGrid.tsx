@@ -5,7 +5,7 @@ import { useState } from "react";
 import { plainText, truncateText } from "@/lib/public-content";
 
 export type StaticServiceItem = {
-  emoji: string;
+  emoji?: string;
   tag: string;
   title: string;
   desc: string;
@@ -40,7 +40,6 @@ export default function LayananFilterGrid({
     const cmsPlain = plainText(matchedCms.deskripsi);
     return {
       ...s,
-      emoji: matchedCms.icon?.trim() || s.emoji,
       desc: cmsPlain ? truncateText(cmsPlain, 220) : s.desc,
       cmsId: matchedCms.id,
     };
@@ -56,7 +55,6 @@ export default function LayananFilterGrid({
         ),
     )
     .map((c) => ({
-      emoji: c.icon?.trim() || "🏥",
       tag: c.nama_poli,
       title: c.nama_poli,
       desc: truncateText(plainText(c.deskripsi), 220),
@@ -102,43 +100,52 @@ export default function LayananFilterGrid({
 
       {/* Service cards */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {visibleServices.map((s) => (
-          <article
-            key={s.title}
-            className="panel panel-lift flex h-full flex-col p-5"
-          >
-            <span
-              className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[var(--teal-soft)] text-xl"
-              aria-hidden="true"
+        {visibleServices.map((s, idx) => {
+          const numberCode = String(idx + 1).padStart(2, "0");
+          return (
+            <article
+              key={s.title}
+              className="panel panel-lift flex h-full flex-col border-t-4 border-t-[var(--teal)] p-6"
             >
-              {s.emoji}
-            </span>
-            <h3 className="mt-4 text-base font-bold tracking-tight text-navy">
-              {s.title}
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{s.desc}</p>
-            {s.items.length > 0 && (
-              <ul className="mt-3 flex-grow space-y-1.5">
-                {s.items.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2 text-sm leading-5 text-slate-600 before:mt-1.5 before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-[var(--teal)]"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {s.cmsId && (
-              <Link
-                href={`/layanan/${s.cmsId}`}
-                className="mt-4 inline-flex items-center text-sm font-semibold text-clinic-teal hover:underline"
-              >
-                Info selengkapnya →
-              </Link>
-            )}
-          </article>
-        ))}
+              <div className="flex items-center justify-between gap-3">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--teal-soft)] text-xs font-extrabold tracking-wider text-[var(--teal)]">
+                  {numberCode}
+                </span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-wider text-slate-500">
+                  {s.tag}
+                </span>
+              </div>
+
+              <h3 className="mt-4 text-lg font-bold tracking-tight text-navy">
+                {s.title}
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-600">{s.desc}</p>
+
+              {s.items.length > 0 && (
+                <ul className="mt-4 flex-grow space-y-1.5 border-t border-slate-100 pt-3.5">
+                  {s.items.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2 text-sm leading-5 text-slate-600 before:mt-1.5 before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-[var(--teal)]"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {s.cmsId && (
+                <Link
+                  href={`/layanan/${s.cmsId}`}
+                  className="mt-4 inline-flex items-center text-sm font-semibold text-clinic-teal hover:underline"
+                >
+                  Info selengkapnya →
+                </Link>
+              )}
+            </article>
+          );
+        })}
       </div>
     </>
   );
