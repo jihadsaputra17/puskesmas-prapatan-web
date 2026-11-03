@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Profil",
@@ -104,7 +105,7 @@ export default function ProfilPage() {
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-[var(--teal)]">
-                Instagram
+                Instagram &amp; Media Sosial
               </p>
               <a
                 href="https://www.instagram.com/puskesmas.prapatan/"
@@ -114,6 +115,14 @@ export default function ProfilPage() {
               >
                 @puskesmas.prapatan
               </a>
+              <div className="mt-2">
+                <Link
+                  href="/media-sosial"
+                  className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[var(--teal)] shadow-sm transition hover:bg-[var(--teal)] hover:text-white"
+                >
+                  📱 Lihat Semua Kanal Media Sosial →
+                </Link>
+              </div>
             </div>
           </div>
 

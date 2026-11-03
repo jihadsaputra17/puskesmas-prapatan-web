@@ -201,6 +201,9 @@ export default async function PpidPage() {
               <Link href="/pengaduan" className="button-primary">
                 Ajukan Permohonan / Masukan
               </Link>
+              <Link href="/media-sosial" className="button-ghost-light">
+                📱 Kanal Media Sosial Resmi
+              </Link>
               <Link href="/profil" className="button-ghost-light">
                 Lihat Kontak &amp; Jam Layanan
               </Link>

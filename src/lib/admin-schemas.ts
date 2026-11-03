@@ -180,6 +180,10 @@ export const settingsSchema = z.object({
   address: z.string().trim().min(1).optional(),
   instagram: optionalHttpUrl,
   facebook: optionalHttpUrl,
+  youtube: optionalHttpUrl,
+  tiktok: optionalHttpUrl,
+  threads: optionalHttpUrl,
+  whatsapp: z.string().trim().optional(),
   hero_title: z.string().trim().min(1).optional(),
   hero_subtitle: z.string().trim().min(1).optional(),
 }).strict();

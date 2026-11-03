@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 import type { settingsSchema } from "@/lib/admin-schemas";
 
-const fallbackSettings = {
+export const DEFAULT_SOCIAL_SETTINGS = {
   site_name: "Puskesmas Prapatan",
   phone: "(0542) 426008",
   email: "puskesmasprapatan123@gmail.com",
@@ -11,6 +11,10 @@ const fallbackSettings = {
     "Jl. Prapatan No. 31 (Jl. Prapatan Dalam), RT. 029, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111",
   instagram: "https://www.instagram.com/puskesmas.prapatan/",
   facebook: "https://web.facebook.com/profile.php?id=61564150502560",
+  youtube: "https://www.youtube.com/@puskesmasprapatanbalikpapa1711",
+  tiktok: "https://www.tiktok.com/@puskesmas.prapatan",
+  threads: "https://www.threads.net/@puskesmas.prapatan",
+  whatsapp: "",
   hero_title: "Pelayanan Kesehatan Terbaik untuk Anda",
   hero_subtitle:
     "Kami berkomitmen memberikan pelayanan kesehatan yang berkualitas, terjangkau, dan merata bagi seluruh warga Kota Balikpapan.",
@@ -38,17 +42,26 @@ export async function updateSettings(settings: SettingsInput) {
     client.release();
   }
   revalidatePath("/");
+  revalidatePath("/media-sosial");
+  revalidatePath("/profil");
+  revalidatePath("/ppid");
   revalidatePath("/admin/settings");
 }
 
-export async function getSettings() {
+export async function getSettings(): Promise<Record<string, string>> {
   try {
     const { rows } = await sql`SELECT setting_key, setting_value FROM website_settings`;
-    return rows.reduce<Record<string, string>>((settings, row) => {
+    const dbSettings = rows.reduce<Record<string, string>>((settings, row) => {
       settings[row.setting_key] = row.setting_value;
       return settings;
     }, {});
+    return {
+      ...DEFAULT_SOCIAL_SETTINGS,
+      ...Object.fromEntries(
+        Object.entries(dbSettings).filter(([, v]) => typeof v === "string" && v.trim() !== ""),
+      ),
+    };
   } catch {
-    return fallbackSettings;
+    return { ...DEFAULT_SOCIAL_SETTINGS };
   }
 }

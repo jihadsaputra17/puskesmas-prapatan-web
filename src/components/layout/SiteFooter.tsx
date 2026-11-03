@@ -93,6 +93,7 @@ export default function SiteFooter({ settings }: { settings: Record<string, stri
             <Link className="footer-link mt-0" href="/berita">Berita</Link>
             <Link className="footer-link mt-0" href="/ppid">PPID</Link>
             <Link className="footer-link mt-0" href="/standar-pelayanan">Standar Pelayanan</Link>
+            <Link className="footer-link mt-0" href="/media-sosial">Media Sosial</Link>
             <Link className="footer-link mt-0" href="/pengaduan">Pengaduan</Link>
             <Link className="footer-link mt-0" href="/profil">Profil</Link>
           </div>

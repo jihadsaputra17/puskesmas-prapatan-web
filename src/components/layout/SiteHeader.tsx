@@ -49,6 +49,7 @@ const SP_CATEGORY_SHORT_LABEL: Record<string, string> = {
 function isActive(pathname: string | null, href: string) {
   const path = pathname || "/";
   if (href === "/") return path === "/";
+  if (href === "/ppid" && path.startsWith("/media-sosial")) return true;
   return path === href || path.startsWith(`${href}/`);
 }
 
@@ -79,6 +80,7 @@ export default function SiteHeader({
   standarPelayananLinks?: StandarPelayananNavLink[];
 }) {
   const [open, setOpen] = useState(false);
+  const [profilHover, setProfilHover] = useState(false);
   const [ppidHover, setPpidHover] = useState(false);
   const [spHover, setSpHover] = useState(false);
   const pathname = usePathname();
@@ -86,6 +88,7 @@ export default function SiteHeader({
 
   useEffect(() => {
     setOpen(false);
+    setProfilHover(false);
     setPpidHover(false);
     setSpHover(false);
   }, [pathname]);
@@ -125,6 +128,68 @@ export default function SiteHeader({
         {/* Desktop Navigation */}
         <nav aria-label="Navigasi utama desktop" className="hidden items-center gap-0.5 lg:flex">
           {links.map((link) => {
+            if (link.href === "/profil") {
+              const active = isActive(pathname, "/profil");
+              return (
+                <div
+                  key={link.href}
+                  className="group/profil relative"
+                  onMouseEnter={() => setProfilHover(true)}
+                  onMouseLeave={() => setProfilHover(false)}
+                >
+                  <Link
+                    href="/profil"
+                    aria-current={active ? "page" : undefined}
+                    onClick={() => setProfilHover(false)}
+                    className="nav-link"
+                  >
+                    {link.label}
+                  </Link>
+
+                  <div
+                    className={`absolute left-0 top-full z-50 w-64 pt-2 transition-all duration-150 ${
+                      profilHover
+                        ? "visible translate-y-0 opacity-100"
+                        : "invisible pointer-events-none -translate-y-1 opacity-0 group-hover/profil:visible group-hover/profil:pointer-events-auto group-hover/profil:translate-y-0 group-hover/profil:opacity-100"
+                    }`}
+                  >
+                    <div className="overflow-hidden rounded-[var(--radius)] border border-slate-200 bg-white shadow-[var(--shadow-lift)]">
+                      <ul className="divide-y divide-slate-100 py-1">
+                        <li>
+                          <Link
+                            href="/profil"
+                            onClick={() => setProfilHover(false)}
+                            className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/60"
+                          >
+                            <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
+                              Tentang Fasyankes
+                            </span>
+                            <span className="mt-0.5 block text-sm font-semibold text-navy">
+                              Profil &amp; Jam Layanan Puskesmas
+                            </span>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href="/media-sosial"
+                            onClick={() => setProfilHover(false)}
+                            className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/60"
+                          >
+                            <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
+                              Jejaring Resmi
+                            </span>
+                            <span className="mt-0.5 block text-sm font-semibold text-navy">
+                              📱 Kanal Media Sosial Resmi
+                            </span>
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
             if (link.href === "/ppid") {
               const active = isActive(pathname, "/ppid");
               return (
@@ -151,32 +216,40 @@ export default function SiteHeader({
                     }`}
                   >
                     <div className="overflow-hidden rounded-[var(--radius)] border border-slate-200 bg-white shadow-[var(--shadow-lift)]">
-                      {ppidLinks.length > 0 ? (
-                        <ul className="max-h-80 divide-y divide-slate-100 overflow-y-auto py-1">
-                          {ppidLinks.map((item) => (
-                            <li key={item.slug}>
-                              <Link
-                                href={`/ppid/${item.slug}`}
-                                onClick={() => setPpidHover(false)}
-                                className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/60"
-                              >
-                                {item.category && (
-                                  <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
-                                    {CATEGORY_SHORT_LABEL[item.category] || "Informasi PPID"}
-                                  </span>
-                                )}
-                                <span className="mt-0.5 block line-clamp-2 text-sm font-semibold text-navy">
-                                  {item.title}
+                      <ul className="max-h-80 divide-y divide-slate-100 overflow-y-auto py-1">
+                        <li className="bg-[var(--teal-soft)]/35">
+                          <Link
+                            href="/media-sosial"
+                            onClick={() => setPpidHover(false)}
+                            className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/80"
+                          >
+                            <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
+                              Digitalisasi &amp; Medsos
+                            </span>
+                            <span className="mt-0.5 block text-sm font-bold text-navy">
+                              📱 Kanal Media Sosial Resmi Puskesmas
+                            </span>
+                          </Link>
+                        </li>
+                        {ppidLinks.map((item) => (
+                          <li key={item.slug}>
+                            <Link
+                              href={`/ppid/${item.slug}`}
+                              onClick={() => setPpidHover(false)}
+                              className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/60"
+                            >
+                              {item.category && (
+                                <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
+                                  {CATEGORY_SHORT_LABEL[item.category] || "Informasi PPID"}
                                 </span>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div className="px-4 py-3 text-xs text-slate-500">
-                          Belum ada informasi PPID yang ditambahkan.
-                        </div>
-                      )}
+                              )}
+                              <span className="mt-0.5 block line-clamp-2 text-sm font-semibold text-navy">
+                                {item.title}
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -312,21 +385,28 @@ export default function SiteHeader({
                       >
                         {link.label}
                       </Link>
-                      {ppidLinks.length > 0 && (
-                        <ul className="ml-3 space-y-1 border-l-2 border-[var(--teal-soft)] pl-3">
-                          {ppidLinks.map((item) => (
-                            <li key={item.slug}>
-                              <Link
-                                href={`/ppid/${item.slug}`}
-                                onClick={() => setOpen(false)}
-                                className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-[var(--teal-soft)] hover:text-[var(--teal)]"
-                              >
-                                {item.title}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      <ul className="ml-3 space-y-1 border-l-2 border-[var(--teal-soft)] pl-3">
+                        <li>
+                          <Link
+                            href="/media-sosial"
+                            onClick={() => setOpen(false)}
+                            className="block rounded-md px-3 py-2 text-sm font-semibold text-[var(--teal)] hover:bg-[var(--teal-soft)]"
+                          >
+                            📱 Kanal Media Sosial Resmi
+                          </Link>
+                        </li>
+                        {ppidLinks.map((item) => (
+                          <li key={item.slug}>
+                            <Link
+                              href={`/ppid/${item.slug}`}
+                              onClick={() => setOpen(false)}
+                              className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-[var(--teal-soft)] hover:text-[var(--teal)]"
+                            >
+                              {item.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   );
                 }
