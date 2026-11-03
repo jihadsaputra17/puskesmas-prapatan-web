@@ -104,6 +104,33 @@ export const ppidSchema = z.object({
     }),
 }).strict();
 
+export const STANDAR_PELAYANAN_CATEGORIES = [
+  "standar-pelayanan",
+  "maklumat-pelayanan",
+  "sop-alur",
+  "tarif-biaya",
+  "survei-kepuasan",
+  "kompensasi-pengaduan",
+] as const;
+
+export type StandarPelayananCategory = (typeof STANDAR_PELAYANAN_CATEGORIES)[number];
+
+export const standarPelayananSchema = z.object({
+  title: requiredText,
+  slug: z.string().trim().min(1).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug"),
+  category: z.enum(STANDAR_PELAYANAN_CATEGORIES),
+  excerpt: newsExcerpt,
+  content: newsContent,
+  image_url: optionalNewsImage,
+  file_url: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() ?? "")
+    .refine(isValidPpidFileUrlField, {
+      message: "Semua tautan dokumen harus berupa URL HTTP atau HTTPS yang valid",
+    }),
+}).strict();
+
 export const serviceSchema = z.object({
   nama_poli: requiredText,
   deskripsi: requiredText,

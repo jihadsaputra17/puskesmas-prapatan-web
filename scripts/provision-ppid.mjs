@@ -23,6 +23,7 @@ for (const file of [
   "db/migrations/003_ppid_items.sql",
   "db/migrations/004_website_poll.sql",
   "db/migrations/005_jadwal_medis.sql",
+  "db/migrations/006_standar_pelayanan_items.sql",
 ]) {
   const migration = await readFile(path.join(rootDir, file), "utf8");
   const statements = migration

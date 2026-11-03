@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getSettings } from "@/lib/settings-actions";
 import { getPpidItems } from "@/lib/ppid-actions";
+import { getStandarPelayananItems } from "@/lib/standar-pelayanan-actions";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -31,14 +32,20 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [session, settings, ppidItems] = await Promise.all([
+  const [session, settings, ppidItems, standarPelayananItems] = await Promise.all([
     getServerSession(authOptions),
     getSettings(),
     getPpidItems({ limit: 15 }),
+    getStandarPelayananItems({ limit: 15 }),
   ]);
   const isAdmin =
     session?.user?.role === "admin" || session?.user?.role === "superadmin";
   const ppidLinks = ppidItems.map((item) => ({
+    title: item.title,
+    slug: item.slug,
+    category: item.category,
+  }));
+  const standarPelayananLinks = standarPelayananItems.map((item) => ({
     title: item.title,
     slug: item.slug,
     category: item.category,
@@ -54,6 +61,7 @@ export default async function RootLayout({
           isAdmin={isAdmin}
           siteName={settings.site_name || "Puskesmas Prapatan"}
           ppidLinks={ppidLinks}
+          standarPelayananLinks={standarPelayananLinks}
         />
         <main id="main-content" className="flex-grow">
           {children}

@@ -11,6 +11,12 @@ export type PpidNavLink = {
   category?: string;
 };
 
+export type StandarPelayananNavLink = {
+  title: string;
+  slug: string;
+  category?: string;
+};
+
 const links = [
   { href: "/", label: "Beranda" },
   { href: "/profil", label: "Profil" },
@@ -18,6 +24,7 @@ const links = [
   { href: "/jadwal-dokter", label: "Jadwal" },
   { href: "/berita", label: "Berita" },
   { href: "/ppid", label: "PPID" },
+  { href: "/standar-pelayanan", label: "Standar Pelayanan" },
   { href: "/pengaduan", label: "Pengaduan" },
 ];
 
@@ -28,6 +35,15 @@ const CATEGORY_SHORT_LABEL: Record<string, string> = {
   "sarana-prasarana": "Sarana & Prasarana",
   "digitalisasi-medsos": "Digitalisasi & Medsos",
   komitmen: "Komitmen Badan Publik",
+};
+
+const SP_CATEGORY_SHORT_LABEL: Record<string, string> = {
+  "standar-pelayanan": "Standar Pelayanan",
+  "maklumat-pelayanan": "Maklumat Pelayanan",
+  "sop-alur": "SOP & Alur",
+  "tarif-biaya": "Tarif & Biaya",
+  "survei-kepuasan": "Survei Kepuasan (SKM)",
+  "kompensasi-pengaduan": "Kompensasi & Pengaduan",
 };
 
 function isActive(pathname: string | null, href: string) {
@@ -55,19 +71,23 @@ export default function SiteHeader({
   isAdmin,
   siteName = "Puskesmas Prapatan",
   ppidLinks = [],
+  standarPelayananLinks = [],
 }: {
   isAdmin: boolean;
   siteName?: string;
   ppidLinks?: PpidNavLink[];
+  standarPelayananLinks?: StandarPelayananNavLink[];
 }) {
   const [open, setOpen] = useState(false);
   const [ppidHover, setPpidHover] = useState(false);
+  const [spHover, setSpHover] = useState(false);
   const pathname = usePathname();
   const menuId = useId();
 
   useEffect(() => {
     setOpen(false);
     setPpidHover(false);
+    setSpHover(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -163,6 +183,64 @@ export default function SiteHeader({
               );
             }
 
+            if (link.href === "/standar-pelayanan") {
+              const active = isActive(pathname, "/standar-pelayanan");
+              return (
+                <div
+                  key={link.href}
+                  className="group/sp relative"
+                  onMouseEnter={() => setSpHover(true)}
+                  onMouseLeave={() => setSpHover(false)}
+                >
+                  <Link
+                    href="/standar-pelayanan"
+                    aria-current={active ? "page" : undefined}
+                    onClick={() => setSpHover(false)}
+                    className="nav-link"
+                  >
+                    {link.label}
+                  </Link>
+
+                  <div
+                    className={`absolute left-0 top-full z-50 w-72 pt-2 transition-all duration-150 ${
+                      spHover
+                        ? "visible translate-y-0 opacity-100"
+                        : "invisible pointer-events-none -translate-y-1 opacity-0 group-hover/sp:visible group-hover/sp:pointer-events-auto group-hover/sp:translate-y-0 group-hover/sp:opacity-100"
+                    }`}
+                  >
+                    <div className="overflow-hidden rounded-[var(--radius)] border border-slate-200 bg-white shadow-[var(--shadow-lift)]">
+                      {standarPelayananLinks.length > 0 ? (
+                        <ul className="max-h-80 divide-y divide-slate-100 overflow-y-auto py-1">
+                          {standarPelayananLinks.map((item) => (
+                            <li key={item.slug}>
+                              <Link
+                                href={`/standar-pelayanan/${item.slug}`}
+                                onClick={() => setSpHover(false)}
+                                className="block px-4 py-2.5 transition hover:bg-[var(--teal-soft)]/60"
+                              >
+                                {item.category && (
+                                  <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
+                                    {SP_CATEGORY_SHORT_LABEL[item.category] || "Standar Pelayanan"}
+                                  </span>
+                                )}
+                                <span className="mt-0.5 block line-clamp-2 text-sm font-semibold text-navy">
+                                  {item.title}
+                                </span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="px-4 py-3 text-xs text-slate-500">
+                          Belum ada informasi Standar Pelayanan yang ditambahkan.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={link.href}
@@ -240,6 +318,36 @@ export default function SiteHeader({
                             <li key={item.slug}>
                               <Link
                                 href={`/ppid/${item.slug}`}
+                                onClick={() => setOpen(false)}
+                                className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-[var(--teal-soft)] hover:text-[var(--teal)]"
+                              >
+                                {item.title}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                }
+
+                if (link.href === "/standar-pelayanan") {
+                  return (
+                    <div key={link.href} className="space-y-1">
+                      <Link
+                        href="/standar-pelayanan"
+                        aria-current={isActive(pathname, "/standar-pelayanan") ? "page" : undefined}
+                        onClick={() => setOpen(false)}
+                        className="nav-link w-full"
+                      >
+                        {link.label}
+                      </Link>
+                      {standarPelayananLinks.length > 0 && (
+                        <ul className="ml-3 space-y-1 border-l-2 border-[var(--teal-soft)] pl-3">
+                          {standarPelayananLinks.map((item) => (
+                            <li key={item.slug}>
+                              <Link
+                                href={`/standar-pelayanan/${item.slug}`}
                                 onClick={() => setOpen(false)}
                                 className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-[var(--teal-soft)] hover:text-[var(--teal)]"
                               >

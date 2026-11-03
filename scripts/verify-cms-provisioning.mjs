@@ -6,6 +6,7 @@ const migration002 = await readFile("db/migrations/002_dokter_profiles.sql", "ut
 const migration003 = await readFile("db/migrations/003_ppid_items.sql", "utf8");
 const migration004 = await readFile("db/migrations/004_website_poll.sql", "utf8");
 const migration005 = await readFile("db/migrations/005_jadwal_medis.sql", "utf8");
+const migration006 = await readFile("db/migrations/006_standar_pelayanan_items.sql", "utf8");
 
 const requiredTables001 = ["users", "health_news", "layanan_poli", "jadwal_dokter", "website_settings"];
 for (const table of requiredTables001) {
@@ -46,6 +47,10 @@ if (!/CREATE TABLE IF NOT EXISTS website_poll\b/i.test(migration004)) {
 
 if (!/ALTER TABLE jadwal_dokter\s+ADD COLUMN IF NOT EXISTS jenis_tenaga_medis/i.test(migration005)) {
   throw new Error("Missing idempotent jenis_tenaga_medis column in 005.");
+}
+
+if (!/CREATE TABLE IF NOT EXISTS standar_pelayanan_items\b/i.test(migration006)) {
+  throw new Error("Missing idempotent provisioning for standar_pelayanan_items in 006.");
 }
 
 for await (const path of glob("src/**/*.{ts,tsx}")) {

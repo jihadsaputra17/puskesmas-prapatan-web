@@ -12,6 +12,7 @@ describe("AdminNav", () => {
 
     expect(screen.getByRole("link", { name: /kelola berita/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /kelola ppid/i })).toBeVisible();
+    expect(screen.getByRole("link", { name: /standar pelayanan/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /layanan poli/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /kelola dokter/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /jadwal dokter/i })).toBeVisible();
