@@ -1,6 +1,6 @@
 # Dokumentasi Pembaruan Website UPTD Puskesmas Prapatan
 
-**Tanggal Pembaruan**: 2 November 2026  
+**Tanggal Pembaruan Terakhir**: 3 November 2026  
 **Domain Produksi**: https://pkmprapatanbpn.web.id/  
 **Repository**: `https://github.com/jihadsaputra17/puskesmas-prapatan-web.git` (`main`)
 
@@ -26,16 +26,36 @@
 
 ---
 
-## 2. Sampul Default Otomatis (`DefaultCoverBanner`) & Tombol Bagikan Sosial Media
+## 2. Segmen & CMS Standar Pelayanan (`/standar-pelayanan` & `/admin/standar-pelayanan`)
+- **Menu Navigasi & Hover Submenu Otomatis**:
+  - Ditambahkan tepat di sebelah menu **PPID** pada Header (`src/components/layout/SiteHeader.tsx`) dan Footer (`src/components/layout/SiteFooter.tsx`).
+  - Saat kursor diarahkan (*hover*) ke menu **Standar Pelayanan**, daftar dokumen Standar Pelayanan yang sudah dipublikasikan di Admin Panel otomatis tampil sebagai submenu dropdown (tanpa ikon panah, identik dengan menu PPID).
+- **Halaman Publik Standar Pelayanan (`/standar-pelayanan` & `/standar-pelayanan/[slug]`)**:
+  - Menampilkan penjelasan Standar Pelayanan sesuai UU No. 25 Tahun 2009 & PermenPAN-RB No. 15 Tahun 2014, filter kategori & pencarian dokumen (`src/components/standar-pelayanan/StandarPelayananExplorer.tsx`), serta halaman detail dokumen.
+- **6 Kategori Standar Pelayanan**:
+  1. `Standar Pelayanan Puskesmas` (`standar-pelayanan`)
+  2. `Maklumat Pelayanan & Janji Layanan` (`maklumat-pelayanan`)
+  3. `SOP & Alur Pelayanan` (`sop-alur`)
+  4. `Tarif / Biaya Pelayanan Kesehatan` (`tarif-biaya`)
+  5. `Survei Kepuasan Masyarakat (SKM / IKM)` (`survei-kepuasan`)
+  6. `Kompensasi & Penanganan Pengaduan Layanan` (`kompensasi-pengaduan`)
+- **Manajemen Admin Standar Pelayanan (`/admin/standar-pelayanan`)**:
+  - Tersedia di sidebar Panel Admin (`Standar Pelayanan`) dan kartu ringkasan Dashboard Utama.
+  - Mendukung fitur lengkap seperti PPID: auto-slug dari judul, pilihan 6 kategori Standar Pelayanan, multi-tautan dokumen (`+ Tambah Tautan Dokumen`) dengan fitur klik-untuk-pratinjau di website, gambar sampul opsional dengan fallback `DefaultCoverBanner`, editor teks lengkap, serta tombol bagikan ke sosial media.
+  - Tabel database: `standar_pelayanan_items` (`db/migrations/006_standar_pelayanan_items.sql`).
+
+---
+
+## 3. Sampul Default Otomatis (`DefaultCoverBanner`) & Tombol Bagikan Sosial Media
 - **Sampul Default Otomatis (`src/components/ui/DefaultCoverBanner.tsx`)**:
-  - Apabila **Gambar sampul (Opsional)** pada PPID atau Berita dikosongkan, sistem otomatis menampilkan sampul resmi UPTD Puskesmas Prapatan (gradasi *navy–teal*, foto gedung Puskesmas, logo resmi, kategori, dan judul artikel/dokumen).
+  - Apabila **Gambar sampul (Opsional)** pada PPID, Standar Pelayanan, atau Berita dikosongkan, sistem otomatis menampilkan sampul resmi UPTD Puskesmas Prapatan (gradasi *navy–teal*, foto gedung Puskesmas, logo resmi, kategori, dan judul artikel/dokumen).
   - Pratinjau sampul otomatis juga tampil langsung di formulir Admin (`src/components/admin/CoverImageField.tsx`).
 - **Fitur Bagikan Artikel (`src/components/berita/ArticleShare.tsx`)**:
   - Dilengkapi tombol bagikan ke **WhatsApp**, **Facebook**, **Instagram**, **TikTok**, **Threads**, serta tombol **Salin Tautan**.
 
 ---
 
-## 3. Fitur Polling Pengunjung di Beranda
+## 4. Fitur Polling Pengunjung di Beranda
 - **Pertanyaan**: *Apakah Website Ini Bermanfaat ?*
 - **Pilihan**:
   1. `Sangat Bermanfaat`
@@ -46,7 +66,7 @@
 
 ---
 
-## 4. Pembaruan Jadwal Dokter & Tenaga Medis (`/jadwal-dokter` & `/admin/jadwal`)
+## 5. Pembaruan Jadwal Dokter & Tenaga Medis (`/jadwal-dokter` & `/admin/jadwal`)
 - Memperbarui database `jadwal_dokter` (`db/migrations/005_jadwal_medis.sql`) dengan 9 Tenaga Medis resmi beserta kolom **Jenis Tenaga Medis** dan **Jam Kerja**:
   - **Poli Umum**:
     - `dr. Novida Fridiani` (`Dokter`)
@@ -70,7 +90,7 @@
 
 ---
 
-## 5. Pembaruan Data Kontak Resmi ("Hubungi Kami")
+## 6. Pembaruan Data Kontak Resmi ("Hubungi Kami")
 - **Alamat Resmi**: `Jl. Prapatan No. 31 (Jl. Prapatan Dalam), RT. 029, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111`
 - **Telepon**: `(0542) 426008`
 - **Email**: `puskesmasprapatan123@gmail.com`
