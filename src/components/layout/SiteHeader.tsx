@@ -164,8 +164,8 @@ export default function SiteHeader({
                             <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
                               Tentang Fasyankes
                             </span>
-                            <span className="mt-0.5 block text-sm font-semibold text-navy">
-                              Profil &amp; Jam Layanan Puskesmas
+                            <span className="mt-0.5 block text-sm font-semibold uppercase text-navy">
+                              PROFIL &amp; JAM LAYANAN PUSKESMAS
                             </span>
                           </Link>
                         </li>
@@ -178,8 +178,8 @@ export default function SiteHeader({
                             <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
                               Jejaring Resmi
                             </span>
-                            <span className="mt-0.5 block text-sm font-semibold text-navy">
-                              📱 Kanal Media Sosial Resmi
+                            <span className="mt-0.5 block text-sm font-semibold uppercase text-navy">
+                              KANAL MEDIA SOSIAL RESMI PUSKESMAS
                             </span>
                           </Link>
                         </li>
@@ -226,8 +226,8 @@ export default function SiteHeader({
                             <span className="block text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--teal)]">
                               Digitalisasi &amp; Medsos
                             </span>
-                            <span className="mt-0.5 block text-sm font-bold text-navy">
-                              📱 Kanal Media Sosial Resmi Puskesmas
+                            <span className="mt-0.5 block text-sm font-bold uppercase text-navy">
+                              KANAL MEDIA SOSIAL RESMI PUSKESMAS
                             </span>
                           </Link>
                         </li>
@@ -243,7 +243,7 @@ export default function SiteHeader({
                                   {CATEGORY_SHORT_LABEL[item.category] || "Informasi PPID"}
                                 </span>
                               )}
-                              <span className="mt-0.5 block line-clamp-2 text-sm font-semibold text-navy">
+                              <span className="mt-0.5 block line-clamp-2 text-sm font-semibold uppercase text-navy">
                                 {item.title}
                               </span>
                             </Link>
@@ -296,7 +296,7 @@ export default function SiteHeader({
                                     {SP_CATEGORY_SHORT_LABEL[item.category] || "Standar Pelayanan"}
                                   </span>
                                 )}
-                                <span className="mt-0.5 block line-clamp-2 text-sm font-semibold text-navy">
+                                <span className="mt-0.5 block line-clamp-2 text-sm font-semibold uppercase text-navy">
                                   {item.title}
                                 </span>
                               </Link>
@@ -390,9 +390,9 @@ export default function SiteHeader({
                           <Link
                             href="/media-sosial"
                             onClick={() => setOpen(false)}
-                            className="block rounded-md px-3 py-2 text-sm font-semibold text-[var(--teal)] hover:bg-[var(--teal-soft)]"
+                            className="block rounded-md px-3 py-2 text-sm font-semibold uppercase text-[var(--teal)] hover:bg-[var(--teal-soft)]"
                           >
-                            📱 Kanal Media Sosial Resmi
+                            KANAL MEDIA SOSIAL RESMI PUSKESMAS
                           </Link>
                         </li>
                         {ppidLinks.map((item) => (
@@ -400,7 +400,7 @@ export default function SiteHeader({
                             <Link
                               href={`/ppid/${item.slug}`}
                               onClick={() => setOpen(false)}
-                              className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-[var(--teal-soft)] hover:text-[var(--teal)]"
+                              className="block rounded-md px-3 py-2 text-sm uppercase text-slate-700 hover:bg-[var(--teal-soft)] hover:text-[var(--teal)]"
                             >
                               {item.title}
                             </Link>

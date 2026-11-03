@@ -202,7 +202,7 @@ export default async function PpidPage() {
                 Ajukan Permohonan / Masukan
               </Link>
               <Link href="/media-sosial" className="button-ghost-light">
-                📱 Kanal Media Sosial Resmi
+                Kanal Media Sosial Resmi
               </Link>
               <Link href="/profil" className="button-ghost-light">
                 Lihat Kontak &amp; Jam Layanan

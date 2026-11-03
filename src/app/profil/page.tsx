@@ -120,7 +120,7 @@ export default function ProfilPage() {
                   href="/media-sosial"
                   className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[var(--teal)] shadow-sm transition hover:bg-[var(--teal)] hover:text-white"
                 >
-                  📱 Lihat Semua Kanal Media Sosial →
+                  Lihat Semua Kanal Media Sosial →
                 </Link>
               </div>
             </div>
