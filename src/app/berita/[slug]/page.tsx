@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
 import ArticleContent from "../../../components/berita/ArticleContent";
+import ArticleImageGallery from "../../../components/berita/ArticleImageGallery";
 import ArticleShare from "../../../components/berita/ArticleShare";
 import DefaultCoverBanner from "../../../components/ui/DefaultCoverBanner";
 import SmartImage from "../../../components/ui/SmartImage";
+import { getPrimaryArticleImage } from "../../../lib/article-images";
 
 export async function generateMetadata({
   params,
@@ -157,32 +159,13 @@ export default async function DetailBeritaPage({
         </div>
       </header>
 
-      <figure className="content-container max-w-4xl">
-        <div className="relative aspect-video w-full overflow-hidden rounded-[var(--radius-lg)] bg-clinic-soft shadow-[var(--shadow-soft)]">
-          {berita.image_url ? (
-            <SmartImage
-              src={berita.image_url}
-              alt={berita.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 896px) 100vw, 896px"
-              priority
-            />
-          ) : (
-            <DefaultCoverBanner
-              title={berita.title}
-              badge={category}
-              subtitle="Tim Promosi Kesehatan · UPTD Puskesmas Prapatan"
-              variant="hero"
-            />
-          )}
-        </div>
-        {berita.excerpt ? (
-          <figcaption className="mt-2.5 text-center text-[0.8125rem] text-slate-400">
-            {berita.excerpt}
-          </figcaption>
-        ) : null}
-      </figure>
+      <ArticleImageGallery
+        imageUrl={berita.image_url}
+        title={berita.title}
+        badge={category}
+        subtitle="Tim Promosi Kesehatan · UPTD Puskesmas Prapatan"
+        caption={berita.excerpt}
+      />
 
       <div className="content-container max-w-4xl pb-4 pt-8">
         {berita.excerpt ? (
@@ -241,6 +224,7 @@ export default async function DetailBeritaPage({
                   month: "long",
                   year: "numeric",
                 });
+                const relCover = getPrimaryArticleImage(item.imageUrl);
                 return (
                   <Link
                     key={item.id}
@@ -248,9 +232,9 @@ export default async function DetailBeritaPage({
                     className="group panel panel-lift overflow-hidden"
                   >
                     <div className="relative h-[8.5rem] w-full overflow-hidden bg-clinic-soft">
-                      {item.imageUrl ? (
+                      {relCover ? (
                         <SmartImage
-                          src={item.imageUrl}
+                          src={relCover}
                           alt=""
                           fill
                           className="object-cover transition duration-300 group-hover:scale-[1.03]"

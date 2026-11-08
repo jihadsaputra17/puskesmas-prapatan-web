@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { getBeritaKesehatan } from "../../lib/actions";
+import { parseArticleImages } from "../../lib/article-images";
 import DefaultCoverBanner from "../../components/ui/DefaultCoverBanner";
 import SmartImage from "../../components/ui/SmartImage";
 
@@ -38,56 +39,65 @@ export default async function BeritaPage() {
         <div className="content-container">
           {beritaData.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {beritaData.map((berita) => (
-                <article
-                  key={berita.id}
-                  className="group panel panel-lift relative flex flex-col overflow-hidden"
-                >
-                  <div className="relative h-48 w-full shrink-0 overflow-hidden bg-clinic-soft">
-                    {berita.imageUrl ? (
-                      <SmartImage
-                        src={berita.imageUrl}
-                        alt=""
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    ) : (
-                      <DefaultCoverBanner
-                        title={berita.title}
-                        badge="Berita & Informasi"
-                        variant="card"
-                      />
-                    )}
-                  </div>
-                  <div className="flex flex-grow flex-col p-5">
-                    <time
-                      dateTime={new Date(berita.date).toISOString()}
-                      className="text-xs font-semibold uppercase tracking-wide text-clinic-teal"
-                    >
-                      {new Date(berita.date).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </time>
-                    <h2 className="mt-2 text-lg font-bold leading-snug text-navy">
-                      <Link
-                        href={`/berita/${berita.slug}`}
-                        className="before:absolute before:inset-0 focus:outline-none group-hover:text-clinic-teal"
-                        aria-label={`Baca selengkapnya mengenai ${berita.title}`}
+              {beritaData.map((berita) => {
+                const photos = parseArticleImages(berita.imageUrl);
+                const coverUrl = photos[0] || "";
+                return (
+                  <article
+                    key={berita.id}
+                    className="group panel panel-lift relative flex flex-col overflow-hidden"
+                  >
+                    <div className="relative h-48 w-full shrink-0 overflow-hidden bg-clinic-soft">
+                      {coverUrl ? (
+                        <SmartImage
+                          src={coverUrl}
+                          alt=""
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <DefaultCoverBanner
+                          title={berita.title}
+                          badge="Berita & Informasi"
+                          variant="card"
+                        />
+                      )}
+                      {photos.length > 1 && (
+                        <span className="absolute right-3 top-3 z-20 rounded-full bg-navy/85 px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
+                          {photos.length} Foto
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-grow flex-col p-5">
+                      <time
+                        dateTime={new Date(berita.date).toISOString()}
+                        className="text-xs font-semibold uppercase tracking-wide text-clinic-teal"
                       >
-                        {berita.title}
-                      </Link>
-                    </h2>
-                    {berita.excerpt && (
-                      <p className="mt-3 line-clamp-3 flex-grow text-sm leading-6 text-slate-600">
-                        {berita.excerpt}
-                      </p>
-                    )}
-                  </div>
-                </article>
-              ))}
+                        {new Date(berita.date).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </time>
+                      <h2 className="mt-2 text-lg font-bold leading-snug text-navy">
+                        <Link
+                          href={`/berita/${berita.slug}`}
+                          className="before:absolute before:inset-0 focus:outline-none group-hover:text-clinic-teal"
+                          aria-label={`Baca selengkapnya mengenai ${berita.title}`}
+                        >
+                          {berita.title}
+                        </Link>
+                      </h2>
+                      {berita.excerpt && (
+                        <p className="mt-3 line-clamp-3 flex-grow text-sm leading-6 text-slate-600">
+                          {berita.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           ) : (
             <div className="panel p-10 text-center text-slate-500">Belum ada berita.</div>

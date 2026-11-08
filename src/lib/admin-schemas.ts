@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidArticleImageField, isValidSingleImageUrl } from "@/lib/article-images";
 import { isValidPpidFileUrlField } from "@/lib/ppid-files";
 
 const httpUrl = z.string().url().refine(
@@ -13,26 +14,14 @@ const httpUrl = z.string().url().refine(
   { message: "URL must use HTTP or HTTPS" },
 );
 
-/** Cover: empty | http(s) URL | compressed data:image (client upload). */
+/** Cover: empty | single or multiple http(s) URLs / compressed data:image uploads. */
 const optionalNewsImage = z
   .string()
   .optional()
   .transform((value) => value?.trim() ?? "")
-  .refine(
-    (value) => {
-      if (!value) return true;
-      if (/^data:image\/(png|jpe?g|gif|webp);base64,/i.test(value)) {
-        return value.length <= 2_000_000;
-      }
-      try {
-        const protocol = new URL(value).protocol;
-        return protocol === "https:" || protocol === "http:";
-      } catch {
-        return false;
-      }
-    },
-    { message: "Gambar harus URL HTTP(S) atau unggahan gambar (max ~1.5MB terkompres)" },
-  );
+  .refine((value) => isValidArticleImageField(value), {
+    message: "Gambar harus URL HTTP(S) atau unggahan gambar (maks 12 foto, @ ~1.5MB terkompres)",
+  });
 
 const optionalHttpUrl = z.union([httpUrl, z.literal("")]).optional();
 const requiredText = z.string().trim().min(1, "Required");
@@ -146,8 +135,14 @@ export const scheduleSchema = z.object({
   jam_selesai: requiredText,
 }).strict();
 
-/** Same image rules as berita covers — shared CMS photo field. */
-export const optionalCmsImage = optionalNewsImage;
+/** Single photo rule for dokter profile photos. */
+export const optionalCmsImage = z
+  .string()
+  .optional()
+  .transform((value) => value?.trim() ?? "")
+  .refine((value) => !value || isValidSingleImageUrl(value), {
+    message: "Gambar harus URL HTTP(S) atau unggahan gambar (max ~1.5MB terkompres)",
+  });
 
 export const dokterSchema = z
   .object({

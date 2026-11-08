@@ -217,16 +217,19 @@ export default function BeritaFormFields({
 
       <div>
         <p className="mb-1 block text-sm font-medium text-[var(--ink)]" id="image_url-label">
-          Gambar sampul
+          Gambar sampul &amp; Galeri Slideshow (Opsional)
         </p>
         <CoverImageField
           name="image_url"
           defaultValue={values.image_url}
           error={fields.image_url}
           describedBy={describedBy("image_url") || "image_url-hint"}
+          previewTitle={title || "Berita & Informasi Puskesmas Prapatan"}
         />
         <FieldHint id="image_url">
-          Unggah dari perangkat atau tempel URL HTTPS. Ideal rasio 16:9. Kosong = placeholder.
+          Unggah 1 foto untuk sampul tunggal, atau pilih beberapa foto sekaligus untuk ditampilkan
+          sebagai Slideshow interaktif di halaman berita. Kosong = menggunakan sampul default
+          otomatis.
         </FieldHint>
       </div>
 

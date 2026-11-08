@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getBeritaKesehatan } from "@/lib/actions";
+import { parseArticleImages } from "@/lib/article-images";
 import DefaultCoverBanner from "@/components/ui/DefaultCoverBanner";
 import SmartImage from "@/components/ui/SmartImage";
 import SectionHeading from "./SectionHeading";
@@ -33,15 +34,17 @@ export default async function BeritaSection() {
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {beritaData.length > 0 ? (
             beritaData.map((berita) => {
+              const photos = parseArticleImages(berita.imageUrl);
+              const coverUrl = photos[0] || "";
               return (
                 <article
                   key={berita.id}
                   className="group panel panel-lift relative flex flex-col overflow-hidden"
                 >
                   <div className="relative h-44 w-full shrink-0 overflow-hidden bg-clinic-soft">
-                    {berita.imageUrl ? (
+                    {coverUrl ? (
                       <SmartImage
-                        src={berita.imageUrl}
+                        src={coverUrl}
                         alt=""
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
@@ -53,6 +56,11 @@ export default async function BeritaSection() {
                         badge="Berita & Informasi"
                         variant="card"
                       />
+                    )}
+                    {photos.length > 1 && (
+                      <span className="absolute right-3 top-3 z-20 rounded-full bg-navy/85 px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
+                        {photos.length} Foto
+                      </span>
                     )}
                   </div>
                   <div className="flex flex-grow flex-col p-5">

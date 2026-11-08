@@ -8,10 +8,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
 import ArticleContent from "@/components/berita/ArticleContent";
+import ArticleImageGallery from "@/components/berita/ArticleImageGallery";
 import ArticleShare from "@/components/berita/ArticleShare";
 import PpidDocumentList from "@/components/ppid/PpidDocumentList";
 import DefaultCoverBanner from "@/components/ui/DefaultCoverBanner";
 import SmartImage from "@/components/ui/SmartImage";
+import { getPrimaryArticleImage } from "@/lib/article-images";
 
 export async function generateMetadata({
   params,
@@ -138,32 +140,13 @@ export default async function DetailPpidPage({
         </div>
       </header>
 
-      <figure className="content-container max-w-4xl">
-        <div className="relative aspect-video w-full overflow-hidden rounded-[var(--radius-lg)] bg-clinic-soft shadow-[var(--shadow-soft)]">
-          {item.imageUrl ? (
-            <SmartImage
-              src={item.imageUrl}
-              alt={item.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 896px) 100vw, 896px"
-              priority
-            />
-          ) : (
-            <DefaultCoverBanner
-              title={item.title}
-              badge={`PPID · ${categoryLabel}`}
-              subtitle="Pejabat Pengelola Informasi dan Dokumentasi · Puskesmas Prapatan"
-              variant="hero"
-            />
-          )}
-        </div>
-        {item.excerpt ? (
-          <figcaption className="mt-2.5 text-center text-[0.8125rem] text-slate-400">
-            {item.excerpt}
-          </figcaption>
-        ) : null}
-      </figure>
+      <ArticleImageGallery
+        imageUrl={item.imageUrl}
+        title={item.title}
+        badge={`PPID · ${categoryLabel}`}
+        subtitle="Pejabat Pengelola Informasi dan Dokumentasi · Puskesmas Prapatan"
+        caption={item.excerpt}
+      />
 
       <div className="content-container max-w-4xl pb-4 pt-8">
         {item.excerpt ? (
@@ -224,6 +207,7 @@ export default async function DetailPpidPage({
                   month: "long",
                   year: "numeric",
                 });
+                const relCover = getPrimaryArticleImage(rel.imageUrl);
                 return (
                   <Link
                     key={rel.id}
@@ -231,9 +215,9 @@ export default async function DetailPpidPage({
                     className="group panel panel-lift overflow-hidden"
                   >
                     <div className="relative h-[8.5rem] w-full overflow-hidden bg-clinic-soft">
-                      {rel.imageUrl ? (
+                      {relCover ? (
                         <SmartImage
-                          src={rel.imageUrl}
+                          src={relCover}
                           alt=""
                           fill
                           className="object-cover transition duration-300 group-hover:scale-[1.03]"

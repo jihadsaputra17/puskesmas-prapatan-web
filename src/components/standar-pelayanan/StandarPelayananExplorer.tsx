@@ -9,6 +9,7 @@ import {
   getStandarPelayananCategoryShortLabel,
   type StandarPelayananItem,
 } from "@/lib/standar-pelayanan-actions";
+import { parseArticleImages } from "@/lib/article-images";
 import { parsePpidAttachments } from "@/lib/ppid-files";
 import type { StandarPelayananCategory } from "@/lib/admin-schemas";
 
@@ -107,6 +108,8 @@ export default function StandarPelayananExplorer({ items }: { items: StandarPela
               year: "numeric",
             });
             const attachments = parsePpidAttachments(item.fileUrl);
+            const photos = parseArticleImages(item.imageUrl);
+            const coverUrl = photos[0] || "";
 
             return (
               <article
@@ -118,9 +121,9 @@ export default function StandarPelayananExplorer({ items }: { items: StandarPela
                   className="relative block h-44 w-full shrink-0 overflow-hidden bg-clinic-soft"
                   aria-label={`Lihat rincian ${item.title}`}
                 >
-                  {item.imageUrl ? (
+                  {coverUrl ? (
                     <SmartImage
-                      src={item.imageUrl}
+                      src={coverUrl}
                       alt=""
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"

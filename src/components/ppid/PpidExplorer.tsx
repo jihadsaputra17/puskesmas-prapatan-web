@@ -9,6 +9,7 @@ import {
   getPpidCategoryShortLabel,
   type PpidItem,
 } from "@/lib/ppid-actions";
+import { parseArticleImages } from "@/lib/article-images";
 import { parsePpidAttachments } from "@/lib/ppid-files";
 import type { PpidCategory } from "@/lib/admin-schemas";
 
@@ -98,6 +99,8 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
               year: "numeric",
             });
             const attachments = parsePpidAttachments(item.fileUrl);
+            const photos = parseArticleImages(item.imageUrl);
+            const coverUrl = photos[0] || "";
 
             return (
               <article
@@ -109,9 +112,9 @@ export default function PpidExplorer({ items }: { items: PpidItem[] }) {
                   className="relative block h-44 w-full shrink-0 overflow-hidden bg-clinic-soft"
                   aria-label={`Lihat rincian ${item.title}`}
                 >
-                  {item.imageUrl ? (
+                  {coverUrl ? (
                     <SmartImage
-                      src={item.imageUrl}
+                      src={coverUrl}
                       alt=""
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
