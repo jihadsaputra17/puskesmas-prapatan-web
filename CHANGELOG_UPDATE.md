@@ -1,12 +1,29 @@
 # Dokumentasi Pembaruan Website UPTD Puskesmas Prapatan
 
-**Tanggal Pembaruan Terakhir**: 3 November 2026  
+**Tanggal Pembaruan Terakhir**: 8 November 2026  
 **Domain Produksi**: https://pkmprapatanbpn.web.id/  
 **Repository**: `https://github.com/jihadsaputra17/puskesmas-prapatan-web.git` (`main`)
 
 ---
 
-## 1. Segmen & CMS PPID (Pejabat Pengelola Informasi dan Dokumentasi)
+## 1. Multi-Foto & Galeri Slideshow Interaktif pada Berita, PPID, & Standar Pelayanan
+- **Unggah Banyak Foto Sekaligus di Panel Admin (`src/components/admin/CoverImageField.tsx` & `src/lib/article-images.ts`)**:
+  - Mendukung unggah **1 hingga 12 foto sekaligus** dari perangkat (drag-and-drop atau pilih beberapa file) maupun menambahkan beberapa URL gambar.
+  - Menampilkan **Grid Urutan Foto Slideshow** di formulir Admin:
+    - Foto ke-1 otomatis menjadi **Sampul Utama** pada kartu daftar berita/dokumen.
+    - Admin dapat mengubah foto mana saja menjadi sampul utama (**Jadikan Utama**) atau menghapus foto tertentu.
+- **Galeri Slideshow Interaktif + Thumbnail Strip + Lightbox (`src/components/berita/ArticleImageGallery.tsx`)**:
+  - **Jika 0 foto**: Otomatis menampilkan `<DefaultCoverBanner />`.
+  - **Jika 1 foto**: Menampilkan sampul tunggal 16:9 dengan tombol **Perbesar** (*Fullscreen Lightbox*).
+  - **Jika 2 foto atau lebih**:
+    - Menampilkan **Slideshow Otomatis** (berganti tiap 5 detik & otomatis jeda saat kursor diarahkan) lengkap dengan tombol navigasi kiri/kanan (`‹` / `›`), indikator titik (*dot indicator*), dan penanda `Foto 1 / N`.
+    - Menampilkan **Baris Thumbnail** di bawah gambar utama agar pembaca dapat berpindah ke foto mana pun dengan 1 klik.
+    - Dilengkapi fitur **Fullscreen Lightbox Modal** (mendukung tombol keyboard `←`, `→`, dan `Esc`).
+  - Kartu daftar berita di Beranda (`src/components/layout/BeritaSection.tsx`) dan `/berita` (`src/app/berita/page.tsx`) otomatis menampilkan badge **`N FOTO`** apabila artikel memiliki lebih dari 1 foto.
+
+---
+
+## 2. Segmen & CMS PPID (Pejabat Pengelola Informasi dan Dokumentasi)
 - **Halaman Publik PPID (`/ppid` & `/ppid/[slug]`)**:
   - Menampilkan profil, tugas & fungsi PPID sesuai UU No. 14 Tahun 2008, alur permohonan informasi publik, pencarian dokumen, dan halaman baca detail dokumen PPID.
 - **6 Kategori Resmi Informasi Publik (PPID)**:
@@ -26,7 +43,7 @@
 
 ---
 
-## 2. Segmen & CMS Standar Pelayanan (`/standar-pelayanan` & `/admin/standar-pelayanan`)
+## 3. Segmen & CMS Standar Pelayanan (`/standar-pelayanan` & `/admin/standar-pelayanan`)
 - **Menu Navigasi & Hover Submenu Otomatis**:
   - Ditambahkan tepat di sebelah menu **PPID** pada Header (`src/components/layout/SiteHeader.tsx`) dan Footer (`src/components/layout/SiteFooter.tsx`).
   - Saat kursor diarahkan (*hover*) ke menu **Standar Pelayanan**, daftar dokumen Standar Pelayanan yang sudah dipublikasikan di Admin Panel otomatis tampil sebagai submenu dropdown dalam teks formal **UPPERCASE**.
@@ -41,14 +58,14 @@
   6. `Kompensasi & Penanganan Pengaduan Layanan` (`kompensasi-pengaduan`)
 - **Manajemen Admin Standar Pelayanan (`/admin/standar-pelayanan`)**:
   - Tersedia di sidebar Panel Admin (`Standar Pelayanan`) dan kartu ringkasan Dashboard Utama.
-  - Mendukung fitur lengkap seperti PPID: auto-slug dari judul, pilihan 6 kategori Standar Pelayanan, multi-tautan dokumen (`+ Tambah Tautan Dokumen`) dengan fitur klik-untuk-pratinjau di website, gambar sampul opsional dengan fallback `DefaultCoverBanner`, editor teks lengkap, serta tombol bagikan ke sosial media.
+  - Mendukung fitur lengkap seperti PPID: auto-slug dari judul, pilihan 6 kategori Standar Pelayanan, multi-tautan dokumen (`+ Tambah Tautan Dokumen`) dengan fitur klik-untuk-pratinjau di website, multi-foto slideshow / sampul default otomatis, editor teks lengkap, serta tombol bagikan ke sosial media.
   - Tabel database: `standar_pelayanan_items` (`db/migrations/006_standar_pelayanan_items.sql`).
 
 ---
 
-## 3. Halaman Kanal Media Sosial Resmi (`/media-sosial`) & Pengaturan Admin
+## 4. Halaman Kanal Media Sosial Resmi (`/media-sosial`) & Pengaturan Admin
 - **Halaman Publik Media Sosial (`src/app/media-sosial/page.tsx`)**:
-  - Menampilkan kartu profil interaktif dan tautan langsung ke seluruh jejaring resmi UPTD Puskesmas Prapatan:
+  - Menampilkan kartu profil interaktif dengan ukuran kartu dan bentuk tombol satu baris (`whitespace-nowrap`) yang 100% seragam untuk seluruh jejaring resmi UPTD Puskesmas Prapatan:
     - **Instagram Resmi**: `https://www.instagram.com/puskesmas.prapatan/` (`@puskesmas.prapatan`)
     - **Facebook Resmi**: `https://web.facebook.com/profile.php?id=61564150502560`
     - **YouTube Channel**: `https://www.youtube.com/@puskesmasprapatanbalikpapa1711`
@@ -63,35 +80,34 @@
 
 ---
 
-## 4. Desain Editorial Profesional pada Layanan Poli (`LayananSection` & `LayananFilterGrid`)
+## 5. Desain Editorial Profesional pada Layanan Poli (`LayananSection` & `LayananFilterGrid`)
 - Menghapus seluruh ikon emoji kartun (`🩺`, `🦷`, `🤰`, `👶`, `🥗`, `🧪`) pada bagian **Layanan Poli** di Beranda (`src/components/layout/LayananSection.tsx`) dan halaman Layanan (`src/components/layanan/LayananFilterGrid.tsx`).
 - Menggantinya dengan desain **Clean Editorial & Numbered Badge (`01`, `02`, `03`, ...)**, garis aksen atas berwarna *teal* (`border-t-4 border-t-[var(--teal)]`), label kategori formal (`LAYANAN MEDIS`, `KESEHATAN GIGI`, `IBU & KELUARGA`, dll.), serta daftar sub-layanan yang rapi.
 
 ---
 
-## 5. Sampul Default Otomatis (`DefaultCoverBanner`) & Tombol Bagikan Sosial Media
+## 6. Sampul Default Otomatis (`DefaultCoverBanner`) & Tombol Bagikan Sosial Media
 - **Sampul Default Otomatis (`src/components/ui/DefaultCoverBanner.tsx`)**:
   - Apabila **Gambar sampul (Opsional)** pada PPID, Standar Pelayanan, atau Berita dikosongkan, sistem otomatis menampilkan sampul resmi UPTD Puskesmas Prapatan (gradasi *navy–teal*, foto gedung Puskesmas, logo resmi, kategori, dan judul artikel/dokumen).
-  - Pratinjau sampul otomatis juga tampil langsung di formulir Admin (`src/components/admin/CoverImageField.tsx`).
 - **Fitur Bagikan Artikel (`src/components/berita/ArticleShare.tsx`)**:
   - Dilengkapi tombol bagikan ke **WhatsApp**, **Facebook**, **Instagram**, **TikTok**, **Threads**, serta tombol **Salin Tautan**.
 
 ---
 
-## 6. Fitur Polling Pengunjung di Beranda
+## 7. Fitur Polling Pengunjung di Beranda
 - **Pertanyaan**: *Apakah Website Ini Bermanfaat ?*
 - **Pilihan**: `Sangat Bermanfaat`, `Cukup Bermanfaat`, `Bermanfaat`, `Kurang Bermanfaat`.
 - **Penyimpanan**: Tersimpan secara *real-time* di tabel PostgreSQL `website_poll` (`db/migrations/004_website_poll.sql`) dengan visualisasi persentase suara dan jumlah responden.
 
 ---
 
-## 7. Pembaruan Jadwal Dokter & Tenaga Medis (`/jadwal-dokter` & `/admin/jadwal`)
+## 8. Pembaruan Jadwal Dokter & Tenaga Medis (`/jadwal-dokter` & `/admin/jadwal`)
 - Memperbarui database `jadwal_dokter` (`db/migrations/005_jadwal_medis.sql`) dengan 9 Tenaga Medis resmi beserta kolom **Jenis Tenaga Medis** dan **Jam Kerja** (Senin–Kamis `08:00 - 15:00`, Jumat `08:00 - 11:30`, Sabtu `08:00 - 13:30`, Minggu & Libur Nasional `-`).
 - Dilengkapi tampilan **Jadwal Per Hari** (dengan status *live* WITA `Sedang praktik` / `Tutup`) dan **Tabel Ringkasan Jam Kerja** di `/jadwal-dokter`.
 
 ---
 
-## 8. Pembaruan Data Kontak Resmi ("Hubungi Kami")
+## 9. Pembaruan Data Kontak Resmi ("Hubungi Kami")
 - **Alamat Resmi**: `Jl. Prapatan No. 31 (Jl. Prapatan Dalam), RT. 029, Kelurahan Prapatan, Kecamatan Balikpapan Kota, Kota Balikpapan, Kalimantan Timur 76111`
 - **Telepon**: `(0542) 426008`
 - **Email**: `puskesmasprapatan123@gmail.com`
