@@ -181,6 +181,7 @@ export const settingsSchema = z.object({
   whatsapp: z.string().trim().optional(),
   hero_title: z.string().trim().min(1).optional(),
   hero_subtitle: z.string().trim().min(1).optional(),
+  hero_images: optionalNewsImage,
 }).strict();
 
 const userIdSchema = z.string().trim().uuid();

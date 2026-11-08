@@ -18,6 +18,7 @@ export const DEFAULT_SOCIAL_SETTINGS = {
   hero_title: "Pelayanan Kesehatan Terbaik untuk Anda",
   hero_subtitle:
     "Kami berkomitmen memberikan pelayanan kesehatan yang berkualitas, terjangkau, dan merata bagi seluruh warga Kota Balikpapan.",
+  hero_images: "",
 };
 
 type SettingsInput = z.infer<typeof settingsSchema>;

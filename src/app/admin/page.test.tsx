@@ -5,7 +5,6 @@ import AdminDashboard from "./page";
 const mocks = vi.hoisted(() => ({
   getBeritaKesehatan: vi.fn(),
   getBeritaCount: vi.fn(),
-  getLayananCount: vi.fn(),
   getJadwalCount: vi.fn(),
   getPpidCount: vi.fn(),
   getStandarPelayananCount: vi.fn(),
@@ -17,7 +16,6 @@ vi.mock("@/lib/actions", () => ({
   getBeritaKesehatan: mocks.getBeritaKesehatan,
   getBeritaCount: mocks.getBeritaCount,
 }));
-vi.mock("@/lib/layanan-actions", () => ({ getLayananCount: mocks.getLayananCount }));
 vi.mock("@/lib/jadwal-actions", () => ({ getJadwalCount: mocks.getJadwalCount }));
 vi.mock("@/lib/ppid-actions", () => ({ getPpidCount: mocks.getPpidCount }));
 vi.mock("@/lib/standar-pelayanan-actions", () => ({
@@ -35,7 +33,6 @@ describe("AdminDashboard", () => {
     mockedGetServerSession.mockResolvedValue({ user: { name: "Rina" } } as never);
     mocks.getBeritaKesehatan.mockResolvedValue([]);
     mocks.getBeritaCount.mockResolvedValue(0);
-    mocks.getLayananCount.mockResolvedValue(0);
     mocks.getJadwalCount.mockResolvedValue(0);
     mocks.getPpidCount.mockResolvedValue(0);
     mocks.getStandarPelayananCount.mockResolvedValue(0);

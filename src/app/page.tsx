@@ -8,6 +8,7 @@ import PollingSection from "@/components/layout/PollingSection";
 import LayananSkeleton from "@/components/layout/LayananSkeleton";
 import DokterSkeleton from "@/components/layout/DokterSkeleton";
 import BeritaSkeleton from "@/components/layout/BeritaSkeleton";
+import { getSettings } from "@/lib/settings-actions";
 
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -19,9 +20,15 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  const settings = await getSettings();
+
   return (
     <>
-      <HeroSlideshow />
+      <HeroSlideshow
+        heroTitle={settings.hero_title}
+        heroSubtitle={settings.hero_subtitle}
+        heroImages={settings.hero_images}
+      />
       <QuickAccess />
       <Suspense fallback={<LayananSkeleton />}>
         <LayananSection />

@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import { Metadata } from "next";
 import { authOptions } from "@/lib/auth";
 import { getBeritaCount, getBeritaKesehatan } from "@/lib/actions";
-import { getLayananCount } from "@/lib/layanan-actions";
 import { getJadwalCount } from "@/lib/jadwal-actions";
 import { getPpidCount } from "@/lib/ppid-actions";
 import { getStandarPelayananCount } from "@/lib/standar-pelayanan-actions";
@@ -25,11 +24,10 @@ async function loadData<T>(load: () => Promise<T>): Promise<LoadResult<T>> {
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
-  const [newsCount, recentNews, layananCount, jadwalCount, ppidCount, standarPelayananCount] =
+  const [newsCount, recentNews, jadwalCount, ppidCount, standarPelayananCount] =
     await Promise.all([
       loadData(getBeritaCount),
       loadData(getBeritaKesehatan),
-      loadData(getLayananCount),
       loadData(getJadwalCount),
       loadData(getPpidCount),
       loadData(getStandarPelayananCount),
@@ -41,7 +39,6 @@ export default async function AdminDashboard() {
     ["Berita", newsCount],
     ["Informasi PPID", ppidCount],
     ["Standar Pelayanan", standarPelayananCount],
-    ["Layanan Poli", layananCount],
     ["Jadwal Dokter", jadwalCount],
   ] as const;
 
@@ -57,7 +54,7 @@ export default async function AdminDashboard() {
         </p>
       </header>
 
-      <section aria-label="Ringkasan konten" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+      <section aria-label="Ringkasan konten" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {summaries.map(([label, result]) => (
           <article key={label} className="panel p-5">
             <p className="text-sm font-medium text-[var(--muted)]">{label}</p>

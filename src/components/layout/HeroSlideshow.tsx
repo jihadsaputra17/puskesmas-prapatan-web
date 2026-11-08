@@ -3,6 +3,7 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import Link from "next/link";
+import { parseArticleImages } from "@/lib/article-images";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -16,7 +17,7 @@ type Slide = {
   ctaHref?: string;
 };
 
-const slides: Slide[] = [
+const defaultSlides: Slide[] = [
   {
     image: "/images/hero-pkm.jpg",
     title: "Puskesmas Prapatan",
@@ -75,7 +76,39 @@ const slides: Slide[] = [
   },
 ];
 
-export default function HeroSlideshow() {
+export default function HeroSlideshow({
+  heroTitle,
+  heroSubtitle,
+  heroImages,
+}: {
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroImages?: string;
+}) {
+  const customImages = parseArticleImages(heroImages);
+
+  const activeSlides: Slide[] =
+    customImages.length > 0
+      ? customImages.map((img, idx) => {
+          const fallback = defaultSlides[idx % defaultSlides.length];
+          return {
+            image: img,
+            title: idx === 0 && heroTitle ? heroTitle : fallback.title,
+            subtitle: idx === 0 && heroSubtitle ? heroSubtitle : fallback.subtitle,
+            ctaLabel: fallback.ctaLabel,
+            ctaHref: fallback.ctaHref,
+          };
+        })
+      : defaultSlides.map((slide, idx) =>
+          idx === 0
+            ? {
+                ...slide,
+                title: heroTitle || slide.title,
+                subtitle: heroSubtitle || slide.subtitle,
+              }
+            : slide,
+        );
+
   return (
     <section className="relative w-full">
       <Swiper
@@ -85,15 +118,15 @@ export default function HeroSlideshow() {
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         pagination={{ clickable: true }}
         navigation
-        loop
+        loop={activeSlides.length > 1}
         className="hero-slideshow"
       >
-        {slides.map((slide, i) => (
-          <SwiperSlide key={i}>
+        {activeSlides.map((slide, i) => (
+          <SwiperSlide key={`${i}-${slide.image.slice(0, 24)}`}>
             <div
               className="relative flex min-h-[60vh] items-center bg-navy md:min-h-[75vh]"
               style={{
-                backgroundImage: `linear-gradient(135deg, rgba(7,28,43,0.85) 0%, rgba(11,42,63,0.7) 50%, rgba(7,28,43,0.55) 100%), url(${slide.image})`,
+                backgroundImage: `linear-gradient(135deg, rgba(7,28,43,0.85) 0%, rgba(11,42,63,0.7) 50%, rgba(7,28,43,0.55) 100%), url("${slide.image}")`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
